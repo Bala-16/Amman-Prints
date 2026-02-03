@@ -1,0 +1,223 @@
+{%extends "nav.html"%}
+{%block title%}Company Creation{%endblock%}
+{%block extra_head%}
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+{%endblock%}
+{%block content%}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-lime-50/30 to-green-50/30 p-6">
+
+<div class="max-w-[1600px] mx-auto space-y-6">
+
+  <!-- HEADER -->
+  <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
+        <i data-lucide="building-2" class="text-white w-6 h-6"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-white">Company Name Creation</h1>
+        <p class="text-lime-100 text-sm">Company master details</p>
+      </div>
+    </div>
+    <button onclick="openModal()" class="bg-white text-green-700 px-4 py-2 rounded-lg shadow hover:scale-105 transition flex items-center gap-2">
+      <i data-lucide="plus"></i> Add Company
+    </button>
+  </div>
+
+  <!-- RECORD COUNT -->
+  <div class="text-sm text-slate-600">
+    Found <span id="recordCount"></span> Records
+  </div>
+
+  <!-- Table / Cards -->
+  <div class="overflow-x-auto">
+
+    <!-- Desktop Table -->
+    <table class="w-full text-sm hidden md:table">
+      <thead class="bg-slate-100">
+        <tr>
+          <th class="p-3">S.No</th>
+          <th class="p-3 text-left">Company Name</th>
+          <th class="p-3 text-left">Address 1</th>
+          <th class="p-3 text-left">Address 2</th>
+          <th class="p-3 text-left">Phone No</th>
+          <th class="p-3 text-left">TIN No</th>
+          <th class="p-3 text-left">CST No</th>
+          <th class="p-3 text-left">CIN No</th>
+          <th class="p-3 text-center">Edit</th>
+          <th class="p-3 text-center">Delete</th>
+        </tr>
+      </thead>
+      <tbody id="companyTableDesktop"></tbody>
+    </table>
+
+    <!-- Mobile Cards -->
+    <div id="companyCardsMobile" class="grid grid-cols-1 gap-4 md:hidden mt-4"></div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+  <div class="bg-white rounded-xl w-full max-w-4xl p-6 shadow-xl">
+    <h2 class="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
+      <i data-lucide="building"></i> Company Creation
+    </h2>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="col-span-2">
+        <label>Company Name *</label>
+        <input id="companyName" class="w-full border rounded px-3 py-2">
+      </div>
+      <div>
+        <label>Phone No</label>
+        <input id="phone" class="w-full border rounded px-3 py-2">
+      </div>
+      <div class="col-span-3">
+        <label>Address 1 *</label>
+        <input id="addr1" class="w-full border rounded px-3 py-2">
+      </div>
+      <div class="col-span-3">
+        <label>Address 2</label>
+        <input id="addr2" class="w-full border rounded px-3 py-2">
+      </div>
+      <div>
+        <label>TIN No</label>
+        <input id="tin" class="w-full border rounded px-3 py-2">
+      </div>
+      <div>
+        <label>CST No</label>
+        <input id="cst" class="w-full border rounded px-3 py-2">
+      </div>
+      <div>
+        <label>CIN No</label>
+        <input id="cin" class="w-full border rounded px-3 py-2">
+      </div>
+    </div>
+
+    <div class="mt-6 flex justify-center gap-6">
+      <button onclick="closeModal()" class="bg-gray-200 text-gray-700 px-10 py-2 rounded hover:bg-gray-300">CANCEL</button>
+      <button onclick="addCompany()" class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 text-white px-10 py-2 rounded hover:bg-[#8aa614]">ADD COMPANY</button>
+    </div>
+  </div>
+</div>
+</div>
+{%endblock%}
+{%block extra_js%}
+<script>
+lucide.createIcons()
+
+let companies = [
+  {name:"SRI AMMAN DIGITAL PRINTS", addr1:"TIRUPPUR", addr2:"TIRUPPUR", phone:"8344944333", tin:"33826412977", cst:"33826412977 / 12.09.16", cin:"000"}
+];
+
+function renderCompanies() {
+  const tableBody = document.getElementById("companyTableDesktop");
+  const cardContainer = document.getElementById("companyCardsMobile");
+  tableBody.innerHTML = "";
+  cardContainer.innerHTML = "";
+
+  companies.forEach((c,i)=>{
+    // Desktop Table
+    tableBody.innerHTML += `<tr class="border-t hover:bg-slate-50">
+      <td class="p-3 text-center">${i+1}</td>
+      <td class="p-3">${c.name}</td>
+      <td class="p-3">${c.addr1}</td>
+      <td class="p-3">${c.addr2}</td>
+      <td class="p-3">${c.phone}</td>
+      <td class="p-3">${c.tin}</td>
+      <td class="p-3">${c.cst}</td>
+      <td class="p-3">${c.cin}</td>
+      <td class="p-3 text-center text-emerald-600" onclick="editCompany(${i})"><i data-lucide="edit"></i></td>
+      <td class="p-3 text-center text-red-500" onclick="deleteCompany(${i})"><i data-lucide="trash-2"></i></td>
+    </tr>`;
+
+    // Mobile Cards
+    cardContainer.innerHTML += `<div class="bg-white rounded-xl shadow p-4 flex flex-col justify-between hover:shadow-lg transition">
+      <h3 class="font-bold text-lg">${c.name}</h3>
+      <p class="text-sm">${c.addr1} ${c.addr2}</p>
+      <p class="text-sm"><span class="font-semibold">Phone:</span> ${c.phone}</p>
+      <p class="text-sm"><span class="font-semibold">TIN:</span> ${c.tin}</p>
+      <p class="text-sm"><span class="font-semibold">CST:</span> ${c.cst}</p>
+      <p class="text-sm"><span class="font-semibold">CIN:</span> ${c.cin}</p>
+      <div class="flex justify-end gap-4 mt-2">
+        <button class="text-emerald-600 hover:text-emerald-800" onclick="editCompany(${i})"><i data-lucide="edit"></i></button>
+        <button class="text-red-500 hover:text-red-700" onclick="deleteCompany(${i})"><i data-lucide="trash-2"></i></button>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById("recordCount").innerText = companies.length;
+  lucide.createIcons();
+}
+
+// Modal
+function openModal(){ modal.classList.remove("hidden"); modal.classList.add("flex"); }
+function closeModal(){ 
+  modal.classList.add("hidden");
+  companyName.value = "";
+  addr1.value = "";
+  addr2.value = "";
+  phone.value = "";
+  tin.value = "";
+  cst.value = "";
+  cin.value = "";
+}
+
+// Add Company
+function addCompany(){
+  companies.push({
+    name:companyName.value,
+    addr1:addr1.value,
+    addr2:addr2.value,
+    phone:phone.value,
+    tin:tin.value,
+    cst:cst.value,
+    cin:cin.value
+  });
+  closeModal();
+  renderCompanies();
+}
+
+// Edit/Delete
+function editCompany(i){
+  // Prefill modal for edit
+  companyName.value = companies[i].name;
+  addr1.value = companies[i].addr1;
+  addr2.value = companies[i].addr2;
+  phone.value = companies[i].phone;
+  tin.value = companies[i].tin;
+  cst.value = companies[i].cst;
+  cin.value = companies[i].cin;
+
+  openModal();
+
+  // Replace add function temporarily
+  document.querySelector("button[onclick='addCompany()']").onclick = function(){
+    companies[i] = {
+      name:companyName.value,
+      addr1:addr1.value,
+      addr2:addr2.value,
+      phone:phone.value,
+      tin:tin.value,
+      cst:cst.value,
+      cin:cin.value
+    };
+    closeModal();
+    renderCompanies();
+
+    // Restore Add function
+    document.querySelector("button[onclick='addCompany()']").onclick = addCompany;
+  }
+}
+
+function deleteCompany(i){
+  if(confirm("Delete "+companies[i].name+"?")){
+    companies.splice(i,1);
+    renderCompanies();
+  }
+}
+
+renderCompanies();
+</script>
+{%endblock%}

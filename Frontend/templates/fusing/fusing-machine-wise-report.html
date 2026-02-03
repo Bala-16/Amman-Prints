@@ -1,0 +1,181 @@
+{% extends "nav.html" %}
+
+{% block title %}Job Card List{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-4 sm:p-6">
+  <div class="max-w-[1600px] mx-auto space-y-6">
+
+    <!-- HEADER -->
+    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-4 sm:p-6 shadow-xl flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="h-12 w-12 flex items-center justify-center rounded-xl bg-white/20">
+          <i data-lucide="settings" class="text-white w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-white">Fusing Machine Wise Report</h1>
+          <p class="text-teal-100 text-sm sm:text-base">Production summary by machine</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div>
+        <label class="text-sm sm:text-base text-slate-600">From Date</label>
+        <input type="date" id="fromDate" class="w-full border rounded px-3 py-2 text-sm sm:text-base">
+      </div>
+      <div>
+        <label class="text-sm sm:text-base text-slate-600">To Date</label>
+        <input type="date" id="toDate" class="w-full border rounded px-3 py-2 text-sm sm:text-base">
+      </div>
+      <div>
+        <label class="text-sm sm:text-base text-slate-600">Machine No</label>
+        <select id="machine" class="w-full border rounded px-3 py-2 text-sm sm:text-base">
+          <option>FLAT BED NO 3</option>
+          <option>FLAT BED NO 4</option>
+          <option>ROLL TO ROLL NO 1</option>
+        </select>
+      </div>
+      <div class="flex items-end gap-2">
+        <button id="searchBtn" class="bg-teal-600 text-white px-4 sm:px-6 py-2 rounded-lg shadow hover:scale-105 transition flex items-center gap-2">
+          <i data-lucide="search" class="w-4 h-4"></i> Search
+        </button>
+        <button id="resetBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 sm:px-6 py-2 rounded-lg shadow flex items-center justify-center gap-2">
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <!-- <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 h-[260px] sm:h-[300px]">
+        <h3 class="font-semibold mb-2 text-sm sm:text-base">Machine Production</h3>
+        <canvas id="machineBar" class="w-full h-full"></canvas>
+      </div>
+
+      <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 h-[260px] sm:h-[300px]">
+        <h3 class="font-semibold mb-2 text-sm sm:text-base">Balance Qty</h3>
+        <canvas id="machinePie" class="w-full h-full"></canvas>
+      </div>
+    </div> -->
+
+    <!-- TABLE -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg overflow-x-auto">
+      <table class="w-full text-sm sm:text-base min-w-[700px]" id="machineTable">
+        <thead class="bg-slate-100">
+          <tr>
+            <th class="p-2 sm:p-3 text-left">Date</th>
+            <th class="p-2 sm:p-3 text-left">Jobcard No</th>
+            <th class="p-2 sm:p-3 text-left">Shift</th>
+            <th class="p-2 sm:p-3 text-left">Machine</th>
+            <th class="p-2 sm:p-3 text-left">Operator</th>
+            <th class="p-2 sm:p-3 text-left">Particular</th>
+            <th class="p-2 sm:p-3 text-right">Order Qty</th>
+            <th class="p-2 sm:p-3 text-right">Product Qty</th>
+            <th class="p-2 sm:p-3 text-right">Balance</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+lucide.createIcons();
+
+// Sample data
+let rows = [
+ {date:"03-04-2024", jc:"JC-2404-0004", shift:"DAY", mach:"FLAT BED NO 3", op:"GOLU KUMAR", part:"XL-5 DESIGN", order:1500, produced:600, balance:900},
+ {date:"04-04-2024", jc:"JC-2404-0005", shift:"DAY", mach:"FLAT BED NO 4", op:"RAHUL", part:"XL-6 DESIGN", order:1600, produced:900, balance:700}
+];
+
+const tbody = document.getElementById("tableBody");
+const fromDate = document.getElementById("fromDate");
+const toDate = document.getElementById("toDate");
+const machineInput = document.getElementById("machine");
+const searchBtn = document.getElementById("searchBtn");
+const resetBtn = document.getElementById("resetBtn");
+
+// Charts
+const barCtx = document.getElementById("machineBar").getContext("2d");
+const pieCtx = document.getElementById("machinePie").getContext("2d");
+
+let barChart = new Chart(barCtx, {
+  type: "bar",
+  data: { labels: [], datasets:[{label:"Produced Qty", data:[], backgroundColor:"#14b8a6"}]},
+  options:{ responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true}}}
+});
+
+let pieChart = new Chart(pieCtx, {
+  type: "doughnut",
+  data: { labels:[], datasets:[{data:[], backgroundColor:["#0d9488","#f97316"]}] },
+  options:{ responsive:true, maintainAspectRatio:false }
+});
+
+// Render table and charts
+function renderTable(data){
+  tbody.innerHTML="";
+  let machineMap = {};
+  data.forEach((r,i)=>{
+    tbody.innerHTML += `
+      <tr class="border-t hover:bg-slate-50">
+        <td class="p-2 sm:p-3">${r.date}</td>
+        <td class="p-2 sm:p-3 font-medium">${r.jc}</td>
+        <td class="p-2 sm:p-3">${r.shift}</td>
+        <td class="p-2 sm:p-3">${r.mach}</td>
+        <td class="p-2 sm:p-3">${r.op}</td>
+        <td class="p-2 sm:p-3">${r.part}</td>
+        <td class="p-2 sm:p-3 text-right">${r.order}</td>
+        <td class="p-2 sm:p-3 text-right">${r.produced}</td>
+        <td class="p-2 sm:p-3 text-right">${r.balance}</td>
+      </tr>`;
+    machineMap[r.mach]=(machineMap[r.mach]||0)+r.produced;
+  });
+
+  barChart.data.labels = Object.keys(machineMap);
+  barChart.data.datasets[0].data = Object.values(machineMap);
+  barChart.update();
+
+  pieChart.data.labels = Object.keys(machineMap);
+  pieChart.data.datasets[0].data = Object.values(machineMap);
+  pieChart.update();
+}
+
+// Initial render
+renderTable(rows);
+
+// Search functionality
+searchBtn.addEventListener("click", ()=>{
+  const from = fromDate.value;
+  const to = toDate.value;
+  const mach = machineInput.value;
+
+  const filtered = rows.filter(r=>{
+    let valid = true;
+    if(from) valid = valid && r.date >= from;
+    if(to) valid = valid && r.date <= to;
+    if(mach) valid = valid && r.mach.toLowerCase().includes(mach.toLowerCase());
+    return valid;
+  });
+
+  renderTable(filtered);
+});
+
+// Reset
+resetBtn.addEventListener("click", ()=>{
+  fromDate.value=""; toDate.value=""; machineInput.value="";
+  renderTable(rows);
+});
+</script>
+{% endblock %}

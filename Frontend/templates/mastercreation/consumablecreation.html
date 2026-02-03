@@ -1,0 +1,183 @@
+{%extends "nav.html"%}
+{%block title%}Consumable{%endblock%}
+{%block extra_head%}
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+{%endblock%}
+{%block content%}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-6">
+
+<div class="max-w-[1600px] mx-auto space-y-6">
+
+<!-- HEADER -->
+<div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-6 flex justify-between items-center">
+  <div class="flex items-center gap-3">
+    <i data-lucide="layers" class="text-white"></i>
+    <h1 class="text-2xl font-bold text-white">Consumable Creation</h1>
+  </div>
+  <button onclick="openModal()"
+    class="bg-white text-teal-600 px-4 py-2 rounded-lg font-semibold">
+    + New Consumable
+  </button>
+</div>
+
+<!-- DESKTOP TABLE -->
+<div class="hidden md:block bg-white rounded-xl shadow overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+  <th class="p-3">#</th>
+  <th class="p-3 text-left">Item</th>
+  <th class="p-3 text-left">Particulars</th>
+  <th class="p-3 text-left">Description</th>
+  <th class="p-3 text-left">Status</th>
+  <th class="p-3 text-center">Edit</th>
+  <th class="p-3 text-center">Delete</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+</div>
+
+<!-- MOBILE CARDS -->
+<div id="cards" class="grid gap-4 md:hidden"></div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+<div class="bg-white rounded-xl w-full max-w-md p-6">
+<h2 id="modalTitle" class="text-lg font-bold mb-4">Consumable</h2>
+
+<select id="itemName" class="w-full border p-2 rounded mb-3">
+  <option value="">Select Item</option>
+  <option>Media</option>
+  <option>Ink</option>
+  <option>Chemical</option>
+</select>
+
+<input id="particulars" placeholder="Particulars"
+ class="w-full border p-2 rounded mb-3">
+
+<input id="description" placeholder="Description"
+ class="w-full border p-2 rounded mb-3">
+
+<select id="status" class="w-full border p-2 rounded mb-4">
+  <option>Active</option>
+  <option>In-active</option>
+</select>
+
+<div class="flex justify-end gap-3">
+  <button onclick="closeModal()" class="px-4 py-2 border rounded">Cancel</button>
+  <button onclick="saveConsumable()"
+    class="px-6 py-2 bg-teal-600 text-white rounded">
+    Save
+  </button>
+</div>
+</div>
+</div>
+</div>
+{%endblock%}
+{%block extra_js%}
+<script>
+lucide.createIcons()
+
+let consumables = [
+ { item:"Media", part:"63-R7", desc:"", status:"In-active" },
+ { item:"Media", part:"60-R7", desc:"", status:"In-active" },
+ { item:"Media", part:"44-R7", desc:"", status:"In-active" }
+]
+
+let editIndex = null
+
+function renderUI(){
+ const tbody = document.getElementById("tableBody")
+ const cards = document.getElementById("cards")
+ tbody.innerHTML = ""
+ cards.innerHTML = ""
+
+ consumables.forEach((c,i)=>{
+  tbody.innerHTML += `
+  <tr class="border-t">
+    <td class="p-3">${i+1}</td>
+    <td class="p-3">${c.item}</td>
+    <td class="p-3">${c.part}</td>
+    <td class="p-3">${c.desc || "-"}</td>
+    <td class="p-3">${c.status}</td>
+    <td class="p-3 text-center text-emerald-600 cursor-pointer"
+      onclick="editConsumable(${i})">✏️</td>
+    <td class="p-3 text-center text-red-500 cursor-pointer"
+      onclick="deleteConsumable(${i})">🗑️</td>
+  </tr>`
+
+  cards.innerHTML += `
+  <div class="bg-white rounded-xl shadow p-4">
+    <h3 class="font-bold">${c.item}</h3>
+    <p>${c.part}</p>
+    <p class="text-sm">${c.desc || "-"}</p>
+    <span class="text-xs">${c.status}</span>
+    <div class="flex justify-end gap-4 mt-3">
+      <button onclick="editConsumable(${i})" class="text-teal-600">Edit</button>
+      <button onclick="deleteConsumable(${i})" class="text-red-500">Delete</button>
+    </div>
+  </div>`
+ })
+}
+
+function openModal(){
+ modal.classList.remove("hidden")
+ modal.classList.add("flex")
+}
+
+function closeModal(){
+ modal.classList.add("hidden")
+ editIndex = null
+ itemName.value = ""
+ particulars.value = ""
+ description.value = ""
+ status.value = "Active"
+}
+
+function saveConsumable(){
+ if(!itemName.value || !particulars.value){
+  alert("Required fields missing")
+  return
+ }
+
+ const obj = {
+  item:itemName.value,
+  part:particulars.value,
+  desc:description.value,
+  status:status.value
+ }
+
+ if(editIndex !== null){
+  consumables[editIndex] = obj
+ } else {
+  consumables.push(obj)
+ }
+
+ closeModal()
+ renderUI()
+}
+
+function editConsumable(i){
+ editIndex = i
+ const c = consumables[i]
+ itemName.value = c.item
+ particulars.value = c.part
+ description.value = c.desc
+ status.value = c.status
+ openModal()
+}
+
+function deleteConsumable(i){
+ if(confirm("Delete this consumable?")){
+  consumables.splice(i,1)
+  renderUI()
+ }
+}
+
+renderUI()
+</script>
+{%endblock%}

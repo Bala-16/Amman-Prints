@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Accounts & Finance</title>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+:root {
+  --primary: linear-gradient(135deg,#3b82f6,#60a5fa);
+  --green: linear-gradient(135deg,#16a34a,#22c55e);
+  --orange: linear-gradient(135deg,#f97316,#fb923c);
+  --red: linear-gradient(135deg,#dc2626,#f87171);
+  --border:#e5e7eb;
+  --muted:#f3f4f6;
+  --text-muted:#6b7280;
+}
+
+/* RESET */
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f5f7;
+  padding: 16px;
+}
+
+.container {
+  max-width: none;
+  margin: auto;
+}
+
+/* HEADER */
+.header {
+  position: relative;
+  overflow: hidden;
+  background: var(--primary);
+  padding: 28px;
+  border-radius: 20px;
+  box-shadow: 0 25px 40px rgba(0,0,0,.15);
+  margin-bottom: 24px;
+}
+
+.header::after {
+  content:"";
+  position:absolute;
+  width:300px;
+  height:300px;
+  background:rgba(255,255,255,.12);
+  border-radius:50%;
+  top:-50%;
+  right:-50%;
+  filter:blur(40px);
+}
+
+.header-row {
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+.header-icon {
+  width:56px;
+  height:56px;
+  border-radius:18px;
+  background:rgba(255,255,255,.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.header h1 {
+  margin:0;
+  font-size:28px;
+  color:white;
+}
+
+.header p {
+  margin:4px 0 0;
+  font-size:13px;
+  color:rgba(255,255,255,.85);
+}
+
+/* STATS */
+.stats {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.stat {
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  border:2px solid var(--border);
+  box-shadow:0 15px 30px rgba(0,0,0,.1);
+  transition:.2s;
+}
+
+.stat:hover {
+  transform:scale(1.05);
+}
+
+.stat-top {
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+
+.stat-icon {
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.badge {
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:600;
+  color:white;
+}
+
+.green{background:var(--green)}
+.orange{background:var(--orange)}
+.red{background:var(--red)}
+.primary{background:var(--primary)}
+
+.stat p {
+  margin:0;
+}
+
+.stat .label {
+  font-size:13px;
+  color:var(--text-muted);
+}
+
+.stat .value {
+  font-size:22px;
+  font-weight:700;
+}
+
+/* TRANSACTIONS */
+.card {
+  background:white;
+  border-radius:18px;
+  border:2px solid var(--border);
+  box-shadow:0 15px 30px rgba(0,0,0,.1);
+  overflow:hidden;
+}
+
+.card-header {
+  padding:16px;
+  background:#eff6ff;
+  font-weight:600;
+}
+
+.txn {
+  padding:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  transition:.2s;
+}
+
+.txn:hover {
+  background:#f8fafc;
+}
+
+.txn-left {
+  display:flex;
+  gap:16px;
+  align-items:center;
+}
+
+.txn-icon {
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.txn-meta h3 {
+  margin:0;
+  font-size:14px;
+}
+
+.txn-meta p {
+  margin:2px 0 0;
+  font-size:12px;
+  color:var(--text-muted);
+}
+
+.txn-right {
+  display:flex;
+  gap:24px;
+  align-items:center;
+}
+
+.amount {
+  text-align:right;
+  font-size:13px;
+}
+
+.amount strong {
+  display:block;
+}
+
+.green-text { color:#16a34a }
+.orange-text { color:#f97316 }
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:600px){
+  .stats{grid-template-columns:1fr}
+  .txn{flex-direction:column;align-items:flex-start}
+  .txn-right{flex-wrap:wrap;gap:12px}
+  .header h1{font-size:22px}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-row">
+    <div class="header-icon"><i data-lucide="dollar-sign"></i></div>
+    <div>
+      <h1>Accounts & Finance</h1>
+      <p>Manage payments and transactions</p>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-top">
+      <div class="stat-icon green"><i data-lucide="trending-up"></i></div>
+      <span class="badge green">+12%</span>
+    </div>
+    <p class="label">Total Revenue</p>
+    <p class="value">₹1,24,500</p>
+  </div>
+
+  <div class="stat">
+    <div class="stat-top">
+      <div class="stat-icon primary"><i data-lucide="wallet"></i></div>
+      <span class="badge primary">Active</span>
+    </div>
+    <p class="label">Received</p>
+    <p class="value">₹77,000</p>
+  </div>
+
+  <div class="stat">
+    <div class="stat-top">
+      <div class="stat-icon orange"><i data-lucide="credit-card"></i></div>
+      <span class="badge orange">Pending</span>
+    </div>
+    <p class="label">Outstanding</p>
+    <p class="value">₹47,500</p>
+  </div>
+
+  <div class="stat">
+    <div class="stat-top">
+      <div class="stat-icon red"><i data-lucide="trending-down"></i></div>
+      <span class="badge red">-5%</span>
+    </div>
+    <p class="label">Expenses</p>
+    <p class="value">₹15,000</p>
+  </div>
+</div>
+
+<!-- TRANSACTIONS -->
+<div class="card">
+  <div class="card-header">Recent Transactions</div>
+  <div id="txns"></div>
+</div>
+
+</div>
+
+<script>
+lucide.createIcons();
+
+const txns = [
+  {id:"JC-2601-0077",name:"Raj Textiles",amount:45000,paid:30000,type:"credit"},
+  {id:"JC-2601-0076",name:"Kumar Prints",amount:32000,paid:32000,type:"credit"},
+  {id:"INV-001",name:"Ink Supplier",amount:15000,paid:15000,type:"debit"}
+];
+
+const wrap = document.getElementById("txns");
+
+txns.forEach(t=>{
+  const bal = t.amount - t.paid;
+  const icon = t.type === "credit" ? "trending-up" : "trending-down";
+  const grad = t.type === "credit" ? "green" : "red";
+  const status = bal === 0 ? "Paid" : "Partial";
+
+  wrap.innerHTML += `
+    <div class="txn">
+      <div class="txn-left">
+        <div class="txn-icon ${grad}">
+          <i data-lucide="${icon}"></i>
+        </div>
+        <div class="txn-meta">
+          <h3>${t.id}</h3>
+          <p>${t.name}</p>
+        </div>
+      </div>
+
+      <div class="txn-right">
+        <div class="amount">
+          <span>Amount</span>
+          <strong>₹${t.amount.toLocaleString()}</strong>
+        </div>
+        <div class="amount">
+          <span>Paid</span>
+          <strong class="green-text">₹${t.paid.toLocaleString()}</strong>
+        </div>
+        <div class="amount">
+          <span>Balance</span>
+          <strong class="orange-text">₹${bal.toLocaleString()}</strong>
+        </div>
+        <span class="badge ${bal===0?"green":"orange"}">${status}</span>
+      </div>
+    </div>
+  `;
+});
+
+lucide.createIcons();
+</script>
+</body>
+</html>

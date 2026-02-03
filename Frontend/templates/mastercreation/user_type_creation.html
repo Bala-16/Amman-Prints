@@ -1,0 +1,172 @@
+{%extends "nav.html"%}
+
+
+{%block title%}User Type{%endblock%}
+{%block extra_head%}
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+{%endblock%}
+{%block content%}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-lime-50/30 to-green-50/30 p-4 sm:p-6">
+
+<div class="max-w-[1400px] mx-auto space-y-6">
+
+  <!-- HEADER -->
+  <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div class="flex items-center gap-3">
+      <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
+        <i data-lucide="user-cog" class="text-white w-6 h-6"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-white">User Type</h1>
+        <p class="text-lime-100 text-sm sm:text-base">Role & department management</p>
+      </div>
+    </div>
+
+    <button onclick="openModal()"
+      class="bg-white text-green-700 px-4 py-2 rounded-lg shadow hover:scale-105 transition flex items-center gap-2">
+      <i data-lucide="plus"></i> Add User Type
+    </button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg overflow-x-auto">
+    <div class="p-4 border-b text-sm text-slate-600">
+      Found <span id="recordCount"></span> Records
+    </div>
+
+    <table class="w-full text-sm sm:text-base min-w-[600px]">
+      <thead class="bg-slate-100">
+        <tr>
+          <th class="p-3">S.No</th>
+          <th class="p-3 text-left">User Type</th>
+          <th class="p-3 text-left">Active</th>
+          <th class="p-3 text-center">Edit</th>
+          <th class="p-3 text-center">Delete</th>
+        </tr>
+      </thead>
+      <tbody id="userTypeTable"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+  <div class="bg-white rounded-xl w-full max-w-md p-6 shadow-xl">
+
+    <h2 class="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
+      <i data-lucide="user-plus"></i> User Type
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="col-span-1">
+        <label class="text-sm">User Type *</label>
+        <input id="userTypeInput" class="w-full border rounded px-3 py-2">
+      </div>
+
+      <div class="col-span-1">
+        <label class="text-sm">Active *</label>
+        <select id="activeInput" class="w-full border rounded px-3 py-2">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-6 flex justify-between">
+      <button onclick="cancelModal()"
+        class="bg-gray-300 text-gray-800 px-6 py-2 rounded hover:bg-gray-400 transition">Cancel</button>
+      <button onclick="saveUserType()"
+        class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 text-white px-6 py-2 rounded hover:scale-105 transition flex items-center gap-2">
+        <i data-lucide="check"></i> Save
+      </button>
+    </div>
+
+  </div>
+</div>
+</div>
+{%endblock%}
+{%block extra_js%}
+<script>
+lucide.createIcons()
+
+let userTypes = [
+  { name:"Admin", active:"Yes" },
+  { name:"ACCOUNTS", active:"Yes" },
+  { name:"MARKETING", active:"Yes" },
+  { name:"PRINTING ROOM", active:"Yes" },
+  { name:"FUSING DEPT", active:"Yes" },
+  { name:"JOB CARD", active:"Yes" },
+  { name:"DELIVERY DEPT", active:"Yes" },
+  { name:"DESIGNING DEPT", active:"Yes" },
+  { name:"HR", active:"Yes" },
+  { name:"Tester", active:"Yes" }
+]
+
+let editIndex = null
+
+function renderTable(){
+  const tbody = document.getElementById("userTypeTable")
+  tbody.innerHTML = ""
+  userTypes.forEach((u, i)=>{
+    tbody.innerHTML += `
+      <tr class="border-t hover:bg-slate-50">
+        <td class="p-3 text-center">${i+1}</td>
+        <td class="p-3">${u.name}</td>
+        <td class="p-3">${u.active}</td>
+        <td class="p-3 text-center text-emerald-600 cursor-pointer" onclick="editUserType(${i})"><i data-lucide="edit"></i></td>
+        <td class="p-3 text-center text-red-500 cursor-pointer" onclick="deleteUserType(${i})"><i data-lucide="trash-2"></i></td>
+      </tr>`
+  })
+  document.getElementById("recordCount").innerText = userTypes.length
+  lucide.createIcons()
+}
+
+function openModal(){
+  editIndex = null
+  userTypeInput.value = ""
+  activeInput.value = "Yes"
+  modal.classList.remove("hidden")
+  modal.classList.add("flex")
+}
+
+function cancelModal(){
+  modal.classList.add("hidden")
+}
+
+function saveUserType(){
+  const name = userTypeInput.value.trim()
+  const active = activeInput.value
+
+  if(!name) return alert("Please enter user type")
+
+  if(editIndex !== null){
+    userTypes[editIndex] = { name, active }
+  } else {
+    userTypes.push({ name, active })
+  }
+
+  renderTable()
+  modal.classList.add("hidden")
+}
+
+function editUserType(i){
+  editIndex = i
+  userTypeInput.value = userTypes[i].name
+  activeInput.value = userTypes[i].active
+  modal.classList.remove("hidden")
+  modal.classList.add("flex")
+}
+
+function deleteUserType(i){
+  if(confirm("Are you sure you want to delete this user type?")){
+    userTypes.splice(i,1)
+    renderTable()
+  }
+}
+
+renderTable()
+</script>
+
+{%endblock%}

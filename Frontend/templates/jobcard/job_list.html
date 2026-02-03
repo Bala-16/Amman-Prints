@@ -1,0 +1,232 @@
+{% extends "nav.html" %}
+
+{% block title %}Job Card List{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } }
+    }
+  }
+</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 font-sans min-h-screen p-6 space-y-8">
+
+  <!-- HEADER -->
+  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 p-8 text-white shadow-2xl">
+    <div class="absolute inset-0 opacity-10 mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+    <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div>
+        <h1 class="text-4xl font-bold tracking-tight">Job Card List</h1>
+        <p class="text-lg text-white/90">Manage and view all your job cards</p>
+      </div>
+      <button id="newJobBtn" class="flex h-12 items-center gap-2 rounded-xl bg-white/20 px-6 text-white backdrop-blur-md hover:bg-white/30">
+        <i data-lucide="plus" class="h-5 w-5"></i> New Job Card
+      </button>
+    </div>
+  </div>
+
+  <!-- FILTER CARD -->
+  <div class="rounded-xl border-l-4 border-l-blue-500 bg-white shadow-xl p-6">
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <input type="text" id="searchName" placeholder="Search by Name" class="h-14 w-full rounded-xl border-2 px-3" />
+      <input type="text" id="jobcardNo" placeholder="Jobcard No" class="h-14 w-full rounded-xl border-2 px-3" />
+      <input type="date" id="fromDate" class="h-14 w-full rounded-xl border-2 px-3" />
+      <input type="date" id="toDate" class="h-14 w-full rounded-xl border-2 px-3" />
+      <select id="jobType" class="h-14 w-full rounded-xl border-2 px-3">
+        <option value="">All Job Types</option>
+        <option>Domestic</option>
+        <option>Export Large</option>
+        <option>Export Small</option>
+      </select>
+      <select id="fabricType" class="h-14 w-full rounded-xl border-2 px-3">
+        <option value="">All Fabric Types</option>
+        <option>F Emboss Gel Embosing</option>
+        <option>F Roll Form</option>
+        <option>Garment Domestic</option>
+      </select>
+      <select id="status" class="h-14 w-full rounded-xl border-2 px-3">
+        <option value="">All Status</option>
+        <option>Pending</option>
+        <option>In Progress</option>
+        <option>Completed</option>
+      </select>
+      <button id="searchBtn" class="h-14 w-full rounded-xl bg-blue-500 text-white font-semibold">Search</button>
+      <button id="resetBtn" class="h-14 w-full rounded-xl border-2">Reset</button>
+    </div>
+  </div>
+
+  <!-- TABLE CARD -->
+  <div class="rounded-xl border-l-4 border-l-green-500 bg-white shadow-xl overflow-x-auto">
+    <table class="w-full min-w-[1000px]">
+      <thead class="bg-green-50">
+        <tr class="text-left">
+          <th class="p-3 font-bold">S.No</th>
+          <th class="p-3 font-bold">Date</th>
+          <th class="p-3 font-bold">Jobcard No</th>
+          <th class="p-3 font-bold">Created By</th>
+          <th class="p-3 font-bold">Customer Name</th>
+          <th class="p-3 font-bold">Job Type</th>
+          <th class="p-3 font-bold">Fabric Type</th>
+          <th class="p-3 text-right font-bold">Qty</th>
+          <th class="p-3 text-right font-bold">Value</th>
+          <th class="p-3 text-center font-bold">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="jobTableBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div id="jobModal" class="fixed inset-0 hidden items-center justify-center bg-black/40 z-50">
+  <div class="bg-white rounded-xl w-full max-w-md p-6">
+    <h2 class="text-xl font-bold text-teal-700 mb-4" id="modalTitle">New Job Card</h2>
+    <div class="space-y-4">
+      <input id="modalDate" type="date" class="w-full border rounded px-3 py-2" placeholder="Date" />
+      <input id="modalJobcard" class="w-full border rounded px-3 py-2" placeholder="Jobcard No" />
+      <input id="modalCreatedBy" class="w-full border rounded px-3 py-2" placeholder="Created By" />
+      <input id="modalCustomer" class="w-full border rounded px-3 py-2" placeholder="Customer Name" />
+      <input id="modalJobType" class="w-full border rounded px-3 py-2" placeholder="Job Type" />
+      <input id="modalFabric" class="w-full border rounded px-3 py-2" placeholder="Fabric Type" />
+      <input id="modalQty" type="number" class="w-full border rounded px-3 py-2" placeholder="Qty" />
+      <input id="modalValue" type="number" class="w-full border rounded px-3 py-2" placeholder="Value" />
+    </div>
+    <div class="mt-6 flex justify-end gap-4">
+      <button onclick="closeModal()" class="px-6 py-2 rounded-xl border">Cancel</button>
+      <button id="saveJobBtn" class="px-6 py-2 rounded-xl bg-teal-600 text-white">Save</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  lucide.createIcons();
+
+  let jobs = [
+    { date:"2026-01-01", jobcard:"JC-001", createdBy:"Admin", customer:"Alice", jobType:"Domestic", fabric:"F Emboss Gel Embosing", qty:100, value:5000 },
+    { date:"2026-01-02", jobcard:"JC-002", createdBy:"Bob", customer:"Bob's Co", jobType:"Export Large", fabric:"F Roll Form", qty:200, value:12000 }
+  ];
+
+  let editIndex = null;
+
+  const tbody = document.getElementById("jobTableBody");
+
+  function renderTable(data){
+    if(data.length===0){
+      tbody.innerHTML = `<tr><td colspan="10" class="text-center p-8">No Records Found!</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = data.map((j,i)=>`
+      <tr class="hover:bg-green-50">
+        <td class="p-2">${i+1}</td>
+        <td class="p-2">${j.date}</td>
+        <td class="p-2">${j.jobcard}</td>
+        <td class="p-2">${j.createdBy}</td>
+        <td class="p-2">${j.customer}</td>
+        <td class="p-2">${j.jobType}</td>
+        <td class="p-2">${j.fabric}</td>
+        <td class="p-2 text-right">${j.qty}</td>
+        <td class="p-2 text-right">${j.value}</td>
+        <td class="p-2 text-center">
+          <button class="text-blue-500" onclick="editJob(${i})">Edit</button>
+          <button class="text-red-500 ml-2" onclick="deleteJob(${i})">Delete</button>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  renderTable(jobs);
+
+  function openModal(){
+    document.getElementById("jobModal").classList.remove("hidden");
+  }
+  function closeModal(){
+    document.getElementById("jobModal").classList.add("hidden");
+    editIndex = null;
+    document.getElementById("saveJobBtn").innerText = "Save";
+    document.querySelector("#modalTitle").innerText = "New Job Card";
+    document.querySelectorAll("#jobModal input").forEach(i=>i.value="");
+  }
+
+  document.getElementById("newJobBtn").addEventListener("click", ()=>{
+    openModal();
+  });
+
+  document.getElementById("saveJobBtn").addEventListener("click", ()=>{
+    const job = {
+      date: document.getElementById("modalDate").value,
+      jobcard: document.getElementById("modalJobcard").value,
+      createdBy: document.getElementById("modalCreatedBy").value,
+      customer: document.getElementById("modalCustomer").value,
+      jobType: document.getElementById("modalJobType").value,
+      fabric: document.getElementById("modalFabric").value,
+      qty: +document.getElementById("modalQty").value,
+      value: +document.getElementById("modalValue").value
+    };
+    if(editIndex!==null){
+      jobs[editIndex] = job;
+    } else {
+      jobs.push(job);
+    }
+    closeModal();
+    renderTable(jobs);
+  });
+
+  function editJob(i){
+    editIndex = i;
+    const j = jobs[i];
+    document.getElementById("modalDate").value = j.date;
+    document.getElementById("modalJobcard").value = j.jobcard;
+    document.getElementById("modalCreatedBy").value = j.createdBy;
+    document.getElementById("modalCustomer").value = j.customer;
+    document.getElementById("modalJobType").value = j.jobType;
+    document.getElementById("modalFabric").value = j.fabric;
+    document.getElementById("modalQty").value = j.qty;
+    document.getElementById("modalValue").value = j.value;
+    document.getElementById("saveJobBtn").innerText = "Update";
+    document.querySelector("#modalTitle").innerText = "Edit Job Card";
+    openModal();
+  }
+
+  function deleteJob(i){
+    if(confirm("Are you sure you want to delete this job?")){
+      jobs.splice(i,1);
+      renderTable(jobs);
+    }
+  }
+
+  document.getElementById("searchBtn").addEventListener("click", ()=>{
+    const name = document.getElementById("searchName").value.toLowerCase();
+    const jobcard = document.getElementById("jobcardNo").value.toLowerCase();
+    const fromDate = document.getElementById("fromDate").value;
+    const toDate = document.getElementById("toDate").value;
+    const jobType = document.getElementById("jobType").value;
+    const fabricType = document.getElementById("fabricType").value;
+
+    const filtered = jobs.filter(j=>{
+      if(name && !j.customer.toLowerCase().includes(name)) return false;
+      if(jobcard && !j.jobcard.toLowerCase().includes(jobcard)) return false;
+      if(fromDate && j.date<fromDate) return false;
+      if(toDate && j.date>toDate) return false;
+      if(jobType && j.jobType!==jobType) return false;
+      if(fabricType && j.fabric!==fabricType) return false;
+      return true;
+    });
+    renderTable(filtered);
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", ()=>{
+    document.querySelectorAll("#searchName,#jobcardNo,#fromDate,#toDate,#jobType,#fabricType,#status").forEach(i=>i.value="");
+    renderTable(jobs);
+  });
+
+</script>
+{% endblock %}

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Consumable Management</title>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+:root {
+  --orange: linear-gradient(135deg, #f97316, #fb923c);
+  --orange-soft: #fff7ed;
+  --green: linear-gradient(135deg, #16a34a, #22c55e);
+  --accent: linear-gradient(135deg, #06b6d4, #22d3ee);
+  --border: #e5e7eb;
+  --muted: #f3f4f6;
+  --text-muted: #6b7280;
+}
+
+/* RESET */
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f5f7;
+  padding: 16px;
+}
+
+.container {
+  max-width: none;
+  margin: auto;
+}
+
+/* HEADER */
+.header {
+  position: relative;
+  overflow: hidden;
+  background: var(--orange);
+  padding: 28px;
+  border-radius: 20px;
+  box-shadow: 0 25px 40px rgba(0,0,0,0.15);
+  margin-bottom: 24px;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+.header-row {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-left {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.header-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header h1 {
+  color: white;
+  font-size: 28px;
+  margin: 0;
+}
+
+.header p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+}
+
+.btn-add {
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* FILTER CARD */
+.filter-card {
+  background: white;
+  border-radius: 18px;
+  border: 2px solid #fed7aa;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  margin-bottom: 24px;
+}
+
+.filter-header {
+  background: var(--orange-soft);
+  padding: 16px;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #9a3412;
+  font-weight: 600;
+}
+
+.filter-body {
+  padding: 20px;
+}
+
+.filter-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.input, select {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.btn-search {
+  height: 42px;
+  border-radius: 10px;
+  border: none;
+  background: var(--orange);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ITEMS GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  border: 2px solid var(--border);
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  transition: transform .2s, box-shadow .2s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 20px 35px rgba(0,0,0,0.12);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+.in { background: var(--green); }
+.low { background: var(--orange); }
+
+.meta {
+  font-size: 13px;
+  margin-top: 6px;
+  color: var(--text-muted);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.progress {
+  height: 8px;
+  background: var(--muted);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.btn {
+  flex: 1;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-danger {
+  color: #dc2626;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1000px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .filter-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr; }
+  .filter-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 22px; }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-row">
+    <div class="header-left">
+      <div class="header-icon"><i data-lucide="package"></i></div>
+      <div>
+        <h1>Consumable Management</h1>
+        <p>Track and manage inventory items</p>
+      </div>
+    </div>
+    <button class="btn-add">
+      <i data-lucide="plus"></i>
+      Add New Item
+    </button>
+  </div>
+</div>
+
+<!-- FILTER -->
+<div class="filter-card">
+  <div class="filter-header">
+    <i data-lucide="filter"></i>
+    Filter Items
+  </div>
+  <div class="filter-body">
+    <div class="filter-grid">
+      <input class="input" placeholder="Search items..." />
+      <select>
+        <option>All Categories</option>
+        <option>Ink</option>
+        <option>Paper</option>
+        <option>Chemical</option>
+      </select>
+      <select>
+        <option>All Status</option>
+        <option>In Stock</option>
+        <option>Low Stock</option>
+      </select>
+      <button class="btn-search">
+        <i data-lucide="search"></i> Search
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ITEMS -->
+<div class="grid" id="items"></div>
+
+</div>
+
+<script>
+lucide.createIcons();
+
+const items = [
+  { name:"Ink Cartridge - Cyan", category:"Ink", qty:45, min:10, unit:"Piece", status:"In Stock" },
+  { name:"Transfer Paper A4", category:"Paper", qty:8, min:20, unit:"Pack", status:"Low Stock" },
+  { name:"Adhesive Spray", category:"Chemical", qty:32, min:15, unit:"Bottle", status:"In Stock" }
+];
+
+const grid = document.getElementById("items");
+
+items.forEach(i => {
+  const pct = Math.min((i.qty / (i.min * 3)) * 100, 100);
+  const bar = i.qty > i.min * 2 ? "var(--green)" : "var(--orange)";
+  const badge = i.status === "In Stock" ? "in" : "low";
+
+  grid.innerHTML += `
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <strong>${i.name}</strong>
+          <div class="meta">${i.category}</div>
+        </div>
+        <span class="badge ${badge}">${i.status}</span>
+      </div>
+
+      <div class="row">
+        <span>Quantity</span>
+        <strong>${i.qty} ${i.unit}</strong>
+      </div>
+      <div class="row">
+        <span>Min Stock</span>
+        <strong>${i.min} ${i.unit}</strong>
+      </div>
+
+      <div class="progress">
+        <div class="progress-fill" style="width:${pct}%;background:${bar}"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn">Edit</button>
+        <button class="btn btn-danger">
+          <i data-lucide="trash-2"></i>
+        </button>
+      </div>
+    </div>
+  `;
+});
+
+lucide.createIcons();
+</script>
+</body>
+</html>

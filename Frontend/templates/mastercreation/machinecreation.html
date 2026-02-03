@@ -1,0 +1,196 @@
+{%extends "nav.html"%}
+{%block title%}Machine Creation{%endblock%}
+{%block extra_head%}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{%endblock%}
+
+{%block content%}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-6">
+
+<div class="max-w-[1600px] mx-auto space-y-6">
+
+  <!-- HEADER -->
+  <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-12 w-12 flex items-center justify-center rounded-xl bg-white/20">
+        <i data-lucide="cpu" class="text-white w-6 h-6"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-white">Machine Creation</h1>
+        <p class="text-teal-100 text-sm">Manage machines and types</p>
+      </div>
+    </div>
+    <button onclick="openModal()"
+      class="bg-white text-teal-600 px-4 py-2 rounded-lg shadow flex items-center gap-2">
+      <i data-lucide="plus" class="w-4 h-4"></i>
+      New Machine
+    </button>
+  </div>
+
+  <!-- CHARTS (UNCHANGED) -->
+  <!-- <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white/80 rounded-xl shadow-lg p-10 h-[300px]">
+      <h3 class="font-semibold mb-4">Machines by Type</h3>
+      <canvas id="machineBarChart"></canvas>
+    </div>
+
+    <div class="bg-white/80 rounded-xl shadow-lg p-10 h-[300px]">
+      <h3 class="font-semibold mb-4">Machine Distribution</h3>
+      <canvas id="machinePieChart"></canvas>
+    </div>
+  </div> -->
+
+  <!-- DESKTOP TABLE -->
+  <div class="hidden md:block bg-white/80 rounded-xl shadow-lg overflow-hidden">
+    <div class="p-4 border-b text-sm">
+      Found <span id="recordCount">0</span> Records.
+    </div>
+
+    <table class="w-full text-sm">
+      <thead class="bg-slate-100">
+        <tr>
+          <th class="p-3">S.No</th>
+          <th class="p-3 text-left">Machine Type</th>
+          <th class="p-3 text-left">Machine No</th>
+          <th class="p-3 text-left">Description</th>
+          <th class="p-3 text-center">Edit</th>
+          <th class="p-3 text-center">Delete</th>
+        </tr>
+      </thead>
+      <tbody id="machineTable"></tbody>
+    </table>
+  </div>
+
+  <!-- MOBILE CARDS -->
+  <div id="machineCards" class="grid gap-4 md:hidden"></div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+  <div class="bg-white rounded-xl w-full max-w-md p-6 shadow-xl">
+    <h2 class="text-xl font-bold text-teal-700 mb-4 flex items-center gap-2">
+      <i data-lucide="cpu"></i> Machine Creation
+    </h2>
+
+    <div class="space-y-4">
+      <select id="machineType" class="w-full border rounded px-3 py-2">
+        <option value="">Select</option>
+        <option>Fusing</option>
+        <option>Printer</option>
+      </select>
+
+      <input id="machineNo" placeholder="Machine No" class="w-full border rounded px-3 py-2"/>
+      <input id="description" placeholder="Description" class="w-full border rounded px-3 py-2"/>
+    </div>
+
+    <div class="mt-6 flex justify-end gap-3">
+      <button onclick="closeModal()" class="px-4 py-2 border rounded">Cancel</button>
+      <button onclick="saveMachine()" class="bg-[#9cb916] text-white px-6 py-2 rounded">
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+{%endblock%}
+{%block extra_js%}
+
+<script>
+lucide.createIcons()
+
+let machines = [
+  { type:"Fusing", no:"FLAT BED 01", desc:"UNIT 1" },
+  { type:"Fusing", no:"FLAT BED 02", desc:"UNIT 2" },
+  { type:"Printer", no:"GT-1", desc:"" }
+]
+
+let editIndex = null
+
+function renderUI(){
+  const table = document.getElementById("machineTable")
+  const cards = document.getElementById("machineCards")
+  table.innerHTML = ""
+  cards.innerHTML = ""
+
+  machines.forEach((m,i)=>{
+    // TABLE
+    table.innerHTML += `
+      <tr class="border-t">
+        <td class="p-3">${i+1}</td>
+        <td class="p-3">${m.type}</td>
+        <td class="p-3">${m.no}</td>
+        <td class="p-3">${m.desc}</td>
+        <td class="p-3 text-center cursor-pointer text-emerald-600" onclick="editMachine(${i})">✏️</td>
+        <td class="p-3 text-center cursor-pointer text-red-500" onclick="deleteMachine(${i})">🗑️</td>
+      </tr>
+    `
+
+    // MOBILE CARD
+    cards.innerHTML += `
+      <div class="bg-white rounded-xl shadow p-4">
+        <h3 class="font-bold">${m.no}</h3>
+        <p class="text-sm">${m.type}</p>
+        <p class="text-xs text-slate-500">${m.desc}</p>
+        <div class="flex justify-end gap-4 mt-3">
+          <button onclick="editMachine(${i})" class="text-teal-600">Edit</button>
+          <button onclick="deleteMachine(${i})" class="text-red-500">Delete</button>
+        </div>
+      </div>
+    `
+  })
+
+  document.getElementById("recordCount").innerText = machines.length
+}
+
+function openModal(){
+  modal.classList.remove("hidden")
+  modal.classList.add("flex")
+}
+
+function closeModal(){
+  modal.classList.add("hidden")
+  editIndex = null
+  machineType.value = ""
+  machineNo.value = ""
+  description.value = ""
+}
+
+function saveMachine(){
+  const data = {
+    type: machineType.value,
+    no: machineNo.value,
+    desc: description.value
+  }
+
+  if(editIndex !== null){
+    machines[editIndex] = data
+  } else {
+    machines.push(data)
+  }
+
+  closeModal()
+  renderUI()
+}
+
+function editMachine(i){
+  editIndex = i
+  machineType.value = machines[i].type
+  machineNo.value = machines[i].no
+  description.value = machines[i].desc
+  openModal()
+}
+
+function deleteMachine(i){
+  if(confirm("Delete this machine?")){
+    machines.splice(i,1)
+    renderUI()
+  }
+}
+
+renderUI()
+</script>
+{%endblock%}
+

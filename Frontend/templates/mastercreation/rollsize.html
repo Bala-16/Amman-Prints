@@ -1,0 +1,168 @@
+{%extends "nav.html" %}
+{%block title%}Roll Size{%endblock%}
+{%block extra_head%}
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+{%endblock%}
+{%block content%}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-6">
+
+<div class="max-w-[1600px] mx-auto space-y-6">
+
+<!-- HEADER -->
+<div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-6 flex justify-between items-center shadow">
+  <div class="flex items-center gap-3">
+    <i data-lucide="layers" class="text-white"></i>
+    <h1 class="text-2xl font-bold text-white">Roll Size Creation</h1>
+  </div>
+  <button onclick="openModal()"
+    class="bg-white text-teal-600 px-4 py-2 rounded-lg font-semibold">
+    + New Roll Size
+  </button>
+</div>
+
+<!-- DESKTOP TABLE -->
+<div class="hidden md:block bg-white rounded-xl shadow overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+  <th class="p-3">S.No</th>
+  <th class="p-3 text-left">Roll Size Name</th>
+  <th class="p-3 text-left">Remarks</th>
+  <th class="p-3 text-center">Edit</th>
+  <th class="p-3 text-center">Delete</th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+</div>
+
+<!-- MOBILE CARDS -->
+<div id="cards" class="grid gap-4 md:hidden"></div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+<div class="bg-white rounded-xl w-full max-w-md p-6 shadow-xl">
+
+<h2 class="text-lg font-bold mb-4" id="modalTitle">Roll Size</h2>
+
+<input id="rollName"
+  placeholder="Roll Size Name *"
+  class="w-full border p-2 rounded mb-3">
+
+<textarea id="remarks"
+  placeholder="Remarks"
+  class="w-full border p-2 rounded mb-4"></textarea>
+
+<div class="flex justify-end gap-3">
+  <button onclick="closeModal()" class="px-4 py-2 border rounded">
+    Cancel
+  </button>
+  <button onclick="saveRoll()"
+    class="px-6 py-2 bg-teal-600 text-white rounded">
+    Save
+  </button>
+</div>
+
+</div>
+</div>
+</div>
+{%endblock%}
+{%block extra_js%}
+<script>
+lucide.createIcons()
+
+let rolls = [
+ { name:"36 Inch", remarks:"Standard roll" },
+ { name:"44 Inch", remarks:"Wide format" },
+ { name:"60 Inch", remarks:"Large printing" }
+]
+
+let editIndex = null
+
+function renderUI(){
+ const tbody = document.getElementById("tableBody")
+ const cards = document.getElementById("cards")
+ tbody.innerHTML = ""
+ cards.innerHTML = ""
+
+ rolls.forEach((r,i)=>{
+  // TABLE
+  tbody.innerHTML += `
+  <tr class="border-t hover:bg-slate-50">
+    <td class="p-3">${i+1}</td>
+    <td class="p-3">${r.name}</td>
+    <td class="p-3">${r.remarks || "-"}</td>
+    <td class="p-3 text-center text-emerald-600 cursor-pointer"
+      onclick="editRoll(${i})">✏️</td>
+    <td class="p-3 text-center text-red-500 cursor-pointer"
+      onclick="deleteRoll(${i})">🗑️</td>
+  </tr>`
+
+  // MOBILE CARD
+  cards.innerHTML += `
+  <div class="bg-white rounded-xl shadow p-4">
+    <h3 class="font-bold text-lg">${r.name}</h3>
+    <p class="text-sm text-slate-600">${r.remarks || "-"}</p>
+    <div class="flex justify-end gap-4 mt-3">
+      <button onclick="editRoll(${i})" class="text-teal-600">Edit</button>
+      <button onclick="deleteRoll(${i})" class="text-red-500">Delete</button>
+    </div>
+  </div>`
+ })
+}
+
+function openModal(){
+ modal.classList.remove("hidden")
+ modal.classList.add("flex")
+}
+
+function closeModal(){
+ modal.classList.add("hidden")
+ editIndex = null
+ rollName.value = ""
+ remarks.value = ""
+}
+
+function saveRoll(){
+ if(!rollName.value.trim()){
+  alert("Roll Size Name is required")
+  return
+ }
+
+ const obj = {
+  name: rollName.value.trim(),
+  remarks: remarks.value.trim()
+ }
+
+ if(editIndex !== null){
+  rolls[editIndex] = obj
+ } else {
+  rolls.push(obj)
+ }
+
+ closeModal()
+ renderUI()
+}
+
+function editRoll(i){
+ editIndex = i
+ rollName.value = rolls[i].name
+ remarks.value = rolls[i].remarks
+ openModal()
+}
+
+function deleteRoll(i){
+ if(confirm("Delete this roll size?")){
+  rolls.splice(i,1)
+  renderUI()
+ }
+}
+
+renderUI()
+</script>
+
+{%endblock%}

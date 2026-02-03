@@ -1,0 +1,223 @@
+{%extends "nav.html"%}
+{%block title%}Operator Creation{%endblock%}
+{%block extra_head%}
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  .modal { display: none; }
+  .modal.active { display: flex; }
+</style>
+{%endblock%}
+{%block content%}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-6">
+
+<div class="max-w-[1600px] mx-auto space-y-6">
+
+  <!-- HEADER -->
+  <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+        <i data-lucide="user-cog" class="text-white"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-white">Operator Creation</h1>
+        <p class="text-teal-50 text-sm">Manage machine operators and staff</p>
+      </div>
+    </div>
+
+    <button onclick="openModal()"
+      class="bg-white text-teal-600 hover:bg-teal-50 shadow-lg px-4 py-2 rounded-lg flex items-center gap-2 transition hover:scale-105">
+      <i data-lucide="plus"></i>
+      New Operator
+    </button>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6">
+      <h3 class="text-lg font-semibold mb-4">Operators by Type</h3>
+      <div class="h-[250px]"><canvas id="typeChart"></canvas></div>
+    </div>
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6">
+      <h3 class="text-lg font-semibold mb-4">Labour Type Distribution</h3>
+      <div class="h-[250px]"><canvas id="labourChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg overflow-x-auto">
+    <table class="w-full min-w-[600px] md:min-w-[700px]">
+      <thead class="bg-slate-50">
+        <tr>
+          <th class="px-4 py-3 text-left font-semibold w-16">S.No</th>
+          <th class="px-4 py-3 text-left font-semibold">Operator Name</th>
+          <th class="px-4 py-3 text-left font-semibold">Operator Type</th>
+          <th class="px-4 py-3 text-left font-semibold">Department</th>
+          <th class="px-4 py-3 text-left font-semibold">Labour Type</th>
+          <th class="px-4 py-3 text-center font-semibold w-16">Edit</th>
+          <th class="px-4 py-3 text-center font-semibold w-16">Delete</th>
+        </tr>
+      </thead>
+      <tbody id="operatorTable"></tbody>
+    </table>
+  </div>
+
+  <!-- MOBILE CARDS -->
+  <div id="operatorCardsMobile" class="grid grid-cols-1 md:hidden gap-4 mt-4"></div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal fixed inset-0 bg-black/40 backdrop-blur-sm items-center justify-center z-50">
+  <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+    <div class="flex items-center gap-2 mb-4">
+      <i data-lucide="user-cog" class="text-teal-600"></i>
+      <h2 class="text-xl font-bold text-teal-700">Operator Creation</h2>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label class="text-sm font-medium">Operator Name *</label>
+        <input id="nameInput" class="w-full mt-1 h-10 px-3 rounded-lg border border-slate-300" />
+      </div>
+
+      <div>
+        <label class="text-sm font-medium">Operator Type *</label>
+        <select id="typeInput" class="w-full mt-1 h-10 px-3 rounded-lg border border-slate-300">
+          <option value="">Select</option>
+          <option>Printing Operator</option>
+          <option>Fusing Operator</option>
+          <option>Machine Operator</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="text-sm font-medium">Department</label>
+        <input id="deptInput" class="w-full mt-1 h-10 px-3 rounded-lg border border-slate-300" />
+      </div>
+
+      <div>
+        <label class="text-sm font-medium">Labour Type</label>
+        <select id="labourInput" class="w-full mt-1 h-10 px-3 rounded-lg border border-slate-300">
+          <option value="">Select</option>
+          <option>Salary</option>
+          <option>Contract</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flex justify-center mt-6 gap-3">
+      <button onclick="closeModal()" class="px-6 py-2 border rounded-lg">Cancel</button>
+      <button onclick="saveOperator()" class="px-8 py-2 rounded-lg bg-[#9cb916] hover:bg-[#8aa614] text-white font-semibold">SAVE</button>
+    </div>
+  </div>
+</div>
+</div>
+{%endblock%}
+{%block extra_js%}
+
+<script>
+  lucide.createIcons();
+
+  let operators = [
+    { name:"SENTHIL", type:"Printing Operator", dept:"OPERATOR", labour:"Salary" },
+    { name:"EDWINRAJ", type:"Select", dept:"OPERATOR", labour:"Salary" },
+    { name:"SRINIVASAN", type:"Fusing Operator", dept:"FUSHING", labour:"Contract" },
+    { name:"GOLU KUMAR", type:"Fusing Operator", dept:"OPERATOR", labour:"Contract" }
+  ];
+
+  let editingIndex = null;
+
+  function renderTable() {
+    const tbody = document.getElementById("operatorTable");
+    const mobileContainer = document.getElementById("operatorCardsMobile");
+    tbody.innerHTML = "";
+    mobileContainer.innerHTML = "";
+
+    operators.forEach((o, i) => {
+      tbody.innerHTML += `
+      <tr class="hover:bg-slate-50/50">
+        <td class="px-4 py-3 font-medium">${i+1}</td>
+        <td class="px-4 py-3 font-medium">${o.name}</td>
+        <td class="px-4 py-3">${o.type}</td>
+        <td class="px-4 py-3">${o.dept}</td>
+        <td class="px-4 py-3">
+          <span class="px-3 py-1 rounded-full text-sm border ${o.labour==="Salary" ? "text-emerald-600 border-emerald-300" : "text-amber-600 border-amber-300"}">${o.labour}</span>
+        </td>
+        <td class="text-center cursor-pointer text-emerald-600" onclick="editOperator(${i})"><i data-lucide="edit"></i></td>
+        <td class="text-center cursor-pointer text-red-500" onclick="deleteOperator(${i})"><i data-lucide="trash-2"></i></td>
+      </tr>`;
+
+      mobileContainer.innerHTML += `
+      <div class="bg-white rounded-xl shadow p-4 flex flex-col justify-between hover:shadow-lg transition md:hidden">
+        <h3 class="font-bold text-lg">${o.name}</h3>
+        <p class="text-sm">Type: ${o.type}</p>
+        <p class="text-sm">Dept: ${o.dept}</p>
+        <p class="text-sm">Labour: ${o.labour}</p>
+        <div class="flex justify-end gap-2 mt-2">
+          <button class="text-emerald-600" onclick="editOperator(${i})"><i data-lucide="edit"></i></button>
+          <button class="text-red-500" onclick="deleteOperator(${i})"><i data-lucide="trash-2"></i></button>
+        </div>
+      </div>`;
+    });
+
+    lucide.createIcons();
+  }
+
+  function openModal(){ document.getElementById("modal").classList.add("active"); }
+  function closeModal(){
+    document.getElementById("modal").classList.remove("active");
+    editingIndex = null;
+    nameInput.value = typeInput.value = deptInput.value = labourInput.value = "";
+  }
+
+  function saveOperator() {
+    const name = nameInput.value.trim();
+    if(!name) return alert("Name required");
+
+    const operatorData = {
+      name,
+      type: typeInput.value || "Select",
+      dept: deptInput.value,
+      labour: labourInput.value || "Select"
+    };
+
+    if(editingIndex !== null){
+      operators[editingIndex] = operatorData;
+    } else {
+      operators.push(operatorData);
+    }
+
+    renderTable();
+    closeModal();
+  }
+
+  function editOperator(i){
+    editingIndex = i;
+    const o = operators[i];
+    nameInput.value = o.name;
+    typeInput.value = o.type;
+    deptInput.value = o.dept;
+    labourInput.value = o.labour;
+    openModal();
+  }
+
+  function deleteOperator(i){
+    if(confirm(`Delete ${operators[i].name}?`)){
+      operators.splice(i,1);
+      renderTable();
+    }
+  }
+
+  // Charts
+  new Chart(typeChart, {type:"bar",data:{labels:["Printing","Fusing","Other"],datasets:[{data:[4,7,2],backgroundColor:["#0d9488","#14b8a6","#5eead4"],borderRadius:6}]},options:{plugins:{legend:{display:false}},indexAxis:"y"}});
+  new Chart(labourChart,{type:"doughnut",data:{labels:["Salary","Contract"],datasets:[{data:[5,7],backgroundColor:["#10b981","#f59e0b"]}]}});
+
+  renderTable();
+  lucide.createIcons();
+</script>
+{%endblock%}

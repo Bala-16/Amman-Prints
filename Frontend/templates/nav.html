@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Print Management System{% endblock %}</title>
+    <!-- <title>Header</title> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      :root {
+        --primary: #14b8a6;
+        --background: #f9fafb;
+        --text-primary: #111827;
+      }
+
+      * {
+        box-sizing: border-box;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+      }
+
+      body {
+        margin: 0;
+        background: #eef2f7;
+      }
+
+      /* ================= HEADER ================= */
+      .header {
+        background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .logo-section {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .logo-title {
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: white;
+        margin: 0;
+      }
+
+      .logo-subtitle {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        margin: 0;
+      }
+
+      /* ================= NAV ================= */
+      .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+      }
+
+      .nav-item {
+        position: relative;
+      }
+
+      .nav-button {
+        padding: 8px 16px;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        text-decoration: none;
+      }
+
+      .nav-button:hover {
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .nav-button.active {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 6px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        min-width: 220px;
+        padding: 8px;
+        z-index: 1000;
+        display: none;
+      }
+
+      .dropdown-item {
+        display: block;
+        width: 100%;
+        padding: 10px 12px;
+        background: transparent;
+        border: none;
+        color: var(--text-primary);
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 8px;
+        text-align: left;
+        text-decoration: none;
+      }
+
+      .dropdown-item:hover {
+        background: var(--background);
+        color: var(--primary);
+      }
+
+      /* ================= ACTIONS ================= */
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .welcome-text {
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .logout-button {
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .logout-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* ================= MOBILE ================= */
+      .hamburger {
+        display: none;
+        font-size: 22px;
+        color: white;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+      }
+
+      .mobile-menu {
+        display: none;
+        background: white;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        padding: 12px;
+      }
+
+      .mobile-menu .nav-button {
+        color: #111827;
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .mobile-menu .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        padding-left: 12px;
+      }
+
+      .mobile-menu .dropdown-item {
+        padding: 8px 12px;
+      }
+
+      @media (max-width: 1024px) {
+        .nav-menu {
+          display: none;
+        }
+
+        .header-actions {
+          display: none;
+        }
+
+        .hamburger {
+          display: block;
+        }
+      }
+    </style>
+    {% block extra_head %}{% endblock %}
+  </head>
+
+  <body>
+    
+    <header class="header">
+      <div class="header-container">
+        <div class="logo-section">
+          <h1 class="logo-title">SRI AMMAN DIGITAL PRINTS</h1>
+          <p class="logo-subtitle">Print Management System</p>
+        </div>
+
+        <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
+
+        <nav class="nav-menu">
+          <div class="nav-item">
+            <button class="nav-button active">Dashboard</button>
+          </div>
+
+          <div class="nav-item">
+            <button class="nav-button" onclick="toggleMasterMenu()">
+              Master Creation ▾
+            </button>
+            <div id="masterMenu" class="dropdown-menu">
+              <a href="/mastercreation/user_type_creation/" class="dropdown-item">User Type Creation</a>
+              <a href="/mastercreation/party_creation/" class="dropdown-item">Party Creation</a>
+              <a href="/mastercreation/company_creation/" class="dropdown-item">Company Creation</a>
+              <a href="/mastercreation/operator/" class="dropdown-item">Operator Creation</a>
+              <a href="/mastercreation/measurement/" class="dropdown-item"> Unit Measurement </a>
+              <a href="/mastercreation/userpermission/" class="dropdown-item">User Rights Creation</a>
+              <a href="/mastercreation/userscreen/" class="dropdown-item">User Screen</a>
+              <a href="/mastercreation/machinecreation/" class="dropdown-item">Machine Creation</a>
+              <a href="/mastercreation/shift/" class="dropdown-item">Shift Creation</a>
+              <a href="/mastercreation/paymentterms/" class="dropdown-item">Payment Terms</a>
+              <a href="/mastercreation/consumablecreation/" class="dropdown-item">Consumable Creation</a>
+              <a href="/mastercreation/fabrictype/" class="dropdown-item">Fabric Type</a>
+              <a href="/mastercreation/rollsize/" class="dropdown-item">Roll Size</a>
+               <a href="/mastercreation/gapcreation/" class="dropdown-item">Gap Creation</a>
+               <a href="/mastercreation/jobtypecreation/" class="dropdown-item">Job typ Creation</a>
+               <a href="/mastercreation/customerstatus/" class="dropdown-item">Customer status</a>
+            </div>
+          </div>
+
+          <div class="nav-item">
+            <button class="nav-button" onclick="toggleJobCardMenu()">
+              Job Card ▾
+            </button>
+            <div id="jobCardMenu" class="dropdown-menu">
+              <a href="/jobcard/job_creation/" class="dropdown-item">New Job Card</a>
+              <a href="/jobcard/job_list/" class="dropdown-item">Job Card List</a>
+              <a href="/jobcard/quotation/" class="dropdown-item">Quotation List</a>
+              <a href="/jobcard/designer_report/" class="dropdown-item">Designer Report</a>
+              <a href="/customer_report/" class="dropdown-item">Customer Report</a>
+              <a href="/quotation_customer/" class="dropdown-item">Quotation Customer Report</a>
+              <a href="/process_report/" class="dropdown-item">Process Report</a>
+                  <a href="/jobcard/process_quotationform/" class="dropdown-item">Quotation Form</a>
+            </div>
+          </div>
+
+          <div class="nav-item">
+            <a href="/consumable/" class="nav-button">Consumable</a>
+          </div>
+          <div class="nav-item">
+            <a href="/delivery/" class="nav-button">Delivery</a>
+          </div>
+          <div class="nav-item">
+            <a href="/printing/" class="nav-button">Printer</a>
+          </div>
+          <div class="nav-item">
+            <button class="nav-button" onclick="toggleFusingMenu()">
+              Fusing ▾
+            </button>
+            <div id="fusingMenu" class="dropdown-menu">
+              <a href="/fusing/fusing-production-entry/" class="dropdown-item">Fusing Production Entry</a>
+              <a href="/fusing/job-no-wise-report/" class="dropdown-item">Job No Wise Report</a>
+              <a href="/fusing/fusing-operator-wise-report/" class="dropdown-item">Fusing Operator Wise Report</a>
+              <a href="/fusing/fusing-machine-wise-report/" class="dropdown-item">Fusing Machine Wise Report</a>
+              <a href="/fusing/fusing-customer-wise-report/" class="dropdown-item">Fusing Customer Wise Report</a>
+              <a href="/fusing/date-wise-report/" class="dropdown-item">Date Wise Report</a>
+            </div>
+          </div>
+          <div class="nav-item">
+            <a href="/accounts/" class="nav-button">Accounts</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <main>
+      {% block content %}{% endblock%}
+    </main>
+
+    <!-- MOBILE MENU -->
+    <div id="mobileMenu" class="mobile-menu">
+      <a href="/dashboard/" class="nav-button">Dashboard</a>
+
+      <button class="nav-button" onclick="toggleMobileSub('mMaster')">
+        Master Creation ▾
+      </button>
+      <div id="mMaster" class="dropdown-menu">
+        <a href="/mastercreation/user_type_creation/" class="dropdown-item">User Type Creation</a>
+        <a href="/mastercreation/party_creation/" class="dropdown-item">Party Creation</a>
+        <a href="/mastercreation/company_creation/" class="dropdown-item">Company Creation</a>
+        <a href="/mastercreation/operator/" class="dropdown-item">Operator Creation</a>
+        <a href="/mastercreation/measurement/" class="dropdown-item">Unit Measurement</a>
+        <a href="/mastercreation/userpermission/" class="dropdown-item">User Rights Creation</a>
+        <a href="/mastercreation/userscreen/" class="dropdown-item">User Screen</a>
+        <a href="/mastercreation/machinecreation/" class="dropdown-item">Machine Creation</a>
+        <a href="/mastercreation/shift/" class="dropdown-item">Shift Creation</a>
+        <a href="/mastercreation/paymentterms/" class="dropdown-item">Payment Terms</a>
+        <a href="/mastercreation/consumablecreation/" class="dropdown-item">Consumable Creation</a>
+        <a href="/mastercreation/fabrictype/" class="dropdown-item">Fabric Type</a>
+          <a href="/mastercreation/rollsize/" class="dropdown-item">Roll Size Creation</a>
+            <a href="/mastercreation/gapcreation/" class="dropdown-item">Gap Creation</a>
+             <a href="/mastercreation/jobtypecreation/" class="dropdown-item">Job typ Creation</a>
+              <a href="/mastercreation/customerstatus/" class="dropdown-item">Customer status</a>
+  
+      
+
+      </div>
+
+      <button class="nav-button" onclick="toggleMobileSub('mJob')">
+        Job Card ▾
+      </button>
+      <div id="mJob" class="dropdown-menu">
+        <a href="/jobcard/job_creation/" class="dropdown-item">New Job Card</a>
+        <a href="/jobcard/job_list/" class="dropdown-item">Job Card List</a>
+        <a href="/jobcard/quotation/" class="dropdown-item">Quotation List</a>
+        <a href="/jobcard/designer_report/" class="dropdown-item">Designer Report</a>
+        <a href="/customer_report/" class="dropdown-item">Customer Report</a>
+        <a href="/quotation_customer/" class="dropdown-item">Quotation Customer Report</a>
+        <a href="/jobcard/process_report/" class="dropdown-item">Process Report</a>
+         <a href="/jobcard/process_quotationform/" class="dropdown-item">Quotation Form</a>
+      </div>
+
+      <button class="nav-button">Consumable</button>
+      <button class="nav-button">Delivery</button>
+      <button class="nav-button">Printer</button>
+      <button class="nav-button">Fusing</button>
+      <button class="nav-button">Accounts</button>
+    </div>
+
+    <script>
+      const jobCardMenu = document.getElementById("jobCardMenu");
+      const masterMenu = document.getElementById("masterMenu");
+      const mobileMenu = document.getElementById("mobileMenu");
+      const fusingMenu = document.getElementById("fusingMenu");
+
+      function toggleJobCardMenu() {
+        jobCardMenu.style.display =
+          jobCardMenu.style.display === "block" ? "none" : "block";
+        masterMenu.style.display = "none";
+        fusingMenu.style.display = "none";
+      }
+
+      function toggleMasterMenu() {
+        masterMenu.style.display =
+          masterMenu.style.display === "block" ? "none" : "block";
+        jobCardMenu.style.display = "none";
+        fusingMenu.style.display = "none";
+      }
+
+      function toggleFusingMenu() {
+        fusingMenu.style.display =
+          fusingMenu.style.display === "block" ? "none" : "block";
+        jobCardMenu.style.display = "none";
+        masterMenu.style.display = "none";
+      }
+
+      function toggleMobileMenu() {
+        mobileMenu.style.display =
+          mobileMenu.style.display === "block" ? "none" : "block";
+      }
+
+      function toggleMobileSub(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === "block" ? "none" : "block";
+      }
+
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".nav-item")) {
+          jobCardMenu.style.display = "none";
+          masterMenu.style.display = "none";
+          fusingMenu.style.display = "none";
+        }
+      });
+    </script>
+    {% block extra_js %}{% endblock%}
+  </body>
+</html>

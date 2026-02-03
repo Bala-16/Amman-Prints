@@ -1,0 +1,183 @@
+{% extends "nav.html" %}
+
+{% block title %}Party Creation{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-lime-50/30 to-green-50/30 p-6">
+
+<div class="max-w-[1700px] mx-auto space-y-6">
+
+  <!-- HEADER -->
+  <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
+        <i data-lucide="users" class="text-white w-6 h-6"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-white">Party Creation</h1>
+        <p class="text-lime-100 text-sm">Customer / Supplier Master</p>
+      </div>
+    </div>
+    <button onclick="openModal()" class="bg-white text-green-700 px-4 py-2 rounded-lg shadow hover:scale-105 transition flex items-center gap-2">
+      <i data-lucide="plus"></i> New Party
+    </button>
+  </div>
+
+  <!-- RECORD COUNT -->
+  <div class="text-sm text-slate-600">
+    Found <span id="recordCount"></span> Records
+  </div>
+
+  <!-- Table / Cards -->
+  <div class="overflow-x-auto">
+
+    <!-- Desktop Table -->
+    <table class="w-full text-sm hidden md:table">
+      <thead class="bg-slate-100">
+        <tr>
+          <th class="p-3">S.No</th>
+          <th class="p-3 text-left">Party Name</th>
+          <th class="p-3 text-left">Mobile</th>
+          <th class="p-3 text-left">Address</th>
+          <th class="p-3 text-left">Approval</th>
+          <th class="p-3 text-left">Status</th>
+          <th class="p-3 text-left">Last Jobcard Date</th>
+          <th class="p-3 text-left">Create Date</th>
+          <th class="p-3 text-center">Edit</th>
+          <th class="p-3 text-center">Delete</th>
+        </tr>
+      </thead>
+      <tbody id="partyTableDesktop"></tbody>
+    </table>
+
+    <!-- Mobile/Tablet Cards -->
+    <div id="partyCardsMobile" class="grid grid-cols-1 gap-4 md:hidden mt-4"></div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+  <div class="bg-white rounded-xl w-full max-w-4xl p-6 shadow-xl overflow-y-auto max-h-[90vh]">
+    <h2 class="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
+      <i data-lucide="user-plus"></i> Party Creation
+    </h2>
+    <div class="grid grid-cols-3 gap-4">
+      <div>
+        <label>Party Type *</label>
+        <select id="partyTypeInput" class="w-full border rounded px-3 py-2">
+          <option>Customer</option>
+          <option>Supplier</option>
+        </select>
+      </div>
+      <div>
+        <label>Status Type *</label>
+        <select id="statusInput" class="w-full border rounded px-3 py-2">
+          <option>Active</option>
+          <option>Inactive</option>
+        </select>
+      </div>
+      <div>
+        <label>Party Name *</label>
+        <input id="nameInput" class="w-full border rounded px-3 py-2">
+      </div>
+      <div>
+        <label>Mobile No</label>
+        <input id="mobileInput" class="w-full border rounded px-3 py-2">
+      </div>
+      <div>
+        <label>Address *</label>
+        <textarea id="addressInput" class="w-full border rounded px-3 py-2"></textarea>
+      </div>
+    </div>
+    <div class="mt-6 flex justify-center gap-4">
+      <button onclick="addParty()" class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 text-white px-10 py-2 rounded hover:bg-[#8aa614]">ADD PARTY</button>
+      <button onclick="closeModal()" class="bg-gray-300 text-gray-700 px-10 py-2 rounded hover:bg-gray-400">CANCEL</button>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+lucide.createIcons()
+
+let parties = [
+  {name:"AV TEX", mobile:"9443338906", address:"567/A,NANJAPPA NAGAR, POYAMPALAYAM, TIRUPPUR", approval:"MD Approved", status:"Active", jobcard:"2024-07-10", created:"2024-07-10"},
+  {name:"A2BS FASHION", mobile:"9443622211", address:"DHARAPURAM ROAD, TIRUPPUR", approval:"MD Approved", status:"Active", jobcard:"2024-10-29", created:"2024-10-29"},
+  {name:"AADHI LAKSHMI EXPORTERS", mobile:"9360007677", address:"KANGAYAM ROAD, TIRUPPUR", approval:"MD Approved", status:"Active", jobcard:"2024-09-27", created:"2024-08-30"}
+];
+
+function renderParties() {
+  const tableBody = document.getElementById("partyTableDesktop");
+  const cardContainer = document.getElementById("partyCardsMobile");
+  tableBody.innerHTML = "";
+  cardContainer.innerHTML = "";
+
+  parties.forEach((p,i)=>{
+    // Desktop table row
+    tableBody.innerHTML += `<tr class="border-t hover:bg-slate-50">
+      <td class="p-3 text-center">${i+1}</td>
+      <td class="p-3">${p.name}</td>
+      <td class="p-3">${p.mobile}</td>
+      <td class="p-3">${p.address}</td>
+      <td class="p-3 text-green-700 font-semibold">${p.approval}</td>
+      <td class="p-3">${p.status}</td>
+      <td class="p-3">${p.jobcard}</td>
+      <td class="p-3">${p.created}</td>
+      <td class="p-3 text-center text-emerald-600" onclick="editParty(${i})"><i data-lucide="edit"></i></td>
+      <td class="p-3 text-center text-red-500" onclick="deleteParty(${i})"><i data-lucide="trash-2"></i></td>
+    </tr>`;
+
+    // Mobile card
+    cardContainer.innerHTML += `<div class="bg-white rounded-xl shadow p-4 flex flex-col justify-between hover:shadow-lg transition">
+      <h3 class="font-bold text-lg">${p.name}</h3>
+      <p class="text-sm text-gray-500">${p.address}</p>
+      <p class="text-sm"><span class="font-semibold">Mobile:</span> ${p.mobile}</p>
+      <p class="text-sm"><span class="font-semibold">Status:</span> ${p.status}</p>
+      <p class="text-sm text-green-700 font-semibold">${p.approval}</p>
+      <p class="text-sm"><span class="font-semibold">Last Jobcard:</span> ${p.jobcard}</p>
+      <p class="text-sm"><span class="font-semibold">Created:</span> ${p.created}</p>
+      <div class="flex justify-end gap-4 mt-2">
+        <button class="text-emerald-600 hover:text-emerald-800" onclick="editParty(${i})"><i data-lucide="edit"></i></button>
+        <button class="text-red-500 hover:text-red-700" onclick="deleteParty(${i})"><i data-lucide="trash-2"></i></button>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById("recordCount").innerText = parties.length;
+  lucide.createIcons();
+}
+
+// Modal functions
+function openModal(){ modal.classList.remove("hidden"); modal.classList.add("flex"); }
+function closeModal(){ modal.classList.add("hidden"); }
+
+// Add party
+function addParty() {
+  parties.push({
+    name: document.getElementById("nameInput").value,
+    mobile: document.getElementById("mobileInput").value,
+    address: document.getElementById("addressInput").value,
+    approval: "Pending",
+    status: document.getElementById("statusInput").value,
+    jobcard: "N/A",
+    created: new Date().toISOString().slice(0,10)
+  });
+  closeModal();
+  renderParties();
+}
+
+// Edit/Delete
+function editParty(i){ alert("Edit: "+parties[i].name); }
+function deleteParty(i){ if(confirm("Delete "+parties[i].name+"?")){ parties.splice(i,1); renderParties(); } }
+
+renderParties();
+</script>
+{% endblock %}

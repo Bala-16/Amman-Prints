@@ -1,0 +1,153 @@
+{% extends "nav.html" %}
+{% block title %}User Permission{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  .modal { display: none; }
+  .modal.active { display: flex; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="min-h-screen bg-slate-50 p-4">
+  <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- HEADER -->
+    <div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-6 flex justify-between items-center">
+      <h1 class="text-white text-xl font-bold">User Permission</h1>
+      <button onclick="openModal()"
+        class="bg-white text-teal-600 px-4 py-2 rounded-lg font-semibold flex items-center gap-2">
+        <i data-lucide="plus"></i> New User
+      </button>
+    </div>
+
+    <!-- DESKTOP TABLE -->
+    <div class="hidden md:block bg-white rounded-xl shadow overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-slate-100">
+          <tr>
+            <th class="p-3 text-left">#</th>
+            <th class="p-3 text-left">User Name</th>
+            <th class="p-3 text-center">Edit</th>
+            <th class="p-3 text-center">Delete</th>
+          </tr>
+        </thead>
+        <tbody id="userTable"></tbody>
+      </table>
+    </div>
+
+    <!-- MOBILE CARDS -->
+    <div id="userCards" class="grid gap-4 md:hidden"></div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal fixed inset-0 bg-black/40 items-center justify-center z-50">
+  <div class="bg-white rounded-xl w-full max-w-md p-6">
+    <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+      <i data-lucide="shield"></i> User Permission
+    </h2>
+
+    <input id="userInput"
+      placeholder="User name"
+      class="w-full border p-2 rounded mb-4">
+
+    <div class="flex justify-end gap-3">
+      <button onclick="closeModal()" class="px-4 py-2 border rounded">Cancel</button>
+      <button onclick="saveUser()" class="px-6 py-2 bg-teal-600 text-white rounded">Save</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+lucide.createIcons()
+
+let users = [
+  "ACCOUNTS","ADMIN","DELIVERY","DESIGNING",
+  "FUSING","HR","JOB CARD","MARKETING","PRINTING"
+]
+
+let editIndex = null
+
+function renderUI() {
+  const table = document.getElementById("userTable")
+  const cards = document.getElementById("userCards")
+
+  table.innerHTML = ""
+  cards.innerHTML = ""
+
+  users.forEach((u, i) => {
+
+    // TABLE
+    table.innerHTML += `
+      <tr class="border-t">
+        <td class="p-3">${i + 1}</td>
+        <td class="p-3 font-medium">${u}</td>
+        <td class="p-3 text-center cursor-pointer text-emerald-600"
+            onclick="editUser(${i})">✏️</td>
+        <td class="p-3 text-center cursor-pointer text-red-500"
+            onclick="deleteUser(${i})">🗑️</td>
+      </tr>
+    `
+
+    // MOBILE CARD
+    cards.innerHTML += `
+      <div class="bg-white rounded-xl shadow p-4">
+        <h3 class="font-bold text-lg">${u}</h3>
+        <div class="flex justify-end gap-4 mt-4">
+          <button onclick="editUser(${i})" class="text-teal-600">Edit</button>
+          <button onclick="deleteUser(${i})" class="text-red-500">Delete</button>
+        </div>
+      </div>
+    `
+  })
+}
+
+function openModal() {
+  modal.classList.add("active")
+}
+
+function closeModal() {
+  modal.classList.remove("active")
+  userInput.value = ""
+  editIndex = null
+}
+
+function saveUser() {
+  const val = userInput.value.trim()
+  if (!val) return alert("User name required")
+
+  if (editIndex !== null) {
+    users[editIndex] = val
+  } else {
+    users.push(val)
+  }
+
+  closeModal()
+  renderUI()
+}
+
+function editUser(i) {
+  editIndex = i
+  userInput.value = users[i]
+  openModal()
+}
+
+function deleteUser(i) {
+  if (confirm("Delete this user?")) {
+    users.splice(i, 1)
+    renderUI()
+  }
+}
+
+renderUI()
+</script>
+{% endblock %}

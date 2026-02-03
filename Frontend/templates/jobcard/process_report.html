@@ -1,0 +1,381 @@
+{% extends "nav.html" %}
+
+{% block title %}Job Card List{% endblock %}
+
+{% block extra_head %}
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* push content below fixed navbar */
+        .main-content {
+            padding-top: 100px; /* adjust to navbar height */
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 24px auto; /* margin fix */
+            padding: 0 12px;   /* horizontal padding for mobile */
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            box-sizing: border-box;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(to right, #4f46e5, #7c3aed, #4f46e5);
+            padding: 24px;
+            border-radius: 12px 12px 0 0;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-print {
+            background: white;
+            color: #4f46e5;
+        }
+
+        .btn-print:hover {
+            background: #eef2ff;
+            transform: scale(1.05);
+        }
+
+        .btn-search {
+            background: linear-gradient(to right, #4f46e5, #7c3aed);
+            color: white;
+        }
+
+        .btn-search:hover {
+            transform: scale(1.05);
+        }
+
+        /* Reset Button */
+        .btn-reset {
+            background: #e5e7eb;
+            color: #3730a3;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-reset:hover {
+            background: #c7d2fe;
+            transform: scale(1.05);
+        }
+
+        /* Card */
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 24px;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Form */
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+            color: #3730a3;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #c7d2fe;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+            align-items: end;
+            flex-wrap: wrap;
+        }
+
+        /* Customer details */
+        .details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        /* Collapsible */
+        .collapsible {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .collapsible-header {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .collapsible-content {
+            display: block;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        th {
+            font-weight: 700;
+        }
+
+        td.text-right {
+            text-align: right;
+        }
+
+        .total-row {
+            font-weight: 700;
+        }
+
+        /* Color themes */
+        .indigo {
+            background: linear-gradient(to right, #eef2ff, #f5f3ff);
+        }
+
+        .violet {
+            background: linear-gradient(to right, #f5f3ff, #ede9fe);
+        }
+
+        .emerald {
+            background: linear-gradient(to right, #ecfdf5, #f0fdfa);
+        }
+
+        /* Responsive adjustments */
+        @media(max-width:768px){
+            .row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .row .btn {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content"></div>
+<div class="container">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1><i data-lucide="file-text"></i> Jobcard Process Report</h1>
+            <p>Complete job processing details and status</p>
+        </div>
+        <button class="btn btn-print" onclick="window.print()">
+            <i data-lucide="printer"></i> Print Report
+        </button>
+    </div>
+
+    <!-- Search -->
+    <div class="card">
+        <div class="row">
+            <div style="flex:1">
+                <label>Jobcard No</label>
+                <input type="text" id="jobcardNo" placeholder="Enter jobcard number...">
+            </div>
+
+            <div class="flex gap-2">
+                <button class="btn btn-search" onclick="searchJobcard()">
+                    <i data-lucide="search"></i> Search
+                </button>
+                <button class="btn btn-reset" onclick="resetJobcard()">
+                    <i data-lucide="refresh-cw"></i> Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Details -->
+    <div class="card">
+        <h3>Customer Details</h3>
+        <div class="details">
+            <div><label>Customer Name</label>
+                <p>-</p>
+            </div>
+            <div><label>Address</label>
+                <p>-</p>
+            </div>
+            <div><label>Quantity</label>
+                <p>0.00</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Printing Report -->
+    <div class="collapsible">
+        <div class="collapsible-header indigo" onclick="toggle('print')">
+            Printing Report <i id="printIcon" data-lucide="chevron-up"></i>
+        </div>
+        <div id="print" class="collapsible-content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Date</th>
+                        <th>Shift</th>
+                        <th>Machine</th>
+                        <th>Operator</th>
+                        <th>Particulars</th>
+                        <th class="text-right">O.Qty</th>
+                        <th class="text-right">P.Qty</th>
+                        <th class="text-right">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="total-row">
+                        <td colspan="6">Total</td>
+                        <td class="text-right">0.00</td>
+                        <td class="text-right">0.00</td>
+                        <td class="text-right">0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Fusing Report -->
+    <div class="collapsible">
+        <div class="collapsible-header violet" onclick="toggle('fusing')">
+            Fusing Report <i id="fusingIcon" data-lucide="chevron-up"></i>
+        </div>
+        <div id="fusing" class="collapsible-content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Date</th>
+                        <th>Shift</th>
+                        <th>Machine</th>
+                        <th>Operator</th>
+                        <th>Particulars</th>
+                        <th class="text-right">O.Qty</th>
+                        <th class="text-right">P.Qty</th>
+                        <th class="text-right">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="total-row">
+                        <td colspan="6">Total</td>
+                        <td class="text-right">0.00</td>
+                        <td class="text-right">0.00</td>
+                        <td class="text-right">0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Delivery Report -->
+    <div class="collapsible">
+        <div class="collapsible-header emerald" onclick="toggle('delivery')">
+            Delivery Report <i id="deliveryIcon" data-lucide="chevron-up"></i>
+        </div>
+        <div id="delivery" class="collapsible-content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Date</th>
+                        <th>DC No</th>
+                        <th>Particulars</th>
+                        <th class="text-right">Inward</th>
+                        <th class="text-right">Outward</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="total-row">
+                        <td colspan="4">Balance</td>
+                        <td class="text-right">0.00</td>
+                        <td class="text-right">0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    lucide.createIcons();
+
+    function toggle(id) {
+        const content = document.getElementById(id);
+        const icon = document.getElementById(id + "Icon");
+
+        content.classList.toggle("hidden");
+        icon.setAttribute(
+            "data-lucide",
+            content.classList.contains("hidden") ? "chevron-down" : "chevron-up"
+        );
+        lucide.createIcons();
+    }
+
+    function searchJobcard() {
+        const jobcard = document.getElementById("jobcardNo").value;
+        alert("Search clicked for Jobcard: " + jobcard);
+    }
+
+    function resetJobcard() {
+        document.getElementById("jobcardNo").value = "";
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,344 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fusing Management</title>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+:root {
+  --purple: linear-gradient(135deg, #7c3aed, #a855f7);
+  --green: linear-gradient(135deg, #16a34a, #22c55e);
+  --orange: linear-gradient(135deg, #f97316, #fb923c);
+  --primary: linear-gradient(135deg, #4f46e5, #6366f1);
+  --border: #e5e7eb;
+  --muted: #f3f4f6;
+}
+
+/* RESET */
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f5f7;
+  padding: 16px;
+}
+
+.container {
+  max-width: none;
+  margin: auto;
+}
+
+/* HEADER */
+.header {
+  position: relative;
+  overflow: hidden;
+  background: var(--purple);
+  padding: 28px;
+  border-radius: 20px;
+  box-shadow: 0 25px 40px rgba(0,0,0,0.15);
+  margin-bottom: 24px;
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+.header-row {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.header-left {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.header-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header h1 {
+  color: white;
+  font-size: 28px;
+  margin: 0;
+}
+
+.header p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+}
+
+/* STATS */
+.stats {
+  display: flex;
+  gap: 12px;
+}
+
+.stat-card {
+  background: rgba(255,255,255,0.2);
+  padding: 14px 16px;
+  border-radius: 14px;
+  min-width: 120px;
+}
+
+.stat-card p {
+  margin: 0;
+  font-size: 11px;
+  color: rgba(255,255,255,0.85);
+}
+
+.stat-card strong {
+  font-size: 22px;
+  color: white;
+}
+
+/* JOB CARD */
+.job-card {
+  background: white;
+  border-radius: 18px;
+  border: 2px solid var(--border);
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.job-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 35px rgba(0,0,0,0.12);
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.job-left {
+  display: flex;
+  gap: 14px;
+}
+
+.job-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+.completed { background: var(--green); }
+.progress { background: var(--primary); }
+.pending { background: var(--orange); }
+
+/* INFO GRID */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.info small {
+  display: block;
+  font-size: 11px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.info span {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* PROGRESS BAR */
+.progress-wrap {
+  margin-top: 8px;
+}
+
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: var(--muted);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--purple);
+}
+
+/* ACTIONS */
+.job-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.btn {
+  flex: 1;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+}
+
+.btn-primary {
+  background: var(--purple);
+  color: white;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .header h1 {
+    font-size: 22px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+
+<div class="header">
+  <div class="header-row">
+    <div class="header-left">
+      <div class="header-icon">
+        <i data-lucide="zap"></i>
+      </div>
+      <div>
+        <h1>Fusing Production</h1>
+        <p>Track fusing operations and progress</p>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <p>Today's Production</p>
+        <strong>610</strong>
+      </div>
+      <div class="stat-card">
+        <p>Pending</p>
+        <strong>340</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="jobList"></div>
+
+</div>
+
+<script>
+lucide.createIcons();
+
+const jobs = [
+  { id:"JC-2601-0077", customer:"Raj Textiles", operator:"Kumar", qty:450, completed:290, status:"In Progress", date:"07/01/2026" },
+  { id:"JC-2601-0076", customer:"Kumar Prints", operator:"Ravi", qty:320, completed:320, status:"Completed", date:"06/01/2026" },
+  { id:"JC-2601-0075", customer:"Sri Textiles", operator:"Vijay", qty:180, completed:0, status:"Pending", date:"07/01/2026" }
+];
+
+const jobList = document.getElementById("jobList");
+
+jobs.forEach(job => {
+  const percent = Math.round((job.completed / job.qty) * 100);
+  const badgeClass = job.status === "Completed" ? "completed" :
+                     job.status === "In Progress" ? "progress" : "pending";
+
+  jobList.innerHTML += `
+    <div class="job-card">
+      <div class="job-header">
+        <div class="job-left">
+          <div class="job-icon"><i data-lucide="zap"></i></div>
+          <div>
+            <strong>${job.id}</strong>
+            <div style="font-size:13px;color:#6b7280">${job.customer}</div>
+          </div>
+        </div>
+        <span class="badge ${badgeClass}">${job.status}</span>
+      </div>
+
+      <div class="info-grid">
+        <div class="info"><small>Operator</small><span>${job.operator}</span></div>
+        <div class="info"><small>Total Qty</small><span>${job.qty} pcs</span></div>
+        <div class="info"><small>Completed</small><span>${job.completed} pcs</span></div>
+        <div class="info"><small>Date</small><span>${job.date}</span></div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-top">
+          <span>Progress</span><span>${percent}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${percent}%"></div>
+        </div>
+      </div>
+
+      <div class="job-actions">
+        <button class="btn btn-outline">Update Progress</button>
+        <button class="btn btn-primary">View Details</button>
+      </div>
+    </div>
+  `;
+});
+
+lucide.createIcons();
+</script>
+</body>
+</html> -->
