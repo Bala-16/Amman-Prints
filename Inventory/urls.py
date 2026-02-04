@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.nav, name='home'),   # ← THIS WAS MISSING
+    path('', views.dashboard, name='dashboard'),   # ← THIS WAS MISSING
     path('nav/', views.nav, name='nav'),
     path('jobcard/customer_report/', views.customer_report, name='customer_report'),
     path('jobcard/quotation/', views.quotation, name='quotation'),

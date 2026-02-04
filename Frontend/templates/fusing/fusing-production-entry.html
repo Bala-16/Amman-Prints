@@ -1,6 +1,6 @@
 {% extends "nav.html" %}
 
-{% block title %}Job Card List{% endblock %}
+{% block title %}Fusing Production Entry{% endblock %}
 
 {% block extra_head %}
 <script src="https://cdn.tailwindcss.com"></script>
@@ -8,212 +8,475 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-6">
   <div class="max-w-[1600px] mx-auto space-y-6">
 
     <!-- HEADER -->
-    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
-      <div>
-        <h1 class="text-2xl font-bold text-white">Fusing Production</h1>
-        <p class="text-teal-100 text-sm">Manage daily fusing production</p>
+    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-2xl p-6 shadow-xl
+                flex justify-between items-center max-sm:flex-col max-sm:items-start max-sm:gap-4">
+
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center">
+          <i data-lucide="printer" class="text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-white">Fusing Production Entry</h1>
+          <p class="text-teal-100 text-sm">Manage daily fusing production details</p>
+        </div>
       </div>
-      <button onclick="openAddModal()"
-        class="bg-white text-teal-600 px-4 py-2 rounded-lg flex items-center gap-2">
-        <i data-lucide="plus"></i> New Entry
-      </button>
+
+      <div class="flex gap-3 flex-wrap">
+        <button onclick="window.print()"
+          class="bg-white/95 text-teal-700 px-4 py-2 rounded-xl font-semibold shadow inline-flex items-center gap-2">
+          <i data-lucide="printer"></i> Print
+        </button>
+
+        <button onclick="openAddModal()"
+          class="bg-white text-teal-700 px-4 py-2 rounded-xl font-semibold shadow inline-flex items-center gap-2">
+          <i data-lucide="plus"></i> Add Entry
+        </button>
+      </div>
     </div>
 
-    <!-- TABLE (Desktop / Tablet) -->
-    <div class="bg-white/80 rounded-xl shadow hidden sm:block">
-      <div class="p-4 text-sm">Found <span id="recordCount">0</span> Records</div>
-      <table class="w-full text-sm">
-        <thead class="bg-slate-100">
-          <tr>
-            <th class="p-3 text-left">Date</th>
-            <th class="p-3">Shift</th>
-            <th class="p-3">Jobcard</th>
-            <th class="p-3">Machine</th>
-            <th class="p-3">Operator</th>
-            <th class="p-3 text-right">Qty</th>
-            <th class="p-3 text-center">Edit</th>
-            <th class="p-3 text-center">Delete</th>
-          </tr>
-        </thead>
-        <tbody id="productionTable"></tbody>
-      </table>
+    <!-- JOB DETAILS (CONTENT SAME AS IMAGE 1) -->
+    <div class="bg-white/80 rounded-2xl shadow p-6 border border-slate-100">
+      <h2 class="text-lg font-bold text-slate-800 mb-4">Job Details</h2>
+
+      <div class=" grid grid-cols-2 md:grid-cols-4 gap-4">
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Jobcard No *</label>
+          <input value="JC-2404-0012" readonly class="w-full mt-1 border rounded-xl p-3 bg-slate-50">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Customer Name</label>
+          <input value="FABRO GAARDEN" readonly class="w-full mt-1 border rounded-xl p-3 bg-slate-50">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Style No</label>
+          <input value="TOTE BAG" readonly class="w-full mt-1 border rounded-xl p-3 bg-slate-50">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Job Type</label>
+          <input value="production" readonly class="w-full mt-1 border rounded-xl p-3 bg-slate-50">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Job Created by</label>
+          <input value="Dhanam" readonly class="w-full mt-1 border rounded-xl p-3 bg-slate-50">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Style Name</label>
+          <input value="TOTE BAG" readonly class="w-full mt-1 border rounded-xl p-3 bg-slate-50">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Fabric Type</label>
+          <input value="F ROLL FORM" readonly class="w-full mt-1 border rounded-xl p-3 bg-slate-50">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Date</label>
+          <input value="27/01/2026, 11:29 AM" readonly class="w-full mt-1 border rounded-xl p-3 bg-slate-50">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Customer PO No</label>
+          <input value="847" readonly class="w-full mt-1 border rounded-xl p-3 bg-slate-50">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Combo</label>
+          <input value="WHITE" readonly class="w-full mt-1 border rounded-xl p-3 bg-slate-50">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Printed Qty</label>
+          <input value="350" readonly class="w-full mt-1 border rounded-xl p-3 bg-slate-50">
+        </div>
+      </div>
     </div>
 
-    <!-- MOBILE CARDS -->
-    <div id="mobileCards" class="sm:hidden space-y-4"></div>
+    <!-- PRODUCTION RECORDS -->
+    <div class="bg-white/80 rounded-2xl shadow border border-slate-100">
+      <div class="p-6 flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <h2 class="text-lg font-bold text-slate-800">Production Records</h2>
+          <p class="text-sm text-slate-500">Found <span id="recordCount">0</span> Records</p>
+        </div>
+
+        <button onclick="openAddModal()"
+          class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-xl font-semibold shadow inline-flex items-center gap-2">
+          <i data-lucide="plus"></i> Add Entry
+        </button>
+      </div>
+
+      <!-- Desktop / Tablet Table -->
+      <div class="hidden sm:block">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-100 text-slate-700">
+            <tr>
+              <th class="p-3 text-left">Date</th>
+              <th class="p-3 text-left">Shift</th>
+              <th class="p-3 text-left">Machine</th>
+              <th class="p-3 text-left">Operator</th>
+              <th class="p-3 text-left">Size</th>
+              <th class="p-3 text-right">T.Qty</th>
+              <th class="p-3 text-right">P.Qty</th>
+              <th class="p-3 text-right">Balance</th>
+              <th class="p-3 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody id="productionTable" class="divide-y"></tbody>
+          <tfoot class="bg-slate-50">
+            <tr>
+              <td class="p-3 font-semibold" colspan="5">Total</td>
+              <td class="p-3 text-right font-semibold" id="totalT">0</td>
+              <td class="p-3 text-right font-semibold" id="totalP">0</td>
+              <td class="p-3 text-right font-semibold" id="totalB">0</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Mobile Cards -->
+      <div id="mobileCards" class="sm:hidden p-6 space-y-4"></div>
+
+      <div class="p-6 flex items-center justify-between flex-wrap gap-4">
+        <div class="min-w-[240px]">
+          <label class="text-sm font-semibold text-slate-700">Fusing Production Status</label>
+          <select class="w-full mt-1 border rounded-xl p-3 bg-white" id="status">
+            <option>Pending</option>
+            <option>Completed</option>
+          </select>
+        </div>
+
+        <button class="bg-green-600 hover:bg-green-700 text-white px-10 py-3 rounded-xl font-bold shadow">
+          SUBMIT
+        </button>
+      </div>
+    </div>
 
   </div>
 
   <!-- MODAL -->
   <div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-    <div class="bg-white w-full max-w-lg rounded-xl p-6 shadow-xl">
-      <h2 id="modalTitle" class="text-xl font-bold mb-4">Fusing Production Entry</h2>
+    <div class="bg-white w-full max-w-2xl rounded-2xl p-6 shadow-2xl mx-4">
+      <div class="flex items-center justify-between mb-4">
+        <h2 id="modalTitle" class="text-xl font-bold text-slate-800">Add Production</h2>
+        <button onclick="closeModal()" class="p-2 rounded-lg hover:bg-slate-100">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
 
-      <div class="grid grid-cols-2 gap-4">
-        <input type="date" id="date" class="border p-2 rounded">
-        <select id="shift" class="border p-2 rounded">
-          <option>DAY</option>
-          <option>NIGHT</option>
-        </select>
-        <input id="jobcard" placeholder="Jobcard No" class="border p-2 rounded">
-        <select id="machine" class="border p-2 rounded">
-          <option>FLAT BED NO 1</option>
-          <option>FLAT BED NO 2</option>
-        </select>
-        <input id="operator" placeholder="Operator" class="border p-2 rounded">
-        <input id="qty" type="number" placeholder="Qty" class="border p-2 rounded">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Date</label>
+          <input type="datetime-local" id="date" class="w-full mt-1 border p-3 rounded-xl">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Shift *</label>
+          <select id="shift" class="w-full mt-1 border p-3 rounded-xl">
+            <option value="DAY SHIFT">DAY SHIFT</option>
+            <option value="NIGHT SHIFT">NIGHT SHIFT</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Machine *</label>
+          <input id="machine" class="w-full mt-1 border p-3 rounded-xl" placeholder="ROLL TO ROLL NO 1">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Operator *</label>
+          <input id="operator" class="w-full mt-1 border p-3 rounded-xl" placeholder="4">
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="text-sm font-semibold text-slate-700">Size *</label>
+          <input id="size" class="w-full mt-1 border p-3 rounded-xl" placeholder="ULTRA COLOUR BAG (58 x 37)">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">T.Qty</label>
+          <input id="tqty" type="number" step="0.001" class="w-full mt-1 border p-3 rounded-xl" value="0">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">P.Qty *</label>
+          <input id="pqty" type="number" step="0.001" class="w-full mt-1 border p-3 rounded-xl" value="0">
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="text-sm font-semibold text-slate-700">Balance</label>
+          <input id="bal" type="number" step="0.001" class="w-full mt-1 border p-3 rounded-xl bg-slate-50" value="0"
+            readonly>
+        </div>
       </div>
 
       <div class="flex justify-center gap-4 mt-6">
-        <button onclick="closeModal()" class="border px-6 py-2 rounded">Cancel</button>
+        <button onclick="closeModal()" class="border px-8 py-2 rounded-xl font-semibold">Cancel</button>
         <button onclick="saveProduction()" id="saveBtn"
-          class="bg-[#9cb916] text-white px-8 py-2 rounded">ADD</button>
+          class="bg-teal-600 hover:bg-teal-700 text-white px-10 py-2 rounded-xl font-bold">
+          ADD
+        </button>
       </div>
     </div>
   </div>
 
 </div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
-lucide.createIcons()
+  // icons
+  if (window.lucide) lucide.createIcons();
 
-// INITIAL DATA
-let productions = [
- {date:"2024-04-03",shift:"DAY",jobcard:"JC-001",machine:"FLAT BED NO 1",operator:"GOLU",qty:300},
- {date:"2024-04-03",shift:"NIGHT",jobcard:"JC-002",machine:"FLAT BED NO 2",operator:"RAVI",qty:300}
-]
+  // ===== DATA (sample) =====
+  let productions = [
+    {
+      date: "2024-04-03 12:23",
+      shift: "DAY SHIFT",
+      machine: "ROLL TO ROLL NO 1",
+      operator: "4",
+      size: "ULTRA COLOUR BAG (58 x 37)",
+      tqty: 105.000,
+      pqty: 105.000,
+      bal: 0.000
+    },
+    {
+      date: "2024-04-03 12:23",
+      shift: "DAY SHIFT",
+      machine: "ROLL TO ROLL NO 1",
+      operator: "4",
+      size: "BLUE SOLID (58 x 39.4)",
+      tqty: 24.000,
+      pqty: 24.000,
+      bal: 0.000
+    }
+  ];
 
-let editIndex = null
+  let editIndex = null;
 
-// RENDER TABLE & MOBILE CARDS
-function renderTable(){
- productionTable.innerHTML=""
- mobileCards.innerHTML=""
+  // ===== HELPERS =====
+  const modal = document.getElementById("modal");
+  const productionTable = document.getElementById("productionTable");
+  const mobileCards = document.getElementById("mobileCards");
+  const recordCount = document.getElementById("recordCount");
 
- productions.forEach((p,i)=>{
-  // Desktop / Tablet
-  productionTable.innerHTML+=`
-   <tr class="border-t hover:bg-slate-50">
-    <td class="p-3">${p.date}</td>
-    <td class="p-3">${p.shift}</td>
-    <td class="p-3">${p.jobcard}</td>
-    <td class="p-3">${p.machine}</td>
-    <td class="p-3">${p.operator}</td>
-    <td class="p-3 text-right">${p.qty}</td>
-    <td class="text-center text-emerald-600 cursor-pointer">
-      <i data-lucide="edit" onclick="openEditModal(${i})"></i>
-    </td>
-    <td class="text-center text-red-500 cursor-pointer">
-      <i data-lucide="trash-2" onclick="deleteProduction(${i})"></i>
-    </td>
-   </tr>`
+  const totalT = document.getElementById("totalT");
+  const totalP = document.getElementById("totalP");
+  const totalB = document.getElementById("totalB");
 
-  // Mobile cards
-  mobileCards.innerHTML+=`
-   <div class="bg-white rounded-xl shadow p-4">
-    <div class="flex justify-between">
-     <div>
-      <p class="font-semibold">${p.jobcard}</p>
-      <p class="text-sm">${p.date} • ${p.shift}</p>
-     </div>
-     <div class="flex gap-3">
-      <i data-lucide="edit" class="text-emerald-600 cursor-pointer" onclick="openEditModal(${i})"></i>
-      <i data-lucide="trash-2" class="text-red-500 cursor-pointer" onclick="deleteProduction(${i})"></i>
-     </div>
-    </div>
-    <div class="text-sm mt-2">
-     <p>Machine: ${p.machine}</p>
-     <p>Operator: ${p.operator}</p>
-     <p>Qty: ${p.qty}</p>
-    </div>
-   </div>`
- })
+  const dateEl = document.getElementById("date");
+  const shiftEl = document.getElementById("shift");
+  const machineEl = document.getElementById("machine");
+  const operatorEl = document.getElementById("operator");
+  const sizeEl = document.getElementById("size");
+  const tqtyEl = document.getElementById("tqty");
+  const pqtyEl = document.getElementById("pqty");
+  const balEl = document.getElementById("bal");
 
- document.getElementById("recordCount").innerText = productions.length
- lucide.createIcons()
-}
-
-// OPEN ADD MODAL
-function openAddModal(){
- editIndex=null
- modalTitle.innerText="Add Production"
- saveBtn.innerText="ADD"
- date.value = ""
- shift.value = "DAY"
- jobcard.value = ""
- machine.value = "FLAT BED NO 1"
- operator.value = ""
- qty.value = ""
- modal.classList.remove("hidden")
- modal.classList.add("flex") // ✅ center modal
-}
-
-// OPEN EDIT MODAL
-function openEditModal(i){
- editIndex=i
- let p=productions[i]
- date.value=p.date
- shift.value=p.shift
- jobcard.value=p.jobcard
- machine.value=p.machine
- operator.value=p.operator
- qty.value=p.qty
- modalTitle.innerText="Edit Production"
- saveBtn.innerText="UPDATE"
- modal.classList.remove("hidden")
- modal.classList.add("flex") // ✅ center modal
-}
-
-// SAVE ADD / EDIT
-function saveProduction(){
- if(!date.value || !jobcard.value || !operator.value || !qty.value){
-   alert("Required fields!")
-   return
- }
-
- if(editIndex===null){
-  productions.push({
-    date: date.value,
-    shift: shift.value,
-    jobcard: jobcard.value,
-    machine: machine.value,
-    operator: operator.value,
-    qty: qty.value
-  })
- }else{
-  productions[editIndex]={
-    date: date.value,
-    shift: shift.value,
-    jobcard: jobcard.value,
-    machine: machine.value,
-    operator: operator.value,
-    qty: qty.value
+  function fmt3(n) {
+    const x = Number(n || 0);
+    return x.toFixed(3);
   }
- }
- closeModal()
- renderTable()
-}
 
-// DELETE RECORD
-function deleteProduction(i){
- if(confirm("Delete this record?")){
-  productions.splice(i,1)
-  renderTable()
- }
-}
+  function recalcBalance() {
+    const t = Number(tqtyEl.value || 0);
+    const p = Number(pqtyEl.value || 0);
+    balEl.value = (t - p).toFixed(3);
+  }
+  tqtyEl.addEventListener("input", recalcBalance);
+  pqtyEl.addEventListener("input", recalcBalance);
 
-// CLOSE MODAL
-function closeModal(){
- modal.classList.add("hidden")
- modal.classList.remove("flex")
-}
+  // ===== RENDER =====
+  function renderTable() {
+    productionTable.innerHTML = "";
+    mobileCards.innerHTML = "";
 
-renderTable()
+    let sumT = 0, sumP = 0, sumB = 0;
+
+    productions.forEach((p, i) => {
+      sumT += Number(p.tqty || 0);
+      sumP += Number(p.pqty || 0);
+      sumB += Number(p.bal || 0);
+
+      // desktop row
+      productionTable.innerHTML += `
+        <tr class="hover:bg-slate-50">
+          <td class="p-3">${p.date}</td>
+          <td class="p-3">${p.shift}</td>
+          <td class="p-3">${p.machine}</td>
+          <td class="p-3">${p.operator}</td>
+          <td class="p-3">${p.size}</td>
+          <td class="p-3 text-right">${fmt3(p.tqty)}</td>
+          <td class="p-3 text-right">${fmt3(p.pqty)}</td>
+          <td class="p-3 text-right">${fmt3(p.bal)}</td>
+          <td class="p-3 text-center">
+            <button class="inline-flex items-center gap-2 text-emerald-600 font-semibold mr-3" onclick="openEditModal(${i})">
+              <i data-lucide="edit"></i>
+            </button>
+            <button class="inline-flex items-center gap-2 text-red-500 font-semibold" onclick="deleteProduction(${i})">
+              <i data-lucide="trash-2"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+
+      // mobile card
+      mobileCards.innerHTML += `
+        <div class="bg-white rounded-2xl shadow p-4 border border-slate-100">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="font-bold text-slate-800">${p.date}</p>
+              <p class="text-sm text-slate-500">${p.shift} • ${p.machine}</p>
+              <p class="text-sm mt-1"><span class="font-semibold">Operator:</span> ${p.operator}</p>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="openEditModal(${i})" class="text-emerald-600">
+                <i data-lucide="edit"></i>
+              </button>
+              <button onclick="deleteProduction(${i})" class="text-red-500">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="text-sm mt-3">
+            <p><span class="font-semibold">Size:</span> ${p.size}</p>
+            <div class="grid grid-cols-3 gap-2 mt-2">
+              <div class="bg-slate-50 p-2 rounded-xl text-center">
+                <div class="text-xs text-slate-500">T.Qty</div>
+                <div class="font-bold">${fmt3(p.tqty)}</div>
+              </div>
+              <div class="bg-slate-50 p-2 rounded-xl text-center">
+                <div class="text-xs text-slate-500">P.Qty</div>
+                <div class="font-bold">${fmt3(p.pqty)}</div>
+              </div>
+              <div class="bg-slate-50 p-2 rounded-xl text-center">
+                <div class="text-xs text-slate-500">Bal</div>
+                <div class="font-bold">${fmt3(p.bal)}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    recordCount.innerText = productions.length;
+    totalT.innerText = fmt3(sumT);
+    totalP.innerText = fmt3(sumP);
+    totalB.innerText = fmt3(sumB);
+
+    if (window.lucide) lucide.createIcons();
+  }
+
+  // ===== MODAL =====
+  function openAddModal() {
+    editIndex = null;
+    document.getElementById("modalTitle").innerText = "Add Production";
+    document.getElementById("saveBtn").innerText = "ADD";
+
+    dateEl.value = "";
+    shiftEl.value = "DAY SHIFT";
+    machineEl.value = "";
+    operatorEl.value = "";
+    sizeEl.value = "";
+    tqtyEl.value = "0";
+    pqtyEl.value = "0";
+    balEl.value = "0";
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function openEditModal(i) {
+    editIndex = i;
+    const p = productions[i];
+
+    document.getElementById("modalTitle").innerText = "Edit Production";
+    document.getElementById("saveBtn").innerText = "UPDATE";
+
+    // datetime-local expects "YYYY-MM-DDTHH:MM" - we keep simple: user can reselect
+    dateEl.value = "";
+    shiftEl.value = p.shift;
+    machineEl.value = p.machine;
+    operatorEl.value = p.operator;
+    sizeEl.value = p.size;
+    tqtyEl.value = p.tqty;
+    pqtyEl.value = p.pqty;
+    balEl.value = p.bal;
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  }
+
+  function saveProduction() {
+    // basic required checks
+    if (!shiftEl.value || !machineEl.value || !operatorEl.value || !sizeEl.value || pqtyEl.value === "") {
+      alert("Required fields missing!");
+      return;
+    }
+
+    const t = Number(tqtyEl.value || 0);
+    const p = Number(pqtyEl.value || 0);
+    const b = t - p;
+
+    // Date display
+    let displayDate = dateEl.value ? dateEl.value.replace("T", " ") : new Date().toLocaleString();
+
+    const newItem = {
+      date: displayDate,
+      shift: shiftEl.value,
+      machine: machineEl.value,
+      operator: operatorEl.value,
+      size: sizeEl.value,
+      tqty: t,
+      pqty: p,
+      bal: b
+    };
+
+    if (editIndex === null) {
+      productions.push(newItem);
+    } else {
+      productions[editIndex] = newItem;
+    }
+
+    closeModal();
+    renderTable();
+  }
+
+  function deleteProduction(i) {
+    if (confirm("Delete this record?")) {
+      productions.splice(i, 1);
+      renderTable();
+    }
+  }
+
+  // expose to html onclick
+  window.openAddModal = openAddModal;
+  window.openEditModal = openEditModal;
+  window.closeModal = closeModal;
+  window.saveProduction = saveProduction;
+  window.deleteProduction = deleteProduction;
+
+  // first render
+  renderTable();
 </script>
 {% endblock %}
