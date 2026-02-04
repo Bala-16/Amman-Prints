@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Customer Wise Report</title>
+{%extends "nav.html"%}
+{%block title%}Printer Customer{%endblock%}
+{%block extra_head%}
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 
-</head>
-
-<body class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-6">
+{%endblock%}
+{%block content%}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-6">
 
 <div class="max-w-[1800px] mx-auto space-y-6">
 
@@ -97,7 +95,10 @@
   </div>
 
 </div>
+</div>
+{%endblock%}
 
+{%block extra_js%}
 <script>
   lucide.createIcons()
 
@@ -111,6 +112,5 @@
     document.getElementById('customerName').value = '';
   }
 </script>
+{%endblock%}
 
-</body>
-</html>

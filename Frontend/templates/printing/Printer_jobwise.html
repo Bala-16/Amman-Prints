@@ -1,0 +1,171 @@
+{%extends "nav.html"%}
+{%block title%}Printer Customer{%endblock%}
+{%block extra_head%}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+{%endblock%}
+{%block content%}
+
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-4 sm:p-6">
+
+<div class="max-w-[1600px] mx-auto space-y-6">
+
+  <!-- ✅ HEADER -->
+  <div
+    class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600
+           rounded-2xl p-6 shadow-xl
+           flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+
+    <div class="flex items-center gap-3">
+      <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
+        <i data-lucide="file-bar-chart" class="text-white w-6 h-6"></i>
+      </div>
+
+      <div>
+        <h1 class="text-2xl font-bold text-white">
+          Printer Jobcard Wise Report
+        </h1>
+        <p class="text-teal-100 text-sm">
+          Production summary by jobcard
+        </p>
+      </div>
+    </div>
+
+    <button onclick="window.print()"
+      class="bg-white/20 text-white px-4 py-2 rounded-xl
+             flex items-center gap-2 hover:bg-white/30 transition">
+      <i data-lucide="printer" class="w-4 h-4"></i>
+      Print
+    </button>
+  </div>
+
+  <!-- ✅ FILTER + SMALL BUTTONS -->
+  <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6">
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+
+      <!-- Jobcard Input -->
+      <div>
+        <label class="text-sm text-slate-600 font-medium">
+          Jobcard No
+        </label>
+        <input id="jobcardInput"
+          placeholder="Enter Jobcard No"
+          class="w-full border rounded-lg px-3 py-2 mt-1">
+      </div>
+
+      <!-- Search Button (Small) -->
+      <div>
+        <button onclick="searchJobcard()"
+          class="w-full sm:w-auto bg-teal-600 text-white
+                 px-4 py-2 text-sm rounded-lg shadow
+                 hover:bg-teal-700 transition flex items-center gap-2">
+          <i data-lucide="search" class="w-4 h-4"></i>
+          Search
+        </button>
+      </div>
+
+      <!-- Reset Button (Small) -->
+      <div>
+        <button onclick="resetJobcard()"
+          class="w-full sm:w-auto bg-slate-500 text-white
+                 px-4 py-2 text-sm rounded-lg shadow
+                 hover:bg-slate-600 transition flex items-center gap-2">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          Reset
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ✅ TABLE -->
+  <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-x-auto">
+
+    <div class="p-4 border-b text-sm text-slate-600">
+      Jobcard No: <b id="jobcardTitle">All</b>
+    </div>
+
+    <table id="jobcardTable" class="w-full text-sm min-w-[900px]">
+      <thead class="bg-slate-100">
+        <tr>
+          <th class="p-3 text-left">Date</th>
+          <th class="p-3 text-left">Shift</th>
+          <th class="p-3 text-left">Machine</th>
+          <th class="p-3 text-left">Operator</th>
+          <th class="p-3 text-left">Particulars</th>
+          <th class="p-3 text-right">Order Qty</th>
+          <th class="p-3 text-right">Product Qty</th>
+          <th class="p-3 text-right">Balance</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr class="border-t hover:bg-slate-50">
+          <td class="p-3">10-04-2024</td>
+          <td class="p-3">DAY</td>
+          <td class="p-3">GT-1</td>
+          <td class="p-3">SENTHIL</td>
+          <td class="p-3">2XL TOP</td>
+          <td class="p-3 text-right">225</td>
+          <td class="p-3 text-right">225</td>
+          <td class="p-3 text-right">0</td>
+        </tr>
+
+        <tr class="border-t hover:bg-slate-50">
+          <td class="p-3">10-04-2024</td>
+          <td class="p-3">DAY</td>
+          <td class="p-3">GT-1</td>
+          <td class="p-3">SENTHIL</td>
+          <td class="p-3">AOP BOTTOM</td>
+          <td class="p-3 text-right">3500</td>
+          <td class="p-3 text-right">3500</td>
+          <td class="p-3 text-right">0</td>
+        </tr>
+
+        <tr class="border-t hover:bg-slate-50">
+          <td class="p-3">10-04-2024</td>
+          <td class="p-3">DAY</td>
+          <td class="p-3">GT-1</td>
+          <td class="p-3">SENTHIL</td>
+          <td class="p-3">L TOP</td>
+          <td class="p-3 text-right">500</td>
+          <td class="p-3 text-right">500</td>
+          <td class="p-3 text-right">0</td>
+        </tr>
+      </tbody>
+
+      <tfoot class="bg-slate-100 font-semibold">
+        <tr>
+          <td colspan="5" class="p-3 text-right">Total</td>
+          <td class="p-3 text-right">6375</td>
+          <td class="p-3 text-right">6375</td>
+          <td class="p-3 text-right">0</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+</div>
+</div>
+{%endblock%}
+{%block extra_js%}
+
+<!-- ✅ SCRIPT -->
+<script>
+  lucide.createIcons()
+
+  // ✅ Search Function
+  function searchJobcard() {
+    let input = document.getElementById("jobcardInput").value.trim()
+    document.getElementById("jobcardTitle").innerText = input || "All"
+  }
+
+  // ✅ Reset Function
+  function resetJobcard() {
+    document.getElementById("jobcardInput").value = ""
+    document.getElementById("jobcardTitle").innerText = "All"
+  }
+</script>
+{%endblock%}
+

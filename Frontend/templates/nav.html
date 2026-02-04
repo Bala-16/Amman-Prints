@@ -25,9 +25,9 @@
       }
 
       /* ================= HEADER ================= */
-      .header {
-        background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+       .header {
+         background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
         position: sticky;
         top: 0;
         z-index: 100;
@@ -176,19 +176,30 @@
         cursor: pointer;
       }
 
-      .mobile-menu {
+       .mobile-menu {
         display: none;
         background: white;
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         padding: 12px;
-      }
+        
+         position: fixed;
+        top: 100px;
+        left: 0px;
+        width: 100%;
+        
+        z-index: 9999;
+        /* animation*/
+        /* transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 0; */
+
+       } 
 
       .mobile-menu .nav-button {
         color: #111827;
         width: 100%;
         justify-content: space-between;
       }
-
+/*     
       .mobile-menu .dropdown-menu {
         position: static;
         box-shadow: none;
@@ -197,7 +208,27 @@
 
       .mobile-menu .dropdown-item {
         padding: 8px 12px;
-      }
+      } */
+
+      
+/* ===== MOBILE SUBMENU AS LEFT CARD (REUSE dropdown-menu) ===== */
+@media (max-width: 1024px) {
+
+  .mobile-menu .dropdown-menu {
+    position: fixed;
+    top: 100px;
+    left: 140px;        /* main menu left side */
+    width: 200px;
+    height: auto;
+
+    background: #fff;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.15);
+    padding: 16px;
+
+    display: none;      /* default hide */
+    z-index: 9998;
+  }
+}
 
       @media (max-width: 1024px) {
         .nav-menu {
@@ -212,11 +243,22 @@
           display: block;
         }
       }
+      @media (min-width: 1025px) {
+    .mobile-menu {
+    display: none !important;
+  }
+}
+
+
+
+
+  
+
     </style>
     {% block extra_head %}{% endblock %}
-  </head>
+  <!-- </head> -->
 
-  <body>
+  <!-- <body> -->
     
     <header class="header">
       <div class="header-container">
@@ -278,9 +320,28 @@
           <div class="nav-item">
             <a href="/delivery/" class="nav-button">Delivery</a>
           </div>
-          <div class="nav-item">
+          <!-- <div class="nav-item">
             <a href="/printing/" class="nav-button">Printer</a>
+          </div> -->
+
+<div class="nav-item">
+          <button class="nav-button" onclick="togglePrintingMenu()">
+            printing ▾
+          </button>
+          <div id="printingMenu" class="dropdown-menu">
+           <a href="/printing/printer_production" class="dropdown-item">Production Entry</a>
+       <a href="/printing/printer_jobwise/" class="dropdown-item"> Job No Wise Report</a>
+       <a href="/printing/printer_operator/" class="dropdown-item"> Operator Wise Report</a>
+       <a href="/printing/printer_machine/" class="dropdown-item"> Machine Wise Report</a>
+      <a href="/printing/printer_customer/" class="dropdown-item"> Customer Wise Report</a>
+      <a href="/printing/printer_data/" class="dropdown-item"> Data Wise Report</a>
+          
+
           </div>
+          </div>
+
+
+
           <div class="nav-item">
             <button class="nav-button" onclick="toggleFusingMenu()">
               Fusing ▾
@@ -294,9 +355,12 @@
               <a href="/fusing/date-wise-report/" class="dropdown-item">Date Wise Report</a>
             </div>
           </div>
+
+
           <div class="nav-item">
             <a href="/accounts/" class="nav-button">Accounts</a>
           </div>
+
         </nav>
       </div>
     </header>
@@ -347,31 +411,85 @@
          <a href="/jobcard/process_quotationform/" class="dropdown-item">Quotation Form</a>
       </div>
 
-      <button class="nav-button">Consumable</button>
-      <button class="nav-button">Delivery</button>
-      <button class="nav-button">Printer</button>
-      <button class="nav-button">Fusing</button>
-      <button class="nav-button">Accounts</button>
+       <div class="nav-item">
+            <a href="/consumable/" class="nav-button">Consumable</a>
+          </div>
+
+          <div class="nav-item">
+            <a href="/delivery/" class="nav-button">Delivery</a>
+          </div>
+          <!-- <div class="nav-item">
+            <a href="/printing/" class="nav-button">Printer</a>
+          </div> -->
+
+<button class="nav-button" onclick="toggleMobileSub('mprinting')">
+      printing ▾
+    </button>
+    <div id="mprinting" class="dropdown-menu">
+      <a href="/printing/printer_production" class="dropdown-item">Production Entry</a>
+       <a href="/printing/printer_jobwise/" class="dropdown-item"> Job No Wise Report</a>
+       <a href="/printing/printer_operator/" class="dropdown-item"> Operator Wise Report</a>
+       <a href="/printing/printer_machine/" class="dropdown-item"> Machine Wise Report</a>
+      <a href="/printing/printer_customer/" class="dropdown-item"> Customer Wise Report</a>
+      <a href="/printing/printer_data/" class="dropdown-item"> Data Wise Report</a>
+     
+     
+     
+      
+
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+          <div class="nav-item">
+            <!-- <button class="nav-button" onclick="toggleMobileSub('fusingMenu')"> -->
+            <button class="nav-button" onclick="toggleMobileSub('mFusing')">
+              Fusing ▾</button>
+            <div id="mFusing" class="dropdown-menu">
+              <a href="/fusing/fusing-production-entry/" class="dropdown-item">Fusing Production Entry</a>
+              <a href="/fusing/job-no-wise-report/" class="dropdown-item">Job No Wise Report</a>
+              <a href="/fusing/fusing-operator-wise-report/" class="dropdown-item">Fusing Operator Wise Report</a>
+              <a href="/fusing/fusing-machine-wise-report/" class="dropdown-item">Fusing Machine Wise Report</a>
+              <a href="/fusing/fusing-customer-wise-report/" class="dropdown-item">Fusing Customer Wise Report</a>
+              <a href="/fusing/date-wise-report/" class="dropdown-item">Date Wise Report</a>
+            </div>
+          </div>
+          
+          <div class="nav-item">
+            <a href="/accounts/" class="nav-button">Accounts</a>
+          </div>
 
     <script>
       const jobCardMenu = document.getElementById("jobCardMenu");
       const masterMenu = document.getElementById("masterMenu");
       const mobileMenu = document.getElementById("mobileMenu");
       const fusingMenu = document.getElementById("fusingMenu");
+       const printingMenu = document.getElementById("printingMenu");
 
       function toggleJobCardMenu() {
         jobCardMenu.style.display =
           jobCardMenu.style.display === "block" ? "none" : "block";
         masterMenu.style.display = "none";
         fusingMenu.style.display = "none";
+          printingMenu.style.display = "none";
+
       }
 
       function toggleMasterMenu() {
         masterMenu.style.display =
-          masterMenu.style.display === "block" ? "none" : "block";
+        masterMenu.style.display === "block" ? "none" : "block";
         jobCardMenu.style.display = "none";
         fusingMenu.style.display = "none";
+         printingMenu.style.display = "none";
       }
 
       function toggleFusingMenu() {
@@ -379,14 +497,39 @@
           fusingMenu.style.display === "block" ? "none" : "block";
         jobCardMenu.style.display = "none";
         masterMenu.style.display = "none";
+         printingMenu.style.display = "none";
+      }
+       function togglePrintingMenu() {
+        printingMenu.style.display =
+          printingMenu.style.display === "block" ? "none" : "block";
+        jobCardMenu.style.display = "none";
+        masterMenu.style.display = "none";
+        fusingMenu.style.display = "none";
       }
 
       function toggleMobileMenu() {
-        mobileMenu.style.display =
+            mobileMenu.style.display =
           mobileMenu.style.display === "block" ? "none" : "block";
+          // close all mobile submenus
+//   document.querySelectorAll(".mobile-menu .dropdown-menu").forEach(el => {
+//     el.style.display = "none";
+//   });
+// }
+
+     //close desktop dropdowns
+       jobCardMenu.style.display = "none";
+        masterMenu.style.display = "none";
+       fusingMenu.style.display = "none";
+       printingMenu.style.display = "none";
       }
 
       function toggleMobileSub(id) {
+        /new one/
+          document.querySelectorAll(".mobile-menu .dropdown-menu").forEach(menu => {
+    if (menu.id !== id) {
+      menu.style.display = "none";
+    }
+  });/end/
         const el = document.getElementById(id);
         el.style.display = el.style.display === "block" ? "none" : "block";
       }
@@ -396,9 +539,24 @@
           jobCardMenu.style.display = "none";
           masterMenu.style.display = "none";
           fusingMenu.style.display = "none";
+          printingMenu.style.display = "none";
+
         }
       });
+      
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 1024) {
+      // close mobile menu
+      mobileMenu.style.display = "none";
+
+      // close mobile sub menus
+      document.querySelectorAll(".mobile-menu .dropdown-menu").forEach(el => {
+        el.style.display = "none";
+      });
+    }
+  });
+
     </script>
     {% block extra_js %}{% endblock%}
-  </body>
-</html>
+  <!-- </body>
+</html> -->

@@ -1,211 +1,287 @@
 {% extends "nav.html" %}
 
-{% block title %}Job Card List{% endblock %}
+{% block title %}Job Card process report{% endblock %}
 
 {% block extra_head %}
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
-        /* push content below fixed navbar */
-        .main-content {
-            padding-top: 100px; /* adjust to navbar height */
-        }
+<style>
+    /* push content below fixed navbar */
+    .main-content {
+        padding-top: 5px;
+        /* adjust to navbar height */
+    }
 
-        .container {
-            max-width: 1600px;
-            margin: 24px auto; /* margin fix */
-            padding: 0 12px;   /* horizontal padding for mobile */
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            box-sizing: border-box;
-        }
+    .container {
+        max-width: 1600px;
+        margin: 24px auto;
+        /* margin fix */
+        padding: 0 12px;
+        /* horizontal padding for mobile */
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        box-sizing: border-box;
+    }
 
-        /* Header */
+    /* Header */
+    .page-header {
+        background: linear-gradient(to right, #4f46e5, #7c3aed, #4f46e5);
+        padding: 24px;
+        border-radius: 12px 12px 0 0;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 10px 16px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.3s;
+    }
+
+    .btn-print {
+        background: white;
+        color: #4f46e5;
+    }
+
+    .btn-print:hover {
+        background: #eef2ff;
+        transform: scale(1.05);
+    }
+
+    .btn-search {
+        background: linear-gradient(to right, #4f46e5, #7c3aed);
+        color: white;
+    }
+
+    .btn-search:hover {
+        transform: scale(1.05);
+    }
+
+    /* Reset Button */
+    .btn-reset {
+        background: #e5e7eb;
+        color: #3730a3;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-reset:hover {
+        background: #c7d2fe;
+        transform: scale(1.05);
+    }
+
+    /* Card */
+    .card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        padding: 24px;
+        border: 2px solid rgba(99, 102, 241, 0.2);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Form */
+    label {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        display: block;
+        color: #3730a3;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #c7d2fe;
+        font-size: 14px;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    .row {
+        display: flex;
+        gap: 16px;
+        align-items: end;
+        flex-wrap: wrap;
+    }
+
+    /* Customer details */
+    .details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+    }
+
+    /* Collapsible */
+    .collapsible {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .collapsible-header {
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        font-weight: 700;
+    }
+
+    .collapsible-content {
+        display: block;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    /* Tables */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 14px;
+        text-align: left;
+    }
+
+    th {
+        font-weight: 700;
+    }
+
+    td.text-right {
+        text-align: right;
+    }
+
+    .total-row {
+        font-weight: 700;
+    }
+
+    /* Color themes */
+    .indigo {
+        background: linear-gradient(to right, #eef2ff, #f5f3ff);
+    }
+
+    .violet {
+        background: linear-gradient(to right, #f5f3ff, #ede9fe);
+    }
+
+    .emerald {
+        background: linear-gradient(to right, #ecfdf5, #f0fdfa);
+    }
+
+
+
+
+    /* ✅ Mobile view only: make header like "User Type" card */
+    @media (max-width: 768px) {
+
+        /* header card layout */
         .page-header {
-            background: linear-gradient(to right, #4f46e5, #7c3aed, #4f46e5);
-            padding: 24px;
-            border-radius: 12px 12px 0 0;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 14px;
+            border-radius: 14px;
+            padding: 20px;
         }
 
-        /* Buttons */
-        .btn {
-            padding: 10px 16px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.3s;
+        /* title + description should stack nicely */
+        .page-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.2;
         }
 
-        .btn-print {
-            background: white;
-            color: #4f46e5;
+        .page-header p {
+            margin-top: 6px;
+            font-size: 14px;
+            opacity: 0.95;
         }
 
-        .btn-print:hover {
-            background: #eef2ff;
-            transform: scale(1.05);
-        }
-
-        .btn-search {
-            background: linear-gradient(to right, #4f46e5, #7c3aed);
-            color: white;
-        }
-
-        .btn-search:hover {
-            transform: scale(1.05);
-        }
-
-        /* Reset Button */
-        .btn-reset {
-            background: #e5e7eb;
-            color: #3730a3;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-reset:hover {
-            background: #c7d2fe;
-            transform: scale(1.05);
-        }
-
-        /* Card */
-        .card {
-            background: rgba(255, 255, 255, 0.9);
+        /* ✅ Print button goes below like "Add User Type" button */
+        .page-header .btn-print {
+            width: 200px;
+            justify-content: center;
             border-radius: 12px;
-            padding: 24px;
-            border: 2px solid rgba(99, 102, 241, 0.2);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            padding: 12px 14px;
         }
+    }
 
-        /* Form */
-        label {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            display: block;
-            color: #3730a3;
-        }
 
-        input {
+
+    /* ✅ Mobile only: table horizontal scroll */
+    @media (max-width: 768px) {
+
+        .table-scroll {
             width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #c7d2fe;
-            font-size: 14px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            /* smooth scroll iPhone */
         }
 
-        input:focus {
-            outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        /* keep table wide so scrolling comes */
+        .table-scroll table {
+            min-width: 900px;
+            /* adjust if you want more/less scroll */
+            width: max-content;
         }
 
-        .row {
+        /* optional: make header stick while scrolling (nice) */
+        .table-scroll thead th {
+            position: sticky;
+            top: 0;
+            background: #f8fafc;
+            z-index: 2;
+        }
+    }
+
+
+
+    /* Responsive adjustments */
+    @media(max-width:768px) {
+
+        .flex.gap-2 {
             display: flex;
-            gap: 16px;
-            align-items: end;
-            flex-wrap: wrap;
+            flex-direction: row;
+            width: 80%;
+            gap: 12px;
+
         }
 
-        /* Customer details */
-        .details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
+        .flex.gap-2 .btn {
+            flex: 1;
+            justify-content: center;
         }
-
-        /* Collapsible */
-        .collapsible {
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid rgba(99, 102, 241, 0.2);
-        }
-
-        .collapsible-header {
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-weight: 700;
-        }
-
-        .collapsible-content {
-            display: block;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        /* Tables */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 14px;
-            text-align: left;
-        }
-
-        th {
-            font-weight: 700;
-        }
-
-        td.text-right {
-            text-align: right;
-        }
-
-        .total-row {
-            font-weight: 700;
-        }
-
-        /* Color themes */
-        .indigo {
-            background: linear-gradient(to right, #eef2ff, #f5f3ff);
-        }
-
-        .violet {
-            background: linear-gradient(to right, #f5f3ff, #ede9fe);
-        }
-
-        .emerald {
-            background: linear-gradient(to right, #ecfdf5, #f0fdfa);
-        }
-
-        /* Responsive adjustments */
-        @media(max-width:768px){
-            .row {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 12px;
-            }
-            .row .btn {
-                width: 100%;
-            }
-        }
-    </style>
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -264,29 +340,31 @@
             Printing Report <i id="printIcon" data-lucide="chevron-up"></i>
         </div>
         <div id="print" class="collapsible-content">
-            <table>
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Date</th>
-                        <th>Shift</th>
-                        <th>Machine</th>
-                        <th>Operator</th>
-                        <th>Particulars</th>
-                        <th class="text-right">O.Qty</th>
-                        <th class="text-right">P.Qty</th>
-                        <th class="text-right">Balance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="total-row">
-                        <td colspan="6">Total</td>
-                        <td class="text-right">0.00</td>
-                        <td class="text-right">0.00</td>
-                        <td class="text-right">0.00</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>Shift</th>
+                            <th>Machine</th>
+                            <th>Operator</th>
+                            <th>Particulars</th>
+                            <th class="text-right">O.Qty</th>
+                            <th class="text-right">P.Qty</th>
+                            <th class="text-right">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="total-row">
+                            <td colspan="6">Total</td>
+                            <td class="text-right">0.00</td>
+                            <td class="text-right">0.00</td>
+                            <td class="text-right">0.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -296,29 +374,31 @@
             Fusing Report <i id="fusingIcon" data-lucide="chevron-up"></i>
         </div>
         <div id="fusing" class="collapsible-content">
-            <table>
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Date</th>
-                        <th>Shift</th>
-                        <th>Machine</th>
-                        <th>Operator</th>
-                        <th>Particulars</th>
-                        <th class="text-right">O.Qty</th>
-                        <th class="text-right">P.Qty</th>
-                        <th class="text-right">Balance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="total-row">
-                        <td colspan="6">Total</td>
-                        <td class="text-right">0.00</td>
-                        <td class="text-right">0.00</td>
-                        <td class="text-right">0.00</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>Shift</th>
+                            <th>Machine</th>
+                            <th>Operator</th>
+                            <th>Particulars</th>
+                            <th class="text-right">O.Qty</th>
+                            <th class="text-right">P.Qty</th>
+                            <th class="text-right">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="total-row">
+                            <td colspan="6">Total</td>
+                            <td class="text-right">0.00</td>
+                            <td class="text-right">0.00</td>
+                            <td class="text-right">0.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -328,25 +408,27 @@
             Delivery Report <i id="deliveryIcon" data-lucide="chevron-up"></i>
         </div>
         <div id="delivery" class="collapsible-content">
-            <table>
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Date</th>
-                        <th>DC No</th>
-                        <th>Particulars</th>
-                        <th class="text-right">Inward</th>
-                        <th class="text-right">Outward</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="total-row">
-                        <td colspan="4">Balance</td>
-                        <td class="text-right">0.00</td>
-                        <td class="text-right">0.00</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Date</th>
+                            <th>DC No</th>
+                            <th>Particulars</th>
+                            <th class="text-right">Inward</th>
+                            <th class="text-right">Outward</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="total-row">
+                            <td colspan="4">Balance</td>
+                            <td class="text-right">0.00</td>
+                            <td class="text-right">0.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

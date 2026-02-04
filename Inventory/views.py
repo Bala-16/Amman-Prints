@@ -19,6 +19,11 @@ def job_creation(request):
     return render(request,'jobcard/job_creation.html',)
 def job_list(request):
     return render(request,'jobcard/job_list.html',)
+def quotation_form(request):
+    return render(request,'jobcard/quotation_form.html',)
+
+
+
 def company_creation(request):
     return render(request,'mastercreation/company_creation.html',)
 def party_creation(request):
@@ -37,8 +42,10 @@ def  delivery(request):
     return render(request,'delivery/delivery.html',)
 def dashboard(request):
     return render(request,'dashboard/dashboard.html',)
-def quotationform(request):
-    return render(request,'jobcard/quotationform.html',)
+
+
+
+
 def operator(request):
     return render(request,'mastercreation/operator.html',)
 def measurement(request):
@@ -85,8 +92,9 @@ def printer_customer(request):
     return render(request,'printing/printer_customer.html',)
 def printer_data(request):
     return render(request,'printing/printer_data.html',)
-# def pinter_jobcard(request):
-#     return render(request,'printing/printer_jobcard.html',)
+def printer_jobwise(request):
+    return render(request, 'printing/printer_jobwise.html')
+
 def printer_machine(request):
     return render(request,'printing/printer_machine.html',)
 def printer_operator(request):
