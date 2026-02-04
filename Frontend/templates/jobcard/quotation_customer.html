@@ -9,7 +9,8 @@
     .container {
         max-width: 1600px;
         margin: 24px auto;
-        padding: 0 12px; /* horizontal padding for mobile */
+        padding: 0 12px;
+        /* horizontal padding for mobile */
         display: flex;
         flex-direction: column;
         gap: 24px;
@@ -33,7 +34,7 @@
         align-items: flex-end;
     }
 
-    .filters > div {
+    .filters>div {
         flex: 1 1 220px;
     }
 
@@ -106,7 +107,8 @@
         background: linear-gradient(to right, #fffbeb, #fff7ed);
     }
 
-    th, td {
+    th,
+    td {
         padding: 12px;
         border-bottom: 1px solid #e5e7eb;
         font-size: 14px;
@@ -135,8 +137,94 @@
         color: #fcd34d;
     }
 
+
+
+    /* ===== Heading Bar (Orange) - ADD ONLY ===== */
+    .page-header {
+        background: linear-gradient(to right, #ea580c, #d97706);
+        color: #fff;
+        border-radius: 14px;
+        padding: 22px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .page-header .left {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+    }
+
+    .page-header .icon-wrap {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.18);
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+    }
+
+    .page-header .icon-wrap svg {
+        width: 22px;
+        height: 22px;
+        stroke: #fff;
+    }
+
+    .page-header h1 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1.2;
+    }
+
+    .page-header p {
+        margin: 6px 0 0 0;
+        font-size: 13px;
+        opacity: 0.92;
+    }
+
+    /* Print button */
+    .btn-print {
+        background: #fff;
+        color: #d97706;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.25s;
+        white-space: nowrap;
+    }
+
+    .btn-print:hover {
+        background: #fff7ed;
+        transform: translateY(-1px);
+    }
+
+    /* Mobile */
+    @media(max-width:768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 18px;
+        }
+
+        .btn-print {
+            align-self: flex-start;
+        }
+    }
+
+
+
     /* Responsive fixes */
-    @media(max-width:768px){
+    @media(max-width:768px) {
         .container {
             padding: 12px;
         }
@@ -148,7 +236,7 @@
             gap: 12px;
         }
 
-        .filters > div {
+        .filters>div {
             flex: 1 1 100%;
         }
 
@@ -159,7 +247,7 @@
         }
 
         /* Search + Reset button container wrap */
-        .filters > div:last-child {
+        .filters>div:last-child {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
@@ -170,6 +258,27 @@
 
 {% block content %}
 <div class="container">
+
+    <!-- ===== Heading - ADD ONLY ===== -->
+    <div class="page-header">
+        <div class="left">
+            <div class="icon-wrap">
+                <i data-lucide="file-text"></i>
+            </div>
+
+            <div>
+                <h1>Jobcard Quotation Customer Wise Report</h1>
+                <p>Track quotations by customer</p>
+            </div>
+        </div>
+
+        <button class="btn-print" type="button" onclick="window.print()">
+            <i data-lucide="printer"></i>
+            Print Report
+        </button>
+    </div>
+
+
 
     <!-- Filters -->
     <div class="card">

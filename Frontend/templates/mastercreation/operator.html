@@ -19,7 +19,7 @@
 <div class="max-w-[1600px] mx-auto space-y-6">
 
   <!-- HEADER -->
-  <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+  <!-- <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
     <div class="flex items-center gap-3">
       <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
         <i data-lucide="user-cog" class="text-white"></i>
@@ -35,7 +35,31 @@
       <i data-lucide="plus"></i>
       New Operator
     </button>
+  </div> -->
+
+  <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl">
+  <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+
+    <!-- LEFT -->
+    <div class="flex items-center gap-3">
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+        <i data-lucide="user-cog" class="text-white"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-white">Operator Creation</h1>
+        <p class="text-teal-50 text-sm">Manage machine operators and staff</p>
+      </div>
+    </div>
+
+    <!-- BUTTON -->
+    <button onclick="openModal()"
+      class="bg-white text-teal-600 hover:bg-teal-50 shadow-lg px-4 py-2 rounded-lg flex items-center gap-2 transition hover:scale-105 w-fit justify-center">
+      <i data-lucide="plus"></i>
+      New Operator
+    </button>
+
   </div>
+</div>
 
   <!-- CHARTS -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

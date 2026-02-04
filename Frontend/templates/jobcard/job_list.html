@@ -12,20 +12,82 @@
   }
 </script>
 <script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  /* ===== Reset button - like your 2nd image ===== */
+  #resetBtn {
+    background: #e5e7eb;
+    /* grey bg */
+    color: #3730a3;
+    /* indigo text */
+    border: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 600;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.08);
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  }
+
+  /* Add icon before Reset text (no HTML change) */
+  #resetBtn::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    background: currentColor;
+    -webkit-mask: url("https://unpkg.com/lucide-static@latest/icons/refresh-cw.svg") no-repeat center / contain;
+    mask: url("https://unpkg.com/lucide-static@latest/icons/refresh-cw.svg") no-repeat center / contain;
+  }
+
+  /* ===== Search button - keep blue but add press effect ===== */
+  #searchBtn {
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    box-shadow: 0 12px 22px rgba(59, 130, 246, 0.28);
+  }
+
+  /* ===== Popup / pressed effect (touch + click) ===== */
+  #searchBtn:hover,
+  #resetBtn:hover {
+    filter: brightness(1.02);
+    transform: translateY(-1px);
+  }
+
+  #searchBtn:active,
+  #resetBtn:active {
+    transform: translateY(0) scale(0.97);
+    /* popup/press */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+    /* stronger */
+  }
+
+  /* Nice focus (keyboard) */
+  #searchBtn:focus-visible,
+  #resetBtn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+  }
+</style>
+
 {% endblock %}
 
 {% block content %}
 <div class="bg-gray-50 font-sans min-h-screen p-6 space-y-8">
 
   <!-- HEADER -->
-  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 p-8 text-white shadow-2xl">
-    <div class="absolute inset-0 opacity-10 mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+  <div
+    class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 p-8 text-white shadow-2xl">
+    <div
+      class="absolute inset-0 opacity-10 mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
+    </div>
     <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div>
         <h1 class="text-4xl font-bold tracking-tight">Job Card List</h1>
         <p class="text-lg text-white/90">Manage and view all your job cards</p>
       </div>
-      <button id="newJobBtn" class="flex h-12 items-center gap-2 rounded-xl bg-white/20 px-6 text-white backdrop-blur-md hover:bg-white/30">
+      <button id="newJobBtn"
+        class="flex h-12 items-center gap-2 rounded-xl bg-white/20 px-6 text-white backdrop-blur-md hover:bg-white/30">
         <i data-lucide="plus" class="h-5 w-5"></i> New Job Card
       </button>
     </div>
@@ -56,8 +118,17 @@
         <option>In Progress</option>
         <option>Completed</option>
       </select>
-      <button id="searchBtn" class="h-14 w-full rounded-xl bg-blue-500 text-white font-semibold">Search</button>
-      <button id="resetBtn" class="h-14 w-full rounded-xl border-2">Reset</button>
+      <div class="flex flex-col gap-6 lg:flex-row lg:col-span-4">
+        <button id="searchBtn" class="h-14 w-full lg:w-[15%] rounded-xl bg-blue-500 text-white font-semibold">
+          Search
+        </button>
+
+        <button id="resetBtn" class="h-14 w-full lg:w-[15%] rounded-xl border-2">
+          Reset
+        </button>
+      </div>
+
+
     </div>
   </div>
 
@@ -111,22 +182,22 @@
   lucide.createIcons();
 
   let jobs = [
-    { date:"2026-01-01", jobcard:"JC-001", createdBy:"Admin", customer:"Alice", jobType:"Domestic", fabric:"F Emboss Gel Embosing", qty:100, value:5000 },
-    { date:"2026-01-02", jobcard:"JC-002", createdBy:"Bob", customer:"Bob's Co", jobType:"Export Large", fabric:"F Roll Form", qty:200, value:12000 }
+    { date: "2026-01-01", jobcard: "JC-001", createdBy: "Admin", customer: "Alice", jobType: "Domestic", fabric: "F Emboss Gel Embosing", qty: 100, value: 5000 },
+    { date: "2026-01-02", jobcard: "JC-002", createdBy: "Bob", customer: "Bob's Co", jobType: "Export Large", fabric: "F Roll Form", qty: 200, value: 12000 }
   ];
 
   let editIndex = null;
 
   const tbody = document.getElementById("jobTableBody");
 
-  function renderTable(data){
-    if(data.length===0){
+  function renderTable(data) {
+    if (data.length === 0) {
       tbody.innerHTML = `<tr><td colspan="10" class="text-center p-8">No Records Found!</td></tr>`;
       return;
     }
-    tbody.innerHTML = data.map((j,i)=>`
+    tbody.innerHTML = data.map((j, i) => `
       <tr class="hover:bg-green-50">
-        <td class="p-2">${i+1}</td>
+        <td class="p-2">${i + 1}</td>
         <td class="p-2">${j.date}</td>
         <td class="p-2">${j.jobcard}</td>
         <td class="p-2">${j.createdBy}</td>
@@ -145,22 +216,22 @@
 
   renderTable(jobs);
 
-  function openModal(){
+  function openModal() {
     document.getElementById("jobModal").classList.remove("hidden");
   }
-  function closeModal(){
+  function closeModal() {
     document.getElementById("jobModal").classList.add("hidden");
     editIndex = null;
     document.getElementById("saveJobBtn").innerText = "Save";
     document.querySelector("#modalTitle").innerText = "New Job Card";
-    document.querySelectorAll("#jobModal input").forEach(i=>i.value="");
+    document.querySelectorAll("#jobModal input").forEach(i => i.value = "");
   }
 
-  document.getElementById("newJobBtn").addEventListener("click", ()=>{
+  document.getElementById("newJobBtn").addEventListener("click", () => {
     openModal();
   });
 
-  document.getElementById("saveJobBtn").addEventListener("click", ()=>{
+  document.getElementById("saveJobBtn").addEventListener("click", () => {
     const job = {
       date: document.getElementById("modalDate").value,
       jobcard: document.getElementById("modalJobcard").value,
@@ -171,7 +242,7 @@
       qty: +document.getElementById("modalQty").value,
       value: +document.getElementById("modalValue").value
     };
-    if(editIndex!==null){
+    if (editIndex !== null) {
       jobs[editIndex] = job;
     } else {
       jobs.push(job);
@@ -180,7 +251,7 @@
     renderTable(jobs);
   });
 
-  function editJob(i){
+  function editJob(i) {
     editIndex = i;
     const j = jobs[i];
     document.getElementById("modalDate").value = j.date;
@@ -196,14 +267,14 @@
     openModal();
   }
 
-  function deleteJob(i){
-    if(confirm("Are you sure you want to delete this job?")){
-      jobs.splice(i,1);
+  function deleteJob(i) {
+    if (confirm("Are you sure you want to delete this job?")) {
+      jobs.splice(i, 1);
       renderTable(jobs);
     }
   }
 
-  document.getElementById("searchBtn").addEventListener("click", ()=>{
+  document.getElementById("searchBtn").addEventListener("click", () => {
     const name = document.getElementById("searchName").value.toLowerCase();
     const jobcard = document.getElementById("jobcardNo").value.toLowerCase();
     const fromDate = document.getElementById("fromDate").value;
@@ -211,20 +282,20 @@
     const jobType = document.getElementById("jobType").value;
     const fabricType = document.getElementById("fabricType").value;
 
-    const filtered = jobs.filter(j=>{
-      if(name && !j.customer.toLowerCase().includes(name)) return false;
-      if(jobcard && !j.jobcard.toLowerCase().includes(jobcard)) return false;
-      if(fromDate && j.date<fromDate) return false;
-      if(toDate && j.date>toDate) return false;
-      if(jobType && j.jobType!==jobType) return false;
-      if(fabricType && j.fabric!==fabricType) return false;
+    const filtered = jobs.filter(j => {
+      if (name && !j.customer.toLowerCase().includes(name)) return false;
+      if (jobcard && !j.jobcard.toLowerCase().includes(jobcard)) return false;
+      if (fromDate && j.date < fromDate) return false;
+      if (toDate && j.date > toDate) return false;
+      if (jobType && j.jobType !== jobType) return false;
+      if (fabricType && j.fabric !== fabricType) return false;
       return true;
     });
     renderTable(filtered);
   });
 
-  document.getElementById("resetBtn").addEventListener("click", ()=>{
-    document.querySelectorAll("#searchName,#jobcardNo,#fromDate,#toDate,#jobType,#fabricType,#status").forEach(i=>i.value="");
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    document.querySelectorAll("#searchName,#jobcardNo,#fromDate,#toDate,#jobType,#fabricType,#status").forEach(i => i.value = "");
     renderTable(jobs);
   });
 

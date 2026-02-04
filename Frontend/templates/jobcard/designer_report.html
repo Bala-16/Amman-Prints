@@ -1,175 +1,341 @@
 {% extends "nav.html" %}
 
 
-{% block title %}Job Card List{% endblock %}
+{% block title %}Designer Report{% endblock %}
 
 {% block extra_head %}
 
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-   
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
 
 
-    <style>
-        body {
-            margin: 0;
-            font-family: "Segoe UI", sans-serif;
-            background: linear-gradient(135deg, #f8fafc, #f3e8ff, #fdf2f8);
-            min-height: 100vh;
-            padding: 24px;
-        }
 
-        .container {
-            max-width: 1600px;
-            margin: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
+<style>
+    body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #f8fafc, #f3e8ff, #fdf2f8);
+        min-height: 100vh;
+        padding: 24px;
+    }
 
-        /* Header */
+    .container {
+        max-width: 1600px;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    /* Header */
+    .h0 {
+        background: linear-gradient(to right, #7c3aed, #db2777, #7c3aed);
+        padding: 24px;
+        border-radius: 12px 12px 0 0;
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .header h1 {
+        margin: 0;
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .header p {
+        margin-top: 6px;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .btn {
+        padding: 10px 16px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.3s;
+    }
+
+    .btn-print {
+        background: white;
+        color: #7c3aed;
+    }
+
+    .btn-print:hover {
+        background: #f3e8ff;
+        transform: scale(1.05);
+    }
+
+    /* Card */
+    .card {
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 12px;
+        padding: 24px;
+        border: 2px solid rgba(192, 132, 252, 0.3);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Filters */
+    .filters {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        align-items: end;
+    }
+
+    label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #581c87;
+    }
+
+    input {
+        width: 90%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #d8b4fe;
+        font-size: 14px;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: #a855f7;
+        box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+    }
+
+    .btn-search {
+        background: linear-gradient(to right, #7c3aed, #db2777);
+        color: white;
+    }
+
+    .btn-search:hover {
+        transform: scale(1.05);
+    }
+
+    /* Table */
+    .table-wrapper {
+        overflow-x: auto;
+        padding: 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead tr {
+        background: linear-gradient(to right, #f3e8ff, #fdf2f8);
+    }
+
+    th,
+    td {
+        padding: 12px;
+        font-size: 14px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+    }
+
+    th {
+        color: #581c87;
+        font-weight: 700;
+    }
+
+    td.text-right {
+        text-align: right;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 60px 0;
+        color: #6b7280;
+    }
+
+    .no-data svg {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 12px;
+        color: #d8b4fe;
+    }
+
+
+    /* ✅ Mobile view ONLY: make .h0 like User Type card */
+    @media (max-width: 768px) {
+
+        /* header card stack */
         .h0 {
-            background: linear-gradient(to right, #7c3aed, #db2777, #7c3aed);
-            padding: 24px;
-            border-radius: 12px 12px 0 0;
-            color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 14px;
+            border-radius: 14px;
+            padding: 18px;
         }
 
-        .header h1 {
+        /* title -> look like User Type */
+        .h0 h1 {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.2;
             margin: 0;
-            font-size: 22px;
             display: flex;
-            align-items: center;
-            gap: 10px;
+            align-items: flex-start;
+            gap: 12px;
         }
 
-        .header p {
-            margin-top: 6px;
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .btn {
-            padding: 10px 16px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.3s;
-        }
-
-        .btn-print {
-            background: white;
-            color: #7c3aed;
-        }
-
-        .btn-print:hover {
-            background: #f3e8ff;
-            transform: scale(1.05);
-        }
-
-        /* Card */
-        .card {
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 12px;
-            padding: 24px;
-            border: 2px solid rgba(192, 132, 252, 0.3);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-        }
-
-        /* Filters */
-        .filters {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            align-items: end;
-        }
-
-        label {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #581c87;
-        }
-
-        input {
-            width: 90%;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #d8b4fe;
-            font-size: 14px;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #a855f7;
-            box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
-        }
-
-        .btn-search {
-            background: linear-gradient(to right, #7c3aed, #db2777);
-            color: white;
-        }
-
-        .btn-search:hover {
-            transform: scale(1.05);
-        }
-
-        /* Table */
-        .table-wrapper {
-            overflow-x: auto;
-            padding: 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead tr {
-            background: linear-gradient(to right, #f3e8ff, #fdf2f8);
-        }
-
-        th,
-        td {
+        /* icon box style (first image like) */
+        .h0 h1 svg {
+            width: 22px;
+            height: 22px;
+            flex: 0 0 auto;
             padding: 12px;
-            font-size: 14px;
-            border-bottom: 1px solid #e5e7eb;
-            text-align: left;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.18);
         }
 
-        th {
-            color: #581c87;
-            font-weight: 700;
+        /* subtitle */
+        .h0 p {
+            margin: 6px 0 0 0;
+            font-size: 13px;
+            opacity: 0.95;
         }
 
-        td.text-right {
-            text-align: right;
+        /* button below like Add User Type */
+        .h0 .btn-print {
+            width: auto;
+            /* not full width */
+            min-width: 170px;
+            /* looks like user type button */
+            justify-content: center;
+            border-radius: 12px;
+            padding: 12px 16px;
         }
 
-        .no-data {
-            text-align: center;
-            padding: 60px 0;
-            color: #6b7280;
+        /* keep button and text aligned left */
+        .h0>div {
+            width: 100%;
         }
 
-        .no-data svg {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 12px;
-            color: #d8b4fe;
+
+
+    }
+
+
+    /* ✅ Nav full width fix + content spacing (NO HTML changes) */
+    body {
+        padding: 0 !important;
+        /* remove page padding so nav can be full */
+    }
+
+    /* keep your page content padding inside container */
+    .container {
+        padding: 24px;
+        /* same as old body padding */
+        max-width: 1600px;
+        margin: 10px auto 0;
+    }
+
+    /* If nav is fixed, give top space for content (optional but safe) */
+    .main-content-gap {
+        height: 0;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 16px;
         }
-    </style>
+    }
+
+
+    .btn-row {
+        display: flex;
+        gap: 19px;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .btn-row .btn {
+        min-width: 150px;
+        justify-content: center;
+    }
+
+    .btn-reset {
+        background: #e5e7eb;
+        color: #3730a3;
+    }
+
+    .btn-reset:hover {
+        background: #c7d2fe;
+        transform: scale(1.03);
+    }
+
+    /* Mobile: full width stacked if you want */
+    @media (max-width:768px) {
+        /* .btn-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-row .btn {
+            width: 100%;
+            min-width: 0;
+        } */
+
+        .btn-row {
+            display: flex;
+            flex-direction: row !important;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* both buttons equal width */
+        .btn-row .btn {
+            width: 50% !important;
+            min-width: 0 !important;
+            justify-content: center;
+        }
+
+        /* lucide replaces <i> with <svg> - so target svg */
+        .h0 h1 svg.lucide {
+            display: inline-block !important;
+            width: 22px !important;
+            height: 22px !important;
+
+            /* make sure it is visible */
+            stroke: #fff !important;
+            color: #fff !important;
+            fill: none !important;
+            stroke-width: 2 !important;
+
+            /* icon box look */
+            padding: 12px !important;
+            border-radius: 14px !important;
+            background: rgba(255, 255, 255, 0.18) !important;
+
+            /* important: padding keep panna box-sizing */
+            box-sizing: content-box !important;
+            flex: 0 0 auto !important;
+        }
+
+        /* sometimes svg gets clipped */
+        .h0 h1 {
+            overflow: visible !important;
+        }
+
+
+    }
+</style>
 <!-- </head> -->
 {% endblock %}
 
@@ -177,96 +343,115 @@
 
 {% block content %}
 
-    <div class="container">
+<div class="container">
 
-        <!-- Header -->
-        <div class="h0">
-            <div>
-                <h1>
-                    <i data-lucide="file-bar-chart"></i>
-                    Sample Jobcard Designer Report
-                </h1>
-                <p>Track job cards by designer performance</p>
-            </div>
-            <button class="btn btn-print" onclick="window.print()">
-                <i data-lucide="printer"></i>
-                Print Report
-            </button>
+    <!-- Header -->
+    <div class="h0">
+        <div>
+            <h1>
+                <i data-lucide="file-bar-chart"></i>
+                Sample Jobcard Designer Report
+            </h1>
+            <p>Track job cards by designer performance</p>
         </div>
+        <button class="btn btn-print" onclick="window.print()">
+            <i data-lucide="printer"></i>
+            Print Report
+        </button>
+    </div>
 
-        <!-- Filters -->
-        <div class="card">
-            <div class="filters">
-                <div>
-                    <label><i data-lucide="calendar"></i> From Date</label>
-                    <input type="date" id="fromDate" value="2026-01-08">
-                </div>
+    <!-- Filters -->
+    <div class="card">
+        <div class="filters">
+            <div>
+                <label><i data-lucide="calendar"></i> From Date</label>
+                <input type="date" id="fromDate" value="2026-01-08">
+            </div>
 
-                <div>
-                    <label><i data-lucide="calendar"></i> To Date</label>
-                    <input type="date" id="toDate" value="2026-01-08">
-                </div>
+            <div>
+                <label><i data-lucide="calendar"></i> To Date</label>
+                <input type="date" id="toDate" value="2026-01-08">
+            </div>
 
-                <div>
-                    <label>Designer Name</label>
-                    <input type="text" id="designerName" placeholder="Enter designer name...">
-                </div>
+            <div>
+                <label>Designer Name</label>
+                <input type="text" id="designerName" placeholder="Enter designer name...">
+            </div>
 
+            <!-- <button class="btn btn-search" onclick="searchDesignerReport()">
+                <i data-lucide="search"></i>
+                Search
+            </button> -->
+
+            <div class="btn-row">
                 <button class="btn btn-search" onclick="searchDesignerReport()">
                     <i data-lucide="search"></i>
                     Search
                 </button>
+
+                <button class="btn btn-reset" type="button" onclick="resetDesignerReport()">
+                    <i data-lucide="refresh-cw"></i>
+                    Reset
+                </button>
             </div>
-        </div>
 
-        <!-- Table -->
-        <div class="card table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Date</th>
-                        <th>Jobcard No</th>
-                        <th>Customer Name</th>
-                        <th>Designer</th>
-                        <th>Design Name</th>
-                        <th>No of Pcs</th>
-                        <th class="text-right">Total</th>
-                        <th class="text-right">Sample Value</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <tr>
-                        <td colspan="9" class="no-data">
-                            <i data-lucide="file-bar-chart"></i>
-                            <div><strong>No Records Found</strong></div>
-                            <div>Select filters to view designer report</div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
-
     </div>
-    {% endblock %}
 
-    {% block extra_js %}
+    <!-- Table -->
+    <div class="card table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Date</th>
+                    <th>Jobcard No</th>
+                    <th>Customer Name</th>
+                    <th>Designer</th>
+                    <th>Design Name</th>
+                    <th>No of Pcs</th>
+                    <th class="text-right">Total</th>
+                    <th class="text-right">Sample Value</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td colspan="9" class="no-data">
+                        <i data-lucide="file-bar-chart"></i>
+                        <div><strong>No Records Found</strong></div>
+                        <div>Select filters to view designer report</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <script>
-        lucide.createIcons();
+</div>
+{% endblock %}
 
-        function searchDesignerReport() {
-            const fromDate = document.getElementById("fromDate").value;
-            const toDate = document.getElementById("toDate").value;
-            const designerName = document.getElementById("designerName").value;
+{% block extra_js %}
 
-            console.log("Search clicked", {
-                fromDate,
-                toDate,
-                designerName
-            });
+<script>
+    function resetDesignerReport() {
+        document.getElementById("fromDate").value = "";
+        document.getElementById("toDate").value = "";
+        document.getElementById("designerName").value = "";
+    }
 
-            alert("Search functionality can be connected to backend later.");
-        }
-    </script>
-    {% endblock %}
+    lucide.createIcons();
+
+    function searchDesignerReport() {
+        const fromDate = document.getElementById("fromDate").value;
+        const toDate = document.getElementById("toDate").value;
+        const designerName = document.getElementById("designerName").value;
+
+        console.log("Search clicked", {
+            fromDate,
+            toDate,
+            designerName
+        });
+
+        alert("Search functionality can be connected to backend later.");
+    }
+</script>
+{% endblock %}

@@ -23,7 +23,6 @@ def quotation_form(request):
     return render(request,'jobcard/quotation_form.html',)
 
 
-
 def company_creation(request):
     return render(request,'mastercreation/company_creation.html',)
 def party_creation(request):
