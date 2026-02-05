@@ -23,4 +23,3 @@ urlpatterns = [
     # path('nav/', views.nav, name='nav')
 path('', include('Inventory.urls'))
 ]
-7

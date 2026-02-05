@@ -57,4 +57,11 @@ urlpatterns = [
     path('printing/printer_machine/',views.printer_machine, name='printer_machine'),
     path('printing/printer_operator/',views.printer_operator, name='printer_operator'), 
     path('printing/printer_production/',views.printer_production, name='printer_production'),
+    
+    path('delivery/delivery/',views.delivery, name='delivery'),
+    path('delivery/fabric/',views.fabric, name='fabric'),
+    path('delivery/inward/',views.delivery, name='inward'),
+    path('delivery/returned/',views.returned, name='returned'),
+    path('delivery/sticker/',views.sticker, name='sticker'),
+    
 ]

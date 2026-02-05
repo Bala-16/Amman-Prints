@@ -1,0 +1,355 @@
+{% extends "nav.html" %}
+{% block title %}Inward Entry{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-100 p-4 sm:p-6">
+
+<div class="max-w-[1600px] mx-auto space-y-6">
+
+<!-- HEADER -->
+<div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600
+            rounded-xl p-6 shadow-xl
+            flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+
+  <!-- LEFT -->
+  <div class="flex items-center gap-4">
+    <div class="h-14 w-14 rounded-xl bg-white/20 flex items-center justify-center">
+      <i data-lucide="clipboard-list" class="w-8 h-8 text-white"></i>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold text-white">Inward Entry</h1>
+      <p class="text-sm text-emerald-100">Fabric inward & quantity entry</p>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <button onclick="openModal()"
+          class="bg-white text-teal-700 hover:bg-teal-50
+                 px-5 py-2 rounded-lg shadow font-semibold">
+    + Add Item
+  </button>
+</div>
+
+<!-- FORM -->
+<div class="bg-white rounded-xl shadow p-5 border">
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 text-sm">
+
+    <div>
+      <label class="font-semibold text-slate-600">Jobcard No *</label>
+      <select class="formInput"><option>Select Jobcard</option></select>
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Customer Name *</label>
+      <select class="formInput"><option>Select Customer</option></select>
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Customer PO No *</label>
+      <select class="formInput"><option>Select PO</option></select>
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Fabric Type *</label>
+      <select class="formInput"><option>Select Fabric</option></select>
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Job Type *</label>
+      <select class="formInput"><option>Select Job</option></select>
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Total Qty</label>
+      <input id="grandTotal" readonly
+             class="formInput font-bold text-teal-700">
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Invoice No *</label>
+      <select class="formInput"><option>Select Invoice</option></select>
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Entry Created By</label>
+      <select class="formInput"><option>Select User</option></select>
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Style Name</label>
+      <select class="formInput"><option>Select Style</option></select>
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Style No</label>
+      <select class="formInput"><option>Select Style</option></select>
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Combo</label>
+      <select class="formInput"><option>Select</option></select>
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Date & Time *</label>
+      <input type="datetime-local" id="headerDate" class="formInput">
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Customer DC No</label>
+      <select class="formInput"><option>Select DC</option></select>
+    </div>
+
+    <div>
+      <label class="font-semibold text-slate-600">Receipt Through</label>
+      <select class="formInput"><option>Select Mode</option></select>
+    </div>
+
+  </div>
+</div>
+<!-- TABLE -->
+<div class="bg-white rounded-xl shadow border overflow-x-auto">
+<table class="w-full text-sm min-w-[1100px]">
+<thead class="bg-slate-50 text-slate-700">
+<tr>
+  <th class="th">S.No</th>
+  <th class="th">Date</th>
+  <th class="th">Particulars</th>
+  <th class="th">Width</th>
+  <th class="th">Height</th>
+  <th class="th">Order Qty</th>
+  <th class="th">Qty</th>
+  <th class="th">Action</th>
+</tr>
+</thead>
+
+<tbody id="inwardBody"></tbody>
+
+<tfoot>
+<tr>
+<td colspan="7" class="p-5">
+<div class="flex flex-col sm:flex-row justify-between items-end gap-4">
+
+<div></div>
+
+<div class="font-bold text-teal-700 text-lg">
+  Total : <span id="totalQty">0</span>
+</div>
+
+<div id="footerBox" class="hidden flex flex-col sm:flex-row gap-4">
+  <div>
+    <label class="font-semibold text-sm">Delivery Through *</label>
+    <select class="formInput w-56"><option>Select</option></select>
+  </div>
+
+  <div>
+    <label class="font-semibold text-sm">Vehicle No *</label>
+    <select class="formInput w-44"><option>Select</option></select>
+  </div>
+
+  <button onclick="finalSubmit()"
+          class="bg-teal-600 hover:bg-teal-700
+                 text-white px-6 py-2 rounded-md">
+    SUBMIT
+  </button>
+</div>
+
+</div>
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+
+</div>
+</div>
+<!-- TABLE + MOBILE CARD VIEW -->
+<div class="bg-white rounded-xl shadow border overflow-hidden">
+
+  <!-- DESKTOP TABLE -->
+  <div class="hidden md:block overflow-x-auto">
+    <table class="w-full text-sm text-left border-collapse">
+      <thead class="bg-slate-100 text-slate-700">
+        <tr>
+          <th class="p-3">S.No</th>
+          <th class="p-3">Date</th>
+          <th class="p-3">Particulars</th>
+          <th class="p-3">Width</th>
+          <th class="p-3">Height</th>
+          <th class="p-3">Order Qty</th>
+          <th class="p-3">Qty</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in inward_list %}
+        <tr class="border-b">
+          <td class="p-3">{{ forloop.counter }}</td>
+          <td class="p-3">{{ row.date }}</td>
+          <td class="p-3">{{ row.particulars }}</td>
+          <td class="p-3">{{ row.width }}</td>
+          <td class="p-3">{{ row.height }}</td>
+          <td class="p-3">{{ row.order_qty }}</td>
+          <td class="p-3">{{ row.qty }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center p-4 text-gray-500">
+            No records found
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+<!-- MODAL -->
+<div id="modal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+  <div class="bg-white rounded-xl p-6 w-[90%] sm:w-[600px] space-y-4">
+    <h2 class="text-xl font-bold text-teal-700">Add Inward Item</h2>
+
+    <div class="grid grid-cols-2 gap-4">
+      <input id="rowDate" type="datetime-local" class="formInput">
+      <select id="particular" class="formInput"><option>Select Item</option></select>
+      <input id="width" placeholder="Width" class="formInput">
+      <input id="height" placeholder="Height" class="formInput">
+      <input id="orderQty" placeholder="Order Qty" class="formInput">
+      <input id="qty" placeholder="Qty" class="formInput">
+    </div>
+
+    <div class="flex justify-end gap-3 pt-4">
+      <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 rounded">Cancel</button>
+      <button onclick="addRow()"
+              class="px-5 py-2 bg-teal-600 text-white rounded">
+        Add
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+.formInput{
+  width:100%;
+  height:42px;
+  border:1px solid #d1d5db;
+  border-radius:8px;
+  padding:0 12px;
+}
+.th{padding:12px;font-weight:600;}
+.td{padding:10px;}
+</style>
+<script>
+lucide.createIcons()
+
+let rowCount = 0;
+let editRow = null;
+
+function openModal(){
+  modal.classList.remove("hidden");
+}
+
+function closeModal(){
+  modal.classList.add("hidden");
+  clearModalInputs();
+  editRow = null;
+}
+
+function addRow(){
+  if(!rowDate.value || !particular.value || !qty.value){
+    alert("Fill required fields");
+    return;
+  }
+
+  headerDate.value = rowDate.value;
+
+  if(editRow){
+    // UPDATE
+    editRow.children[1].innerText = rowDate.value;
+    editRow.children[2].innerText = particular.value;
+    editRow.children[3].innerText = width.value;
+    editRow.children[4].innerText = height.value;
+    editRow.children[5].innerText = orderQty.value;
+    editRow.children[6].innerText = qty.value;
+    editRow = null;
+  } else {
+    // ADD NEW
+    rowCount++;
+    inwardBody.insertAdjacentHTML("beforeend",`
+      <tr class="border-t">
+        <td class="td"></td>
+        <td class="td text-center">${rowDate.value}</td>
+        <td class="td text-center">${particular.value}</td>
+        <td class="td text-center">${width.value}</td>
+        <td class="td text-center">${height.value}</td>
+        <td class="td text-center">${orderQty.value}</td>
+        <td class="td text-center qty">${qty.value}</td>
+        <td class="td flex gap-3 text-text-center-sm">
+          <span class="text-teal-600 cursor-pointer"
+                onclick="editThis(this)">Edit</span>
+          <span class="text-red-600 cursor-pointer"
+                onclick="deleteThis(this)">Delete</span>
+        </td>
+      </tr>
+    `);
+  }
+
+  renumberRows();
+  updateTotal();
+  closeModal(); // ✅ popup close after add/update
+}
+
+function editThis(el){
+  editRow = el.closest("tr");
+
+  rowDate.value   = editRow.children[1].innerText;
+  particular.value= editRow.children[2].innerText;
+  width.value     = editRow.children[3].innerText;
+  height.value    = editRow.children[4].innerText;
+  orderQty.value  = editRow.children[5].innerText;
+  qty.value       = editRow.children[6].innerText;
+
+  openModal();
+}
+
+function deleteThis(el){
+  el.closest("tr").remove();
+  renumberRows();
+  updateTotal();
+}
+
+function renumberRows(){
+  document.querySelectorAll("#inwardBody tr").forEach((tr,i)=>{
+    tr.children[0].innerText = i + 1;
+  });
+  rowCount = document.querySelectorAll("#inwardBody tr").length;
+}
+
+function updateTotal(){
+  let t = 0;
+  document.querySelectorAll(".qty").forEach(q=>{
+    t += Number(q.innerText) || 0;
+  });
+  totalQty.innerText = t;
+  grandTotal.value = t;
+  footerBox.classList.toggle("hidden", t === 0);
+}
+
+function clearModalInputs(){
+  rowDate.value = "";
+  particular.value = "";
+  width.value = "";
+  height.value = "";
+  orderQty.value = "";
+  qty.value = "";
+}
+
+function finalSubmit(){
+  alert("Inward Entry Submitted Successfully ✅");
+}
+</script>
+
+
+{% endblock %}

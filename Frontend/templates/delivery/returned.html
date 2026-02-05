@@ -1,5 +1,5 @@
 {% extends "nav.html" %}
-{% block title %}Fabric Delivery Challan{% endblock %}
+{% block title %}Return Form{% endblock %}
 
 {% block extra_head %}
 <script src="https://cdn.tailwindcss.com"></script>
@@ -29,12 +29,14 @@
   <!-- LEFT -->
 <div class="flex items-center gap-4">
   <div class="h-14 w-14 rounded-xl bg-white/20 flex items-center justify-center">
-    <i data-lucide="layers" class="w-8 h-8 text-white"></i>
+  <i data-lucide="rotate-ccw" class="w-8 h-8 text-white"></i>
+ 
   </div>
   <div>
-    <h1 class="text-2xl font-bold text-white">Fabric Delivery Challan</h1>
+    <h1 class="text-2xl font-bold text-white">Return Form</h1>
     <p class="text-sm text-emerald-100">
-      Fabric delivery & quantity tracking
+      Returned items & quantity verification
+      
     </p>
   </div>
 </div>
@@ -54,8 +56,8 @@
 <div class="bg-white rounded-xl shadow p-5 border">
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 text-sm">
     <div>
-      <label class="font-semibold text-slate-600">Delivery No *</label>
-      <select class="formInput"><option>Select Delivery</option></select>
+      <label class="font-semibold text-slate-600">Return No *</label>
+      <select class="formInput"><option>Select Return</option></select>
     </div>
 
     <div>
@@ -78,10 +80,10 @@
       <select class="formInput"><option>Select Fabric</option></select>
     </div>
 
-    <!-- <div>
+    <div>
       <label class="font-semibold text-slate-600">Job Type *</label>
       <select class="formInput"><option>Select Job</option></select>
-    </div> -->
+    </div>
 
     <div>
       <label class="font-semibold text-slate-600">Total Qty</label>
@@ -162,24 +164,24 @@
 </div>
 
 <div id="footerBox" class="hidden flex flex-col sm:flex-row gap-4">
-  <div>
+  <!-- <div>
     <label class="font-semibold text-sm">Delivery status *</label>
     <select class="formInput w-56"><option>Select</option>
     <option>Pending</option>
     <option>Completed</option></select>
-  </div>
-   <div>
+  </div> -->
+   <!-- <div>
     <label class="font-semibold text-sm">Delivery Through *</label>
     <select class="formInput w-56"><option>Select</option>
     <option>Own Vehicle</option>
     <option>Courier</option></select>
-  </div>
-  <div>
+  </div> -->
+  <!-- <div>
     <label class="font-semibold text-sm">Vehicle No *</label>
     <select class="formInput w-44"><option>Select</option>
     <option>TN01AB1234</option>
     </select>
-  </div>
+  </div> -->
   <!-- <div>
   <label class="lbl">Remarks</label>
   <input class="input">
@@ -236,9 +238,6 @@
     </div>
   </div>
 </div>
-{%endblock%}
-
-{%block extra_js%}
 
 <style>
 .formInput{
@@ -251,8 +250,6 @@
 .th{padding:12px;font-weight:600;}
 .td{padding:10px;}
 </style>
-
-
 <script>
 lucide.createIcons()
 

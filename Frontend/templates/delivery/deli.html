@@ -1,0 +1,148 @@
+{% extends "nav.html" %}
+
+{% block title %}Delivery Report{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-100 p-6">
+
+  <div class="max-w-[1600px] mx-auto space-y-6">
+
+    <!-- HEADER -->
+    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl
+                flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+
+      <div class="flex items-center gap-3">
+        <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
+          <i data-lucide="truck" class="w-7 h-7 text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-white">Delivery Report</h1>
+          <p class="text-sm text-emerald-100">Delivery & outward movement summary</p>
+        </div>
+      </div>
+
+      <button type="button"
+              onclick="window.print()"
+              class="bg-white text-teal-700 hover:bg-teal-50
+                     px-5 py-2 rounded-lg shadow flex items-center gap-2 font-semibold">
+        <i data-lucide="printer"></i>
+        Print
+      </button>
+    </div>
+
+    <!-- FILTER SECTION -->
+    <div class="bg-white rounded-xl shadow p-5">
+      <form method="get" id="searchForm"
+            class="grid grid-cols-1 sm:grid-cols-5 gap-4 items-end">
+
+        <div>
+          <label class="text-sm font-semibold text-slate-600">From Date</label>
+          <input type="date" name="from_date"
+                 value="{{ request.GET.from_date }}"
+                 class="w-full border border-slate-300 rounded-lg px-3 py-2
+                        focus:outline-none focus:ring-0 focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-600">To Date</label>
+          <input type="date" name="to_date"
+                 value="{{ request.GET.to_date }}"
+                 class="w-full border border-slate-300 rounded-lg px-3 py-2
+                        focus:outline-none focus:ring-0 focus:border-emerald-500">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-600">Job Card No</label>
+          <input type="text" name="jobcard_no"
+                 value="{{ request.GET.jobcard_no }}"
+                 placeholder="JC-2404-0003"
+                 class="w-full border border-slate-300 rounded-lg px-3 py-2
+                        focus:outline-none focus:ring-0 focus:border-emerald-500">
+        </div>
+
+        <!-- SEARCH -->
+        <div>
+          <button type="submit"
+                  class="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg shadow
+                         flex items-center justify-center gap-2">
+            <i data-lucide="search"></i>
+            Search
+          </button>
+        </div>
+
+        <!-- RESET -->
+        <div>
+          <a href="{% url 'delivery_report' %}"
+             class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-2 rounded-lg shadow
+                    flex items-center justify-center gap-2 font-semibold">
+            <i data-lucide="rotate-ccw"></i>
+            Reset
+          </a>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- TABLE -->
+    <div class="bg-white rounded-xl shadow overflow-x-auto">
+      <div class="p-4 border-b text-sm text-slate-600">
+        Found <span class="font-semibold">{{ deliveries|length }}</span> Records
+      </div>
+
+      <table class="w-full text-sm min-w-[1400px]">
+        <thead class="bg-slate-50 text-slate-700">
+          <tr>
+            <th class="p-3">S.No</th>
+            <th class="p-3">Date</th>
+            <th class="p-3">Job Card No</th>
+            <th class="p-3">Customer Name</th>
+            <th class="p-3">Delivery No</th>
+            <th class="p-3">DC No</th>
+            <th class="p-3">Particulars</th>
+            <th class="p-3 text-right">Inward Qty</th>
+            <th class="p-3 text-right">Outward Qty</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for d in deliveries %}
+          <tr class="border-t hover:bg-emerald-50 transition">
+            <td class="p-3 text-center">{{ forloop.counter }}</td>
+            <td class="p-3">{{ d.date }}</td>
+            <td class="p-3 font-semibold text-emerald-700">{{ d.jobcard_no }}</td>
+            <td class="p-3">{{ d.customer_name }}</td>
+            <td class="p-3">{{ d.delivery_no }}</td>
+            <td class="p-3">{{ d.dc_no }}</td>
+            <td class="p-3">{{ d.particulars }}</td>
+            <td class="p-3 text-right">{{ d.inward_qty }}</td>
+            <td class="p-3 text-right">{{ d.outward_qty }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="9" class="p-6 text-center text-slate-500">
+              No delivery records found
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  lucide.createIcons();
+
+  document.getElementById("searchForm").addEventListener("submit", function () {
+    alert("Search applied successfully");
+  });
+</script>
+{% endblock %}

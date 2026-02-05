@@ -102,6 +102,18 @@ def printer_production(request):
     return render(request,'printing/printer_production.html',)
 
 
+def inward(request):
+    return render(request,'delivery/inward.html',)
+def fabric(request):
+    return render(request,'delivery/fabric.html',)
+def delivery(request):
+    return render(request, 'delivery/delivery.html')
+def returned(request):
+    return render(request,'delivery/returned.html',)
+def sticker(request):
+    return render(request,'delivery/sticker.html',)
+
+
 
 
 
