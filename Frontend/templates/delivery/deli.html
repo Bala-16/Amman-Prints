@@ -77,7 +77,7 @@
 
         <!-- RESET -->
         <div>
-          <a href="{% url 'delivery_report' %}"
+          <a href="{% url 'deli' %}"
              class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-2 rounded-lg shadow
                     flex items-center justify-center gap-2 font-semibold">
             <i data-lucide="rotate-ccw"></i>
@@ -88,49 +88,125 @@
       </form>
     </div>
 
-    <!-- TABLE -->
-    <div class="bg-white rounded-xl shadow overflow-x-auto">
+    <!-- ✅ DELIVERY RECORDS -->
+
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+
+      <!-- Record Count -->
       <div class="p-4 border-b text-sm text-slate-600">
         Found <span class="font-semibold">{{ deliveries|length }}</span> Records
       </div>
 
-      <table class="w-full text-sm min-w-[1400px]">
-        <thead class="bg-slate-50 text-slate-700">
-          <tr>
-            <th class="p-3">S.No</th>
-            <th class="p-3">Date</th>
-            <th class="p-3">Job Card No</th>
-            <th class="p-3">Customer Name</th>
-            <th class="p-3">Delivery No</th>
-            <th class="p-3">DC No</th>
-            <th class="p-3">Particulars</th>
-            <th class="p-3 text-right">Inward Qty</th>
-            <th class="p-3 text-right">Outward Qty</th>
-          </tr>
-        </thead>
+      <!-- ✅ MOBILE CARD VIEW -->
+      <div class="block sm:hidden space-y-4 p-4">
 
-        <tbody>
-          {% for d in deliveries %}
-          <tr class="border-t hover:bg-emerald-50 transition">
-            <td class="p-3 text-center">{{ forloop.counter }}</td>
-            <td class="p-3">{{ d.date }}</td>
-            <td class="p-3 font-semibold text-emerald-700">{{ d.jobcard_no }}</td>
-            <td class="p-3">{{ d.customer_name }}</td>
-            <td class="p-3">{{ d.delivery_no }}</td>
-            <td class="p-3">{{ d.dc_no }}</td>
-            <td class="p-3">{{ d.particulars }}</td>
-            <td class="p-3 text-right">{{ d.inward_qty }}</td>
-            <td class="p-3 text-right">{{ d.outward_qty }}</td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="9" class="p-6 text-center text-slate-500">
-              No delivery records found
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+        {% for d in deliveries %}
+
+        <div class="bg-slate-50 border rounded-xl p-4 shadow-sm space-y-2">
+
+          <!-- Jobcard + Date -->
+          <div class="flex justify-between items-center">
+            <p class="text-sm font-bold text-emerald-700">
+              {{ d.jobcard_no }}
+            </p>
+            <p class="text-xs text-slate-500">{{ d.date }}</p>
+          </div>
+
+          <!-- Customer -->
+          <p class="text-sm text-slate-700">
+            <span class="font-semibold">Customer:</span>
+            {{ d.customer_name }}
+          </p>
+
+          <!-- Delivery -->
+          <p class="text-sm text-slate-700">
+            <span class="font-semibold">Delivery No:</span>
+            {{ d.delivery_no }}
+          </p>
+
+          <!-- DC -->
+          <p class="text-sm text-slate-700">
+            <span class="font-semibold">DC No:</span>
+            {{ d.dc_no }}
+          </p>
+
+          <!-- Particulars -->
+          <p class="text-sm text-slate-700">
+            <span class="font-semibold">Particulars:</span>
+            {{ d.particulars }}
+          </p>
+
+          <!-- Qty Boxes -->
+          <div class="grid grid-cols-2 gap-3 pt-3">
+
+            <div class="bg-white rounded-lg p-2 text-center shadow">
+              <p class="text-xs text-slate-500">Inward Qty</p>
+              <p class="font-bold text-slate-800">{{ d.inward_qty }}</p>
+            </div>
+
+            <div class="bg-white rounded-lg p-2 text-center shadow">
+              <p class="text-xs text-slate-500">Outward Qty</p>
+              <p class="font-bold text-slate-800">{{ d.outward_qty }}</p>
+            </div>
+
+          </div>
+
+        </div>
+
+        {% empty %}
+        <p class="text-center text-slate-500 py-6">
+          No delivery records found
+        </p>
+
+        {% endfor %}
+      </div>
+
+      <!-- ✅ DESKTOP TABLE VIEW -->
+      <div class="hidden sm:block overflow-x-auto">
+
+        <table class="w-full text-sm min-w-[1400px]">
+
+          <thead class="bg-slate-50 text-slate-700">
+            <tr>
+              <th class="p-3">S.No</th>
+              <th class="p-3">Date</th>
+              <th class="p-3">Job Card No</th>
+              <th class="p-3">Customer Name</th>
+              <th class="p-3">Delivery No</th>
+              <th class="p-3">DC No</th>
+              <th class="p-3">Particulars</th>
+              <th class="p-3 text-right">Inward Qty</th>
+              <th class="p-3 text-right">Outward Qty</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for d in deliveries %}
+            <tr class="border-t hover:bg-emerald-50 transition">
+              <td class="p-3 text-center">{{ forloop.counter }}</td>
+              <td class="p-3">{{ d.date }}</td>
+              <td class="p-3 font-semibold text-emerald-700">{{ d.jobcard_no }}</td>
+              <td class="p-3">{{ d.customer_name }}</td>
+              <td class="p-3">{{ d.delivery_no }}</td>
+              <td class="p-3">{{ d.dc_no }}</td>
+              <td class="p-3">{{ d.particulars }}</td>
+              <td class="p-3 text-right">{{ d.inward_qty }}</td>
+              <td class="p-3 text-right">{{ d.outward_qty }}</td>
+            </tr>
+
+            {% empty %}
+            <tr>
+              <td colspan="9" class="p-6 text-center text-slate-500">
+                No delivery records found
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+
+        </table>
+
+      </div>
+
     </div>
 
   </div>

@@ -40,7 +40,7 @@
       .header-container {
         max-width: 1400px;
         margin: 0 auto;
-        padding: 16px 24px;
+        padding: 10px 25px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -116,8 +116,22 @@
         min-width: 220px;
         padding: 8px;
         z-index: 1000;
-        display: none;
+        /* display: none; */
+        
+          /* 🔥 Animation Setup */
+  opacity: 0;
+  transform: translateY(10px);
+  visibility: hidden;
+  transition: all 0.3s ease;
       }
+      .nav-item:hover .dropdown-menu {
+  opacity: 1;
+  transform: translateY(0px);
+  visibility: visible;
+
+    /* transition: opacity 0.25s ease, transform 0.25s ease; */
+}
+
 
       .dropdown-item {
         display: block;

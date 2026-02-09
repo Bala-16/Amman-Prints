@@ -85,37 +85,42 @@
 </div>
 
 <!-- MODAL -->
-<div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-  <div class="bg-white rounded-xl w-full max-w-4xl p-6 shadow-xl overflow-y-auto max-h-[90vh]">
+ <div id="modal"
+  class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+  <div class="bg-white rounded-xl p-5 w-[90%] sm:w-[600px] space-y-4">
+<!-- <div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+  <div class="bg-white rounded-xl w-full max-w-4xl p-6 shadow-xl overflow-y-auto max-h-[90vh]"> -->
     <h2 class="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
       <i data-lucide="user-plus"></i> Party Creation
     </h2>
     <div class="grid grid-cols-3 gap-4">
       <div>
         <label>Party Type *</label>
-        <select id="partyTypeInput" class="w-full border rounded px-3 py-2">
+        <select id="partyTypeInput" class="w-full border rounded px-4 py-2">
           <option>Customer</option>
           <option>Supplier</option>
         </select>
       </div>
       <div>
         <label>Status Type *</label>
-        <select id="statusInput" class="w-full border rounded px-3 py-2">
+        <select id="statusInput" class="w-full border rounded px-4 py-2">
           <option>Active</option>
           <option>Inactive</option>
         </select>
       </div>
       <div>
         <label>Party Name *</label>
-        <input id="nameInput" class="w-full border rounded px-3 py-2">
+        <input id="nameInput" class="w-full border rounded px-4 py-2">
       </div>
       <div>
         <label>Mobile No</label>
-        <input id="mobileInput" class="w-full border rounded px-3 py-2">
+        <input id="mobileInput" class="w-full border rounded px-4 py-2">
       </div>
       <div>
         <label>Address *</label>
-        <textarea id="addressInput" class="w-full border rounded px-3 py-2"></textarea>
+        <input id="nameInput" class="w-full border rounded px-4 py-2">
+        <!-- <textarea id="addressInput" class="w-full border rounded px-4 py-1"></textarea> -->
       </div>
     </div>
     <div class="mt-6 flex justify-center gap-4">

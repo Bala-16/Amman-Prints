@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Media Management</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+.tab-btn{padding:10px 18px;border-radius:12px;font-weight:500;background:#f1f5f9}
+.tab-btn.active{background:linear-gradient(to right,#0d9488,#06b6d4);color:white}
+th{white-space:nowrap}
+</style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-teal-50/30 p-6">
+
+<div class="max-w-[1800px] mx-auto space-y-6">
+
+<!-- HEADER -->
+<div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl">
+<h1 class="text-2xl font-bold text-white">Media Management</h1>
+</div>
+
+<!-- TABS -->
+<div class="bg-white rounded-xl shadow p-2 flex gap-2">
+<button class="tab-btn active" onclick="showTab('mediapurchaseForm')">Media Purchase Form</button>
+<button class="tab-btn" onclick="showTab('mediapurchaseList')">Purchase List</button>
+<button class="tab-btn" onclick="showTab('mediaentryForm')">Media Entry Form</button>
+<button class="tab-btn" onclick="showTab('mediareport')">Media Report</button>
+<button class="tab-btn" onclick="showTab('mediaconsolidated')"> Media Consolidated</button>
+</div>
+
+<!-- ================= PURCHASE FORM ================= -->
+<div id="mediapurchaseForm" class="tab-content bg-white rounded-xl shadow p-6">
+<!-- HEADER -->
+<div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-5 shadow-xl flex justify-between items-center">
+  <h1 class="text-xl font-bold text-white">Media Purchase Form</h1>
+</div>
+
+<!-- INFO BAR -->
+<div class="bg-white/90 rounded-xl shadow-lg p-5 flex justify-between items-center">
+  <div class="flex items-center gap-6">
+    <span class="text-red-600 font-semibold">Purchase No</span>
+    <span class="font-bold">MPR-2601-0001</span>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <span class="font-semibold">Date & Time</span>
+    <input type="datetime-local" class="border rounded px-3 py-2"
+           value="2026-01-27T11:18">
+  </div>
+</div>
+
+<!-- TABLE -->
+<div class="bg-white/90 rounded-xl shadow-lg overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+<th class="p-3">S.No</th>
+<th class="p-3">Date</th>
+<th class="p-3">Invoice No</th>
+<th class="p-3">Supplier Name</th>
+<th class="p-3">Particulars</th>
+<th class="p-3">Batch No</th>
+<th class="p-3">Qty</th>
+<th class="p-3">Mtr / Qty</th>
+<th class="p-3">Total Mtr</th>
+<th class="p-3">Action</th>
+</tr>
+</thead>
+
+<tbody id="purchaseBody">
+<tr>
+<td class="p-2 text-center">1</td>
+
+<td class="p-2">
+<input type="datetime-local" class="border rounded px-2 py-1 w-full">
+</td>
+
+<td class="p-2">
+<input class="border rounded px-2 py-1 w-full">
+</td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>ABC Traders</option>
+<option>XYZ Suppliers</option>
+</select>
+</td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>36-R7*</option>
+<option>36-R8*</option>
+<option>36-R9*</option>
+<option>40-R7*</option>
+<option>44-IMP*</option>
+<option>44-R10*</option>
+<option>44-R5*</option>
+<option>44-R6*</option>
+<option>44-R7*</option>
+<option>44-R8*</option>
+<option>44-R9*</option>
+<option>48-R6*</option>
+<option>48-R10*</option>
+<option>50-29*</option>
+<option>50-R6*</option>
+<option>50-R7*</option>
+<option>54-R7*</option>
+<option>54-R8*</option>
+<option>54-R9*</option>
+</select>
+</td>
+
+<td class="p-2">
+<input class="border rounded px-2 py-1 w-full">
+</td>
+
+<td class="p-2">
+<input type="number" class="border rounded px-2 py-1 w-full qty" oninput="calculateRow(this)">
+</td>
+
+<td class="p-2">
+<input type="number" class="border rounded px-2 py-1 w-full mtr" oninput="calculateRow(this)">
+</td>
+
+<td class="p-2 font-semibold text-center total">0.00</td>
+
+<td class="p-2 text-center">
+<button onclick="addRow()" class="border px-4 py-1 rounded shadow">ADD</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- TOTAL BAR -->
+<div class="flex justify-end gap-10 items-center mt-6">
+<span class="font-semibold">Total</span>
+<span class="font-bold" id="grandTotal">0.00</span>
+</div>
+
+<!-- SUBMIT -->
+<div class="flex justify-center mt-10">
+<button class="bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-14 py-3 rounded-lg shadow hover:scale-105 transition">
+SUBMIT
+</button>
+</div>
+
+</div>
+
+<script>
+lucide.createIcons()
+
+function calculateRow(el){
+  const row = el.closest("tr")
+  const qty = Number(row.querySelector(".qty").value || 0)
+  const mtr = Number(row.querySelector(".mtr").value || 0)
+  const total = qty * mtr
+  row.querySelector(".total").innerText = total.toFixed(2)
+  calculateGrandTotal()
+}
+
+function calculateGrandTotal(){
+  let sum = 0
+  document.querySelectorAll(".total").forEach(t=>{
+    sum += Number(t.innerText || 0)
+  })
+  document.getElementById("grandTotal").innerText = sum.toFixed(2)
+}
+
+function addRow(){
+  const tbody = document.getElementById("purchaseBody")
+  const index = tbody.rows.length + 1
+
+  tbody.insertAdjacentHTML("beforeend", `
+<tr>
+<td class="p-2 text-center">${index}</td>
+<td class="p-2"><input type="datetime-local" class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2"><input class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>ABC Traders</option>
+<option>XYZ Suppliers</option>
+</select>
+</td>
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>36-R7*</option>
+<option>36-R8*</option>
+<option>36-R9*</option>
+<option>40-R7*</option>
+<option>44-IMP*</option>
+<option>44-R10*</option>
+<option>44-R5*</option>
+<option>44-R6*</option>
+<option>44-R7*</option>
+<option>44-R8*</option>
+<option>44-R9*</option>
+</select>
+</td>
+<td class="p-2"><input class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2"><input type="number" class="border rounded px-2 py-1 w-full qty" oninput="calculateRow(this)"></td>
+<td class="p-2"><input type="number" class="border rounded px-2 py-1 w-full mtr" oninput="calculateRow(this)"></td>
+<td class="p-2 font-semibold text-center total">0.00</td>
+<td class="p-2 text-center">
+<button onclick="this.closest('tr').remove();calculateGrandTotal()" class="border px-3 py-1 rounded text-red-600">DEL</button>
+</td>
+</tr>
+`)
+}
+</script>
+
+
+<!-- ================= PURCHASE LIST ================= -->
+ <div id="mediapurchaseList" class="tab-content bg-white rounded-xl shadow p-6">
+ <!-- HEADER -->
+  <div class="bg-gradient-to-r from-teal-700 to-cyan-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-white">
+      Media Purchase List
+    </h1>
+
+    <button onclick="openForm()" class="bg-white text-teal-700 px-4 py-2 rounded-lg shadow flex items-center gap-2 hover:scale-105 transition">
+      <i data-lucide="plus"></i>
+      Add Purchase
+    </button>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="bg-white/80 backdrop-blur rounded-xl shadow p-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div>
+      <label class="text-sm text-slate-600">From Date</label>
+      <input type="date" class="w-full border rounded px-3 py-2">
+    </div>
+    <div>
+      <label class="text-sm text-slate-600">To Date</label>
+      <input type="date" class="w-full border rounded px-3 py-2">
+    </div>
+    <div class="flex items-end gap-2">
+      <button class="bg-teal-700 text-white px-6 py-2 rounded-lg flex items-center gap-2">
+        <i data-lucide="search"></i> Search
+      </button>
+      <button class="bg-slate-700 text-white px-4 py-2 rounded-lg justify-end">
+        <i data-lucide="printer"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="bg-white/80 backdrop-blur rounded-xl shadow overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-100">
+        <tr>
+          <th class="p-3 text-left">S.No</th>
+          <th class="p-3 text-left">Date</th>
+          <th class="p-3 text-left">Media Pur.No</th>
+          <th class="p-3 text-right">Total Mtr</th>
+          <th class="p-3 text-center">Edit</th>
+          <th class="p-3 text-center">Delete</th>
+        </tr>
+      </thead>
+
+      <tbody id="tableBody"></tbody>
+
+      <tfoot class="bg-slate-100 font-semibold">
+        <tr>
+          <td colspan="3" class="p-3 text-right">Total</td>
+          <td id="grandTotal" class="p-3 text-right">0.00</td>
+          <td colspan="2"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<!-- CENTERED MODAL -->
+<div id="modal"
+     class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center">
+
+  <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 animate-scaleIn">
+    
+    <!-- Modal Header -->
+    <div class="flex items-center gap-2 mb-4">
+      <i data-lucide="file-plus" class="text-teal-700"></i>
+      <h2 class="text-xl font-semibold text-teal-700">
+        Media Purchase
+      </h2>
+    </div>
+
+    <input type="hidden" id="editIndex">
+
+    <!-- FORM -->
+    <div class="space-y-4">
+      <div>
+        <label class="text-sm font-medium">Date</label>
+        <input id="date" type="date" class="w-full border rounded-lg px-3 py-2">
+      </div>
+
+      <div>
+        <label class="text-sm font-medium">Media Pur.No</label>
+        <input id="purNo" type="text" class="w-full border rounded-lg px-3 py-2">
+      </div>
+
+      <div>
+        <label class="text-sm font-medium">Total</label>
+        <input id="total" type="number" class="w-full border rounded-lg px-3 py-2">
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="flex justify-end gap-3 mt-6">
+      <button onclick="closeForm()" class="px-5 py-2 border rounded-lg">
+        Cancel
+      </button>
+      <button onclick="saveData()" class="px-5 py-2 bg-teal-700 text-white rounded-lg">
+        Save
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+lucide.createIcons()
+
+let data = []
+
+function renderTable() {
+  const tbody = document.getElementById("tableBody")
+  tbody.innerHTML = ""
+  let total = 0
+
+  data.forEach((row, i) => {
+    total += Number(row.total)
+    tbody.innerHTML += `
+      <tr class="border-t hover:bg-slate-50">
+        <td class="p-3">${i + 1}</td>
+        <td class="p-3">${row.date}</td>
+        <td class="p-3">${row.purNo}</td>
+        <td class="p-3 text-right">${row.total}</td>
+        <td class="p-3 text-center text-emerald-600 cursor-pointer" onclick="editData(${i})">
+        <i data-lucide="edit"></i>
+      </td>
+      <td class="p-3 text-center text-red-500 cursor-pointer" onclick="deleteData(${i})">
+        <i data-lucide="trash-2"></i>
+      </td>
+      </tr>`
+  })
+
+  document.getElementById("grandTotal").innerText = total.toFixed(2)
+  lucide.createIcons()
+}
+
+function openForm() {
+  modal.classList.remove("hidden")
+}
+
+function closeForm() {
+  modal.classList.add("hidden")
+}
+
+function saveData() {
+  const index = editIndex.value
+  const row = { date: date.value, purNo: purNo.value, total: total.value }
+
+  if (index === "") data.push(row)
+  else data[index] = row
+
+  closeForm()
+  renderTable()
+}
+
+function editData(i) {
+  openForm()
+  editIndex.value = i
+  date.value = data[i].date
+  purNo.value = data[i].purNo
+  total.value = data[i].total
+}
+
+function deleteData(i) {
+  if (confirm("Delete this record?")) {
+    data.splice(i, 1)
+    renderTable()
+  }
+}
+</script>
+
+<style>
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0 }
+  to { transform: scale(1); opacity: 1 }
+}
+.animate-scaleIn {
+  animation: scaleIn 0.2s ease-out;
+}
+</style>
+</div>
+
+<!-- ================= MEDIA ENTRY FORM ================= -->
+<div id="mediaentryForm" class="tab-content hidden bg-white rounded-xl shadow p-6">
+<!-- HEADER -->
+<div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-5 shadow-xl flex justify-between items-center">
+  <h1 class="text-xl font-bold text-white">Media Entry Form</h1>
+</div>
+
+<!-- JOB DETAILS -->
+<div class="bg-white/90 rounded-xl shadow-lg p-6 grid grid-cols-2 gap-6 text-sm">
+
+<div class="space-y-7">
+  <div class="flex gap-3 items-center">
+    <label class="text-red-600 font-semibold w-32">Jobcard No *</label>
+    <input class="border-b w-64 outline-none">
+  </div>
+  <div class="flex gap-3">
+    <label class="w-32">Customer Name</label>
+    <input class="border-b w-64 outline-none">
+  </div>
+  <div class="flex gap-3">
+    <label class="w-32">Customer PO No</label>
+    <input class="border-b w-64 outline-none">
+  </div>
+  <div class="flex gap-3">
+    <label class="w-32">Job Type</label>
+    <input class="border-b w-64 outline-none">
+  </div>
+  <div class="flex gap-3">
+    <label class="w-32">Fabric Type</label>
+    <input class="border-b w-64 outline-none">
+  </div>
+</div>
+
+<div class="space-y-7">
+  <div class="flex gap-3 items-center justify-end">
+    <label class="font-semibold">Date & Time</label>
+    <input type="datetime-local" class="border rounded px-3 py-1"
+           value="2026-01-27T11:18">
+  </div>
+  <div class="flex gap-3 justify-end">
+    <label>Entry Created By</label>
+    <input class="border-b w-56 outline-none">
+  </div>
+  <div class="flex gap-3 justify-end">
+    <label>Style No</label>
+    <input class="border-b w-56 outline-none">
+  </div>
+  <div class="flex gap-3 justify-end">
+    <label>Style Name</label>
+    <input class="border-b w-56 outline-none">
+  </div>
+  <div class="flex gap-3 justify-end">
+    <label>Combo</label>
+    <input class="border-b w-56 outline-none">
+  </div>
+</div>
+
+</div>
+
+<!-- ENTRY TABLE -->
+<div class="bg-white/90 rounded-xl shadow-lg overflow-x-auto">
+<table class="w-full text-xs">
+<thead class="bg-slate-100">
+<tr>
+<th class="p-2">S.No</th>
+<th class="p-2">Date</th>
+<th class="p-2">Particulars</th>
+<th class="p-2">Width</th>
+<th class="p-2">Height</th>
+<th class="p-2">Order Qty</th>
+<th class="p-2">Plan Qty</th>
+<th class="p-2">Roll Size</th>
+<th class="p-2">Req By</th>
+<th class="p-2">Steps Used</th>
+<th class="p-2">Steps</th>
+<th class="p-2">Total Repeats</th>
+<th class="p-2">Gap</th>
+<th class="p-2">Gap Mtr</th>
+<th class="p-2">Total Req</th>
+<th class="p-2">Batch No</th>
+<th class="p-2">Action</th>
+</tr>
+</thead>
+
+<tbody id="entryBody">
+<tr>
+<td class="p-2 text-center">1</td>
+<td class="p-2"><input type="datetime-local" class="border px-1 py-1"></td>
+<td class="p-2">
+<select class="border px-1 py-1">
+<option>Select</option>
+<option>BLACK</option>
+<option>CYAN</option>
+<option>MAGENTA</option>
+<option>YELLOW</option>
+</select>
+</td>
+<td class="p-2"><input class="border px-1 py-1 w-20"></td>
+<td class="p-2"><input class="border px-1 py-1 w-20"></td>
+<td class="p-2"><input type="number" class="border px-1 py-1 w-20"></td>
+<td class="p-2"><input type="number" class="border px-1 py-1 w-20"></td>
+<td class="p-2">
+<select class="border px-1 py-1">
+<option>Select</option>
+<option>36</option>
+<option>44</option>
+<option>54</option>
+</select>
+</td>
+<td class="p-2">
+<select class="border px-1 py-1">
+<option>Select</option>
+<option>Designer</option>
+<option>Production</option>
+</select>
+</td>
+<td class="p-2"><input class="border px-1 py-1 w-16"></td>
+<td class="p-2"><input class="border px-1 py-1 w-16"></td>
+<td class="p-2"><input class="border px-1 py-1 w-16"></td>
+<td class="p-2"><input class="border px-1 py-1 w-16"></td>
+<td class="p-2"><input class="border px-1 py-1 w-16"></td>
+<td class="p-2 total font-semibold text-center">0.00</td>
+<td class="p-2">
+<select class="border px-1 py-1">
+<option>Select</option>
+<option>B001</option>
+<option>B002</option>
+</select>
+</td>
+<td class="p-2 text-center">
+<button onclick="addRow()" class="border px-3 py-1 rounded">ADD</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- TOTAL -->
+<div class="flex justify-end items-center gap-6 mt-6">
+<span class="font-semibold">Total</span>
+<span class="font-bold" id="grandTotal">0.00</span>
+</div>
+
+<!-- SUBMIT -->
+<div class="flex justify-center mt-10">
+<button class="bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-16 py-3 rounded-lg shadow hover:scale-105 transition">
+SUBMIT
+</button>
+</div>
+
+</div>
+
+<script>
+lucide.createIcons()
+
+function addRow(){
+  const body = document.getElementById("entryBody")
+  const index = body.rows.length + 1
+
+  body.insertAdjacentHTML("beforeend", `
+<tr>
+<td class="p-2 text-center">${index}</td>
+<td class="p-2"><input type="datetime-local" class="border px-1 py-1"></td>
+<td class="p-2">
+<select class="border px-1 py-1">
+<option>Select</option>
+<option>BLACK</option>
+<option>CYAN</option>
+<option>MAGENTA</option>
+<option>YELLOW</option>
+</select>
+</td>
+<td class="p-2"><input class="border px-2 py-2 w-20 "></td>
+<td class="p-2"><input class="border px-1 py-1 w-20"></td>
+<td class="p-2"><input type="number" class="border px-1 py-1 w-20"></td>
+<td class="p-2"><input type="number" class="border px-1 py-1 w-20"></td>
+<td class="p-2"><select class="border px-1 py-1"><option>Select</option></select></td>
+<td class="p-2"><select class="border px-1 py-1"><option>Select</option></select></td>
+<td class="p-2"><input class="border px-1 py-1 w-16"></td>
+<td class="p-2"><input class="border px-1 py-1 w-16"></td>
+<td class="p-2"><input class="border px-1 py-1 w-16"></td>
+<td class="p-2"><input class="border px-1 py-1 w-16"></td>
+<td class="p-2"><input class="border px-1 py-1 w-16"></td>
+<td class="p-2 total text-center">0.00</td>
+<td class="p-2"><select class="border px-1 py-1"><option>Select</option></select></td>
+<td class="p-2 text-center">
+<button onclick="this.closest('tr').remove()" class="text-red-600">DEL</button>
+</td>
+</tr>
+`)
+}
+</script>
+<!-- ================= INK REPORT ================= -->
+<div id="mediareport" class="tab-content hidden bg-white rounded-xl shadow p-6">
+    <!-- HEADER -->
+<div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+  <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+    <i data-lucide="file-bar-chart"></i> Media Report
+  </h1>
+
+  <div class="flex gap-3">
+    <button onclick="printReport()" class="bg-white/90 px-4 py-2 rounded flex gap-2 items-center shadow">
+      <i data-lucide="printer"></i> Print
+    </button>
+    <button onclick="exportExcel()" class="bg-white/90 px-4 py-2 rounded flex gap-2 items-center shadow">
+      <i data-lucide="file-spreadsheet"></i> Excel
+    </button>
+  </div>
+</div>
+
+<!-- FILTER PANEL -->
+<div class="bg-white/90 rounded-xl shadow-lg p-6 grid grid-cols-6 gap-6">
+
+<div>
+  <label class="font-semibold">From Date</label>
+  <input type="date" class="border rounded px-3 py-2 w-full">
+</div>
+
+<div>
+  <label class="font-semibold">To Date</label>
+  <input type="date" class="border rounded px-3 py-2 w-full">
+</div>
+
+<div>
+  <label class="font-semibold">Buyer Name</label>
+  <input class="border rounded px-3 py-2 w-full">
+</div>
+
+<div>
+  <label class="font-semibold">Jobcard From</label>
+  <input class="border rounded px-3 py-2 w-full">
+</div>
+
+<div>
+  <label class="font-semibold">Jobcard To</label>
+  <input class="border rounded px-3 py-2 w-full">
+</div>
+
+<div>
+  <label class="font-semibold">Roll Size</label>
+  <input class="border rounded px-3 py-2 w-full">
+</div>
+
+<div>
+  <label class="font-semibold">Job Type</label>
+  <select class="border rounded px-3 py-2 w-full">
+    <option>All</option>
+    <option>Flex</option>
+    <option>Offset</option>
+  </select>
+</div>
+
+<div>
+  <label class="font-semibold">Jobcard No</label>
+  <input class="border rounded px-3 py-2 w-full">
+</div>
+
+<div>
+  <label class="font-semibold">Type</label>
+  <select class="border rounded px-3 py-2 w-full">
+    <option>Purchases</option>
+    <option>Usage</option>
+  </select>
+</div>
+
+<div>
+  <label class="font-semibold">Status</label>
+  <select class="border rounded px-3 py-2 w-full">
+    <option>All</option>
+    <option>Open</option>
+    <option>Closed</option>
+  </select>
+</div>
+
+<div class="flex items-end">
+  <button class="bg-teal-600 text-white px-6 py-2 rounded shadow flex gap-2">
+    <i data-lucide="search"></i> Search
+  </button>
+</div>
+
+</div>
+
+<!-- TABLE -->
+<div class="bg-white/90 rounded-xl shadow-lg overflow-x-auto">
+<table id="reportTable" class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+  <th class="p-3">S.No</th>
+  <th class="p-3">Date</th>
+  <th class="p-3">Invoice No</th>
+  <th class="p-3">Supplier</th>
+  <th class="p-3">Particulars</th>
+  <th class="p-3 text-right">Qty</th>
+  <th class="p-3 text-right">Mtr/Qty</th>
+  <th class="p-3 text-right">Total Mtr</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+  <td class="p-2">1</td>
+  <td class="p-2">03-04-2024</td>
+  <td class="p-2">Opening</td>
+  <td class="p-2">CHAMPION PAPER INDUSTRY</td>
+  <td class="p-2">63-R6</td>
+  <td class="p-2 text-right">2.00</td>
+  <td class="p-2 text-right">200.00</td>
+  <td class="p-2 text-right font-semibold">400.00</td>
+</tr>
+<tr>
+  <td class="p-2">2</td>
+  <td class="p-2">03-04-2024</td>
+  <td class="p-2">Opening</td>
+  <td class="p-2">CHAMPION PAPER INDUSTRY</td>
+  <td class="p-2">63-R8</td>
+  <td class="p-2 text-right">1.00</td>
+  <td class="p-2 text-right">170.00</td>
+  <td class="p-2 text-right font-semibold">170.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+lucide.createIcons()
+
+function printReport(){
+  window.print()
+}
+
+function exportExcel(){
+  const table = document.getElementById("reportTable")
+  const wb = XLSX.utils.table_to_book(table, {sheet:"Media Report"})
+  XLSX.writeFile(wb, "Media_Report.xlsx")
+}
+</script>
+
+<style>
+@media print {
+  body { background: white }
+  button { display: none }
+}
+</style>
+
+
+<!-- ================= CONSOLIDATED ================= -->
+<div id="mediaconsolidated" class="tab-content hidden bg-white rounded-xl shadow p-6">
+ <!-- HEADER -->
+<div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+  <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+    <i data-lucide="layers"></i>
+    Media Usage Console Report
+  </h1>
+
+  <div class="flex gap-3">
+    <button onclick="printReport()" class="bg-white/90 px-4 py-2 rounded flex items-center gap-2 shadow">
+      <i data-lucide="printer"></i> Print
+    </button>
+    <button onclick="exportExcel()" class="bg-white/90 px-4 py-2 rounded flex items-center gap-2 shadow">
+      <i data-lucide="file-spreadsheet"></i> Excel
+    </button>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="bg-white/90 rounded-xl shadow-lg p-6 grid grid-cols-6 gap-6">
+
+<div>
+  <label class="font-semibold">From Date</label>
+  <input type="date" class="border rounded px-3 py-2 w-full">
+</div>
+
+<div>
+  <label class="font-semibold">To Date</label>
+  <input type="date" class="border rounded px-3 py-2 w-full">
+</div>
+
+<div>
+  <label class="font-semibold">Buyer Name</label>
+  <input class="border rounded px-3 py-2 w-full">
+</div>
+
+<div>
+  <label class="font-semibold">Roll Size</label>
+  <input class="border rounded px-3 py-2 w-full">
+</div>
+
+<div>
+  <label class="font-semibold">Type</label>
+  <select class="border rounded px-3 py-2 w-full">
+    <option>Summary</option>
+    <option>Detailed</option>
+  </select>
+</div>
+
+<div class="flex items-end">
+  <button class="bg-teal-600 text-white px-6 py-2 rounded shadow flex gap-2">
+    <i data-lucide="search"></i> Search
+  </button>
+</div>
+
+</div>
+
+<!-- TABLE -->
+<div class="bg-white/90 rounded-xl shadow-lg overflow-x-auto">
+<div class="text-center font-semibold py-3 bg-slate-50">Summary</div>
+
+<table id="consoleTable" class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+  <th class="p-3">S.No</th>
+  <th class="p-3">Roll Size</th>
+  <th class="p-3 text-right">Production</th>
+  <th class="p-3 text-right">Re Production</th>
+  <th class="p-3 text-right">Sample</th>
+  <th class="p-3 text-right">Sticker</th>
+  <th class="p-3 text-right">Quantity</th>
+  <th class="p-3 text-right">Meter</th>
+  <th class="p-3 text-right">Sqr Meter</th>
+</tr>
+</thead>
+
+<tbody>
+<tr class="hover:bg-slate-50">
+  <td class="p-2">1</td>
+  <td class="p-2">44-R6</td>
+  <td class="p-2 text-right">415.45</td>
+  <td class="p-2 text-right">0.00</td>
+  <td class="p-2 text-right">0.00</td>
+  <td class="p-2 text-right">0.00</td>
+  <td class="p-2 text-right">733.00</td>
+  <td class="p-2 text-right">415.45</td>
+  <td class="p-2 text-right">464.31</td>
+</tr>
+
+<tr class="hover:bg-slate-50">
+  <td class="p-2">2</td>
+  <td class="p-2">44-R8</td>
+  <td class="p-2 text-right">101.21</td>
+  <td class="p-2 text-right">0.00</td>
+  <td class="p-2 text-right">0.00</td>
+  <td class="p-2 text-right">0.00</td>
+  <td class="p-2 text-right">256.00</td>
+  <td class="p-2 text-right">101.21</td>
+  <td class="p-2 text-right">113.11</td>
+</tr>
+
+<tr class="hover:bg-slate-50">
+  <td class="p-2">3</td>
+  <td class="p-2">44-R9</td>
+  <td class="p-2 text-right">230.98</td>
+  <td class="p-2 text-right">0.00</td>
+  <td class="p-2 text-right">0.00</td>
+  <td class="p-2 text-right">0.00</td>
+  <td class="p-2 text-right">630.00</td>
+  <td class="p-2 text-right">230.98</td>
+  <td class="p-2 text-right">258.14</td>
+</tr>
+</tbody>
+
+<tfoot class="bg-slate-100 font-semibold">
+<tr>
+  <td colspan="6" class="p-3 text-right">Total</td>
+  <td class="p-3 text-right">0.00</td>
+  <td class="p-3 text-right">0.00</td>
+  <td class="p-3 text-right">0.00</td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+
+</div>
+
+<script>
+lucide.createIcons()
+lucide.createIcons()
+function showTab(id){
+document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'))
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'))
+document.getElementById(id).classList.remove('hidden')
+event.target.classList.add('active')
+}
+
+function printReport(){
+  window.print()
+}
+
+function exportExcel(){
+  const table = document.getElementById("consoleTable")
+  const wb = XLSX.utils.table_to_book(table, {sheet:"Console Summary"})
+  XLSX.writeFile(wb, "Media_Usage_Console_Report.xlsx")
+}
+</script>
+
+<style>
+@media print {
+  body { background:white }
+  button { display:none }
+}
+</style>
+</body>
+</html>

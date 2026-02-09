@@ -2,8 +2,14 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    
+      # path('login/', views.login,name='login'),
+    
+    path('', views.login_view,name='login'),
+    # path('', views.logout_view,name='logout'),
     path('', views.dashboard, name='dashboard'),   # ← THIS WAS MISSING
     path('nav/', views.nav, name='nav'),
+  
     path('jobcard/customer_report/', views.customer_report, name='customer_report'),
     path('jobcard/quotation/', views.quotation, name='quotation'),
     path('jobcard/designer_report/', views.designer_report, name='designer_report'),
@@ -17,10 +23,10 @@ urlpatterns = [
   
  
     
-    path('printing/', views.printing, name='printing'),
-    path('consumable/', views.consumable, name='consumable'),
-    path('accounts/', views.accounts, name='accounts'),
-    path('delivery/', views.delivery, name='delivery'),
+    # path('printing/', views.printing, name='printing'),
+    # path('consumable/', views.consumable, name='consumable'),
+    # path('accounts/', views.accounts, name='accounts'),
+    # path('delivery/', views.delivery, name='delivery'),
     path('dashboard/', views.nav, name='dashboard'),
   
     path('customer_report/', views.customer_report, name='customer_report'),
@@ -58,10 +64,9 @@ urlpatterns = [
     path('printing/printer_operator/',views.printer_operator, name='printer_operator'), 
     path('printing/printer_production/',views.printer_production, name='printer_production'),
     
-    path('delivery/delivery/',views.delivery, name='delivery'),
+    path('delivery/deli/',views.delivery, name='deli'),
     path('delivery/fabric/',views.fabric, name='fabric'),
-    path('delivery/inward/',views.delivery, name='inward'),
-    path('delivery/returned/',views.returned, name='returned'),
-    path('delivery/sticker/',views.sticker, name='sticker'),
-    
+    path('delivery/inward/',views.inward, name='inward'),
+    path('delivery/return/',views.returned, name='return'),
+    path('delivery/sticker/',views.sticker, name='sticker'),   
 ]

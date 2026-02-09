@@ -1,9 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+from django.contrib.auth import authenticate, login as auth_login, logout
+from django.contrib import messages
 from django.http import HttpResponse
 
 
 def nav(request):
     return render(request,'nav.html')
+
 
 def customer_report(request):
     return render(request,'jobcard/customer_report.html')
@@ -107,13 +110,29 @@ def inward(request):
 def fabric(request):
     return render(request,'delivery/fabric.html',)
 def delivery(request):
-    return render(request, 'delivery/delivery.html')
+    return render(request, 'delivery/deli.html')
 def returned(request):
-    return render(request,'delivery/returned.html',)
+    return render(request,'delivery/return.html',)
 def sticker(request):
     return render(request,'delivery/sticker.html',)
 
 
 
+# def login(request):
+#     return render(request,'login.html',)
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            auth_login(request, user)   # session create
+            return redirect("dashboard")
+        else:
+            messages.error(request, "Invalid username or password")
+
+    return render(request, "login.html")
 
 
