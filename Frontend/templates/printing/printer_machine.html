@@ -2,209 +2,260 @@
 {%block title%}Printer Customer{%endblock%}
 {%block extra_head%}
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 {%endblock%}
 {%block content%}
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-4 sm:p-6">
 
-<div class="max-w-[1700px] mx-auto space-y-6">
+  <div class="max-w-[1700px] mx-auto space-y-6">
 
-  <!-- ✅ HEADER -->
-  <div
-    class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600
+    <!-- ✅ HEADER -->
+    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600
            rounded-2xl p-6 shadow-xl
            flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 
-    <div class="flex items-center gap-3">
-      <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
-        <i data-lucide="settings" class="text-white w-6 h-6"></i>
+      <div class="flex items-center gap-3">
+        <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
+          <i data-lucide="settings" class="text-white w-6 h-6"></i>
+        </div>
+
+        <div>
+          <h1 class="text-2xl font-bold text-white">Machine Wise Report</h1>
+          <p class="text-teal-100 text-sm">Production details by machine</p>
+        </div>
       </div>
 
-      <div>
-        <h1 class="text-2xl font-bold text-white">Machine Wise Report</h1>
-        <p class="text-teal-100 text-sm">Production details by machine</p>
-      </div>
-    </div>
-
-    <button onclick="window.print()"
-      class="bg-white/20 text-white px-5 py-2 rounded-xl
+      <button onclick="window.print()" class="bg-white/20 text-white px-5 py-2 rounded-xl
              flex items-center gap-2 hover:bg-white/30 transition">
-      <i data-lucide="printer" class="w-4 h-4"></i>
-      Print
-    </button>
-  </div>
-
-  <!-- ✅ FILTERS (Responsive + Reset Added) -->
-  <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6">
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-
-      <!-- From Date -->
-      <div>
-        <label class="text-sm text-slate-600 font-medium">From Date</label>
-        <input id="fromDate" type="date"
-          class="w-full border rounded-lg px-3 py-2 mt-1">
-      </div>
-
-      <!-- To Date -->
-      <div>
-        <label class="text-sm text-slate-600 font-medium">To Date</label>
-        <input id="toDate" type="date"
-          class="w-full border rounded-lg px-3 py-2 mt-1">
-      </div>
-
-      <!-- Machine No -->
-      <div>
-        <label class="text-sm text-slate-600 font-medium">Machine No</label>
-        <input id="machineInput" placeholder="Enter Machine"
-          class="w-full border rounded-lg px-3 py-2 mt-1">
-      </div>
-
-      <!-- Search Button -->
-      <div class="flex items-end">
-        <button onclick="searchTable()"
-          class="w-full bg-teal-600 text-white px-6 py-2 rounded-xl
-                 shadow hover:scale-105 transition flex items-center justify-center gap-2">
-          <i data-lucide="search" class="w-4 h-4"></i>
-          Search
-        </button>
-      </div>
-
-      <!-- Reset Button -->
-      <div class="flex items-end">
-        <button onclick="resetFilters()"
-          class="w-full bg-slate-500 text-white px-6 py-2 rounded-xl
-                 shadow hover:bg-slate-600 transition flex items-center justify-center gap-2">
-          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-          Reset
-        </button>
-      </div>
-
+        <i data-lucide="printer" class="w-4 h-4"></i>
+        Print
+      </button>
     </div>
+
+    <!-- ✅ FILTERS -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6">
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+
+        <!-- From Date -->
+        <div>
+          <label class="text-sm text-slate-600 font-medium">From Date</label>
+          <input id="fromDate" type="date" class="w-full border rounded-lg px-3 py-2 mt-1">
+        </div>
+
+        <!-- To Date -->
+        <div>
+          <label class="text-sm text-slate-600 font-medium">To Date</label>
+          <input id="toDate" type="date" class="w-full border rounded-lg px-3 py-2 mt-1">
+        </div>
+
+        <!-- Machine No -->
+        <div>
+          <label class="text-sm text-slate-600 font-medium">Machine No</label>
+          <input id="machineInput" placeholder="Enter Machine" class="w-full border rounded-lg px-3 py-2 mt-1">
+        </div>
+
+        <!-- ✅ Buttons (small + last like 2nd image) -->
+        <div class="flex items-end justify-end gap-3 lg:col-span-2">
+          <!-- Search Button (smaller) -->
+          <button type="button" onclick="searchTable()" class="w-[180px] bg-teal-600 text-white px-6 py-2 rounded-xl
+                 shadow hover:scale-105 transition flex items-center justify-center gap-2">
+            <i data-lucide="search" class="w-4 h-4"></i>
+            Search
+          </button>
+
+          <!-- Reset Button (grey like 2nd image, smaller) -->
+          <button type="button" onclick="resetFilters()" class="w-[160px] bg-slate-200 text-slate-900 px-6 py-2 rounded-xl
+                 shadow hover:bg-slate-300 transition flex items-center justify-center gap-2">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            Reset
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ✅ TABLE -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-x-auto">
+
+      <table id="reportTable" class="w-full text-sm min-w-[950px]">
+
+        <thead class="bg-slate-100 text-slate-700">
+          <tr>
+            <th class="p-3">S.No</th>
+            <th class="p-3">Date</th>
+            <th class="p-3">Jobcard No</th>
+            <th class="p-3">Machine</th>
+            <th class="p-3">Shift</th>
+            <th class="p-3">Operator</th>
+            <th class="p-3">Particulars</th>
+            <th class="p-3 text-right">Order Qty</th>
+            <th class="p-3 text-right">Product Qty</th>
+            <th class="p-3 text-right">Balance Qty</th>
+          </tr>
+        </thead>
+
+        <tbody id="tableBody">
+          <tr class="border-t hover:bg-slate-50">
+            <td class="p-3">1</td>
+            <td class="p-3">10-04-2024</td>
+            <td class="p-3">JC-2404-0085</td>
+            <td class="p-3 machine-col">GT-1</td>
+            <td class="p-3">DAY (09:00–21:00)</td>
+            <td class="p-3">SENTHIL</td>
+            <td class="p-3">2XL TOP</td>
+            <td class="p-3 text-right">225</td>
+            <td class="p-3 text-right">225</td>
+            <td class="p-3 text-right">0</td>
+          </tr>
+
+          <tr class="border-t hover:bg-slate-50">
+            <td class="p-3">2</td>
+            <td class="p-3">10-04-2024</td>
+            <td class="p-3">JC-2404-0085</td>
+            <td class="p-3 machine-col">GT-1</td>
+            <td class="p-3">DAY (09:00–21:00)</td>
+            <td class="p-3">SENTHIL</td>
+            <td class="p-3">AOP BOTTOM</td>
+            <td class="p-3 text-right">3500</td>
+            <td class="p-3 text-right">3500</td>
+            <td class="p-3 text-right">0</td>
+          </tr>
+
+          <tr class="border-t hover:bg-slate-50">
+            <td class="p-3">12</td>
+            <td class="p-3">10-04-2024</td>
+            <td class="p-3">JC-2404-0086</td>
+            <td class="p-3 machine-col">GT-1</td>
+            <td class="p-3">DAY (09:00–21:00)</td>
+            <td class="p-3">SENTHIL</td>
+            <td class="p-3">AOP BOTTOM</td>
+            <td class="p-3 text-right">5000</td>
+            <td class="p-3 text-right">5000</td>
+            <td class="p-3 text-right">0</td>
+          </tr>
+
+          <tr class="border-t hover:bg-slate-50">
+            <td class="p-3">13</td>
+            <td class="p-3">12-04-2024</td>
+            <td class="p-3">JC-2404-0089</td>
+            <td class="p-3 machine-col">ORIC-1</td>
+            <td class="p-3">DAY (09:00–21:00)</td>
+            <td class="p-3">HARI</td>
+            <td class="p-3">16 SLEEVE (R/L)</td>
+            <td class="p-3 text-right">684</td>
+            <td class="p-3 text-right">684</td>
+            <td class="p-3 text-right">0</td>
+          </tr>
+        </tbody>
+
+        <tfoot class="bg-slate-100 font-semibold">
+          <tr>
+            <td colspan="7" class="p-3 text-right">Total</td>
+            <td class="p-3 text-right">9,409</td>
+            <td class="p-3 text-right">9,409</td>
+            <td class="p-3 text-right">0</td>
+          </tr>
+        </tfoot>
+
+      </table>
+    </div>
+
   </div>
-
-  <!-- ✅ TABLE (Responsive Scroll) -->
-  <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-x-auto">
-
-    <table id="reportTable" class="w-full text-sm min-w-[950px]">
-
-      <thead class="bg-slate-100 text-slate-700">
-        <tr>
-          <th class="p-3">S.No</th>
-          <th class="p-3">Date</th>
-          <th class="p-3">Jobcard No</th>
-          <th class="p-3">Machine</th>
-          <th class="p-3">Shift</th>
-          <th class="p-3">Operator</th>
-          <th class="p-3">Particulars</th>
-          <th class="p-3 text-right">Order Qty</th>
-          <th class="p-3 text-right">Product Qty</th>
-          <th class="p-3 text-right">Balance Qty</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr class="border-t hover:bg-slate-50">
-          <td class="p-3">1</td>
-          <td class="p-3">10-04-2024</td>
-          <td class="p-3">JC-2404-0085</td>
-          <td class="p-3 machine-col">GT-1</td>
-          <td class="p-3">DAY (09:00–21:00)</td>
-          <td class="p-3">SENTHIL</td>
-          <td class="p-3">2XL TOP</td>
-          <td class="p-3 text-right">225</td>
-          <td class="p-3 text-right">225</td>
-          <td class="p-3 text-right">0</td>
-        </tr>
-
-        <tr class="border-t hover:bg-slate-50">
-          <td class="p-3">2</td>
-          <td class="p-3">10-04-2024</td>
-          <td class="p-3">JC-2404-0085</td>
-          <td class="p-3 machine-col">GT-1</td>
-          <td class="p-3">DAY (09:00–21:00)</td>
-          <td class="p-3">SENTHIL</td>
-          <td class="p-3">AOP BOTTOM</td>
-          <td class="p-3 text-right">3500</td>
-          <td class="p-3 text-right">3500</td>
-          <td class="p-3 text-right">0</td>
-        </tr>
-
-        <tr class="border-t hover:bg-slate-50">
-          <td class="p-3">12</td>
-          <td class="p-3">10-04-2024</td>
-          <td class="p-3">JC-2404-0086</td>
-          <td class="p-3 machine-col">GT-1</td>
-          <td class="p-3">DAY (09:00–21:00)</td>
-          <td class="p-3">SENTHIL</td>
-          <td class="p-3">AOP BOTTOM</td>
-          <td class="p-3 text-right">5000</td>
-          <td class="p-3 text-right">5000</td>
-          <td class="p-3 text-right">0</td>
-        </tr>
-
-        <tr class="border-t hover:bg-slate-50">
-          <td class="p-3">13</td>
-          <td class="p-3">12-04-2024</td>
-          <td class="p-3">JC-2404-0089</td>
-          <td class="p-3 machine-col">ORIC-1</td>
-          <td class="p-3">DAY (09:00–21:00)</td>
-          <td class="p-3">HARI</td>
-          <td class="p-3">16 SLEEVE (R/L)</td>
-          <td class="p-3 text-right">684</td>
-          <td class="p-3 text-right">684</td>
-          <td class="p-3 text-right">0</td>
-        </tr>
-      </tbody>
-
-      <tfoot class="bg-slate-100 font-semibold">
-        <tr>
-          <td colspan="7" class="p-3 text-right">Total</td>
-          <td class="p-3 text-right">9,409</td>
-          <td class="p-3 text-right">9,409</td>
-          <td class="p-3 text-right">0</td>
-        </tr>
-      </tfoot>
-
-    </table>
-  </div>
-
-</div>
 </div>
 {%endblock%}
 {%block extra_js%}
 
-<!-- ✅ JAVASCRIPT -->
 <script>
-  lucide.createIcons()
+  lucide.createIcons();
 
-  // ✅ SEARCH FUNCTION (Machine Filter)
+  // ✅ Hide all rows initially (until machine search)
+  function hideAllRows() {
+    const rows = document.querySelectorAll("#reportTable tbody tr");
+    rows.forEach(r => {
+      if (r.id !== "hintRow") r.style.display = "none";
+    });
+  }
+
+  function showHintRow(msg) {
+    const tbody = document.getElementById("tableBody");
+    let hint = document.getElementById("hintRow");
+
+    if (!hint) {
+      hint = document.createElement("tr");
+      hint.id = "hintRow";
+      hint.className = "border-t";
+      tbody.prepend(hint);
+    }
+
+    hint.innerHTML = `
+      <td colspan="10" class="p-6 text-center text-slate-500">
+        ${msg}
+      </td>
+    `;
+    hint.style.display = "";
+  }
+
+  function removeHintRow() {
+    const hint = document.getElementById("hintRow");
+    if (hint) hint.remove();
+  }
+
+  // ✅ SEARCH FUNCTION with alerts
   function searchTable() {
-    let machineInput = document.getElementById("machineInput").value.toUpperCase()
-    let rows = document.querySelectorAll("#reportTable tbody tr")
+    const machineInputEl = document.getElementById("machineInput");
+    const machineInput = machineInputEl.value.trim().toUpperCase();
+    const rows = document.querySelectorAll("#reportTable tbody tr");
+
+    // 1) Empty machine no -> alert
+    if (machineInput === "") {
+      alert("Please enter Machine No");
+      hideAllRows();
+      showHintRow("Enter Machine No to view records");
+      return;
+    }
+
+    removeHintRow();
+
+    let found = 0;
 
     rows.forEach(row => {
-      let machineText = row.querySelector(".machine-col").innerText.toUpperCase()
+      if (row.id === "hintRow") return;
 
-      if (machineText.includes(machineInput) || machineInput === "") {
-        row.style.display = ""
+      const machineText = row.querySelector(".machine-col").innerText.trim().toUpperCase();
+
+      if (machineText.includes(machineInput)) {
+        row.style.display = "";
+        found++;
       } else {
-        row.style.display = "none"
+        row.style.display = "none";
       }
-    })
+    });
+
+    // 2) Wrong machine no -> alert
+    if (found === 0) {
+      alert("No records found for this Machine No");
+      hideAllRows();
+      showHintRow("No Records");
+    }
   }
 
   // ✅ RESET FUNCTION
   function resetFilters() {
-    document.getElementById("fromDate").value = ""
-    document.getElementById("toDate").value = ""
-    document.getElementById("machineInput").value = ""
+    document.getElementById("fromDate").value = "";
+    document.getElementById("toDate").value = "";
+    document.getElementById("machineInput").value = "";
 
-    let rows = document.querySelectorAll("#reportTable tbody tr")
-    rows.forEach(row => row.style.display = "")
+    hideAllRows();
+    showHintRow("Enter Machine No to view records");
   }
+
+  // on load
+  document.addEventListener("DOMContentLoaded", () => {
+    hideAllRows();
+    showHintRow("Enter Machine No to view records");
+  });
 </script>
 {%endblock%}
-

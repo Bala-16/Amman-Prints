@@ -1,0 +1,223 @@
+{% extends "nav.html" %}
+{% block title %}Quotation Customer Report{% endblock %}
+
+{% block extra_head %}
+{% load static %}
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    
+    .report-header {
+        background: #14b8a6;  /* 🔥 Changed from purple to teal */
+        color: white;
+        padding: 15px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        /* margin-top: 1px; */
+    }
+
+    .filter-section {
+        background: white;
+        padding: 15px 20px;
+        display: flex;
+        gap: 20px;
+        align-items: end;
+        flex-wrap: wrap;
+        margin: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .filter-group label {
+        font-weight: bold;
+        font-size: 13px;
+        color: #333;
+    }
+
+    .filter-group input {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        min-width: 200px;
+        font-size: 13px;
+    }
+
+    .search-btn {
+        background: #14b8a6;  /* 🔥 Teal color */
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 38px;
+        transition: all 0.3s;
+    }
+
+    .search-btn:hover {
+        background: #0d9488;  /* 🔥 Darker teal on hover */
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(20, 184, 166, 0.3);
+    }
+
+    .print-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        margin-left: auto;
+        padding: 0 10px;
+        transition: transform 0.2s;
+    }
+
+    .print-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .table-container {
+        background: white;
+        margin: 20px;
+        overflow-x: auto;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    thead {
+        background: #f0f4f7;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        font-weight: bold;
+        color: #333;
+        white-space: nowrap;
+    }
+
+    tbody tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+
+    tbody tr:hover {
+        background: #f1f1f1;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .total-row {
+        background: #e8f5e9 !important;
+        font-weight: bold;
+    }
+
+    .no-records {
+        padding: 20px;
+        text-align: center;
+        font-weight: bold;
+        color: #666;
+    }
+
+    @media print {
+        .filter-section, .print-btn, .report-header {
+            display: none;
+        }
+        .table-container {
+            margin: 0;
+            box-shadow: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="report-header">Jobcard Quotation Customer wise Report</div>
+
+<form method="get" class="filter-section">
+    <div class="filter-group">
+        <label>From Date</label>
+        <input type="date" name="from_date" value="{{ from_date }}">
+    </div>
+
+    <div class="filter-group">
+        <label>To Date</label>
+        <input type="date" name="to_date" value="{{ to_date }}">
+    </div>
+
+    <div class="filter-group">
+        <label>Customer Name</label>
+        <input type="text" 
+               name="customer_name" 
+               value="{{ customer_name }}" 
+               placeholder="Enter Customer Name"
+               autocomplete="off">
+    </div>
+
+    <button type="submit" class="search-btn">
+         Search
+    </button>
+    <button type="button" class="print-btn" onclick="window.print()" title="Print">🖨️</button>
+</form>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Date</th>
+                <th>Jobcard No</th>
+                <th>Customer Name</th>
+                <th>Particulars</th>
+                <th class="text-right">Quantity</th>
+                <th class="text-right">Confirmed Rate</th>
+                <th class="text-right">Amt</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if report_data %}
+                {% for data in report_data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ data.date|date:"d-m-Y" }}</td>
+                    <td>{{ data.jobcard_no }}</td>
+                    <td>{{ data.customer_name }}</td>
+                    <td>{{ data.particulars }}</td>
+                    <td class="text-right">{{ data.quantity|floatformat:2 }}</td>
+                    <td class="text-right">{{ data.confirmed_rate|floatformat:2 }}</td>
+                    <td class="text-right">{{ data.amt|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="total-row">
+                    <td colspan="5" class="text-right">Total</td>
+                    <td class="text-right">{{ report_data|length }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8" class="no-records">No Records!</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

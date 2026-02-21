@@ -1,171 +1,295 @@
-{%extends "nav.html"%}
-{%block title%}Printer Customer{%endblock%}
-{%block extra_head%}
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-{%endblock%}
-{%block content%}
+{% extends "nav.html" %}
+{% block title %}Printer Customer{% endblock %}
 
-<div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-4 sm:p-6">
+{% block extra_head %}
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
-<div class="max-w-[1600px] mx-auto space-y-6">
+<style>
+  @media print {
+    body * {
+      visibility: hidden;
+    }
 
-  <!-- ✅ HEADER -->
-  <div
-    class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600
-           rounded-2xl p-6 shadow-xl
-           flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+    #printArea,
+    #printArea * {
+      visibility: visible;
+    }
 
-    <div class="flex items-center gap-3">
-      <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
-        <i data-lucide="file-bar-chart" class="text-white w-6 h-6"></i>
+    #printArea {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+  }
+
+  /* CARD */
+  .cardBox {
+    background: rgba(255, 255, 255, .85);
+    backdrop-filter: blur(8px);
+    border-radius: 18px;
+    box-shadow: 0 16px 34px rgba(15, 23, 42, .08);
+    border: 1px solid rgba(226, 232, 240, .9);
+  }
+
+  /* INPUT */
+  .inputBox {
+    height: 56px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 0 16px;
+    outline: none;
+    width: 100%;
+    font-size: 18px;
+  }
+
+  .inputBox:focus {
+    border-color: #14b8a6;
+    box-shadow: 0 0 0 4px rgba(20, 184, 166, .15);
+  }
+
+  /* BUTTONS */
+  .btnBig {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 56px;
+    min-width: 220px;
+    padding: 0 30px;
+    border-radius: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .18s ease;
+  }
+
+  .btnBig svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .btnSearch {
+    background: #0f8b66;
+    color: #fff;
+  }
+
+  .btnReset {
+    background: #e5e7eb;
+    color: #111827;
+  }
+
+  /* TABLE */
+  .tbl thead th {
+    background: #f3f6f9;
+    font-weight: 800;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+  }
+
+  .tbl td {
+    border-bottom: 1px solid #eef2f7;
+  }
+
+  .emptyMsg {
+    padding: 20px 0;
+    text-align: center;
+    color: #64748b;
+    font-size: 16px;
+  }
+
+  /* ✅ ALERT (NEW) */
+  .alertBox {
+    display: none;
+    margin-bottom: 16px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    font-weight: 800;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(239, 68, 68, .25);
+    background: rgba(239, 68, 68, .10);
+    color: #991b1b;
+  }
+
+  .alertBox.show {
+    display: flex;
+  }
+
+  .alertBox svg {
+    width: 20px;
+    height: 20px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-6">
+  <div class="max-w-[1700px] mx-auto space-y-6" id="printArea">
+
+    <!-- ✅ FILTER : SINGLE LINE -->
+    <div class="cardBox p-6">
+
+      <!-- ✅ ALERT (NEW) -->
+      <div id="alertBox" class="alertBox">
+        <i data-lucide="alert-triangle"></i>
+        <span id="alertMsg">Message</span>
       </div>
 
-      <div>
-        <h1 class="text-2xl font-bold text-white">
-          Printer Jobcard Wise Report
-        </h1>
-        <p class="text-teal-100 text-sm">
-          Production summary by jobcard
-        </p>
+      <div class="flex items-end gap-6">
+
+        <!-- Jobcard -->
+        <div class="flex-1 max-w-[720px]">
+          <label class="text-sm text-slate-700 font-semibold">Jobcard No</label>
+          <input id="jobcardInput" class="inputBox mt-2" placeholder="Enter Jobcard No" />
+        </div>
+
+        <!-- ✅ Buttons group → LAST (right end) -->
+        <div class="ml-auto flex items-end gap-6">
+          <!-- Search -->
+          <button class="btnBig btnSearch" onclick="searchJobcard()">
+            <i data-lucide="search"></i>
+            Search
+          </button>
+
+          <!-- Reset -->
+          <button class="btnBig btnReset" onclick="resetJobcard()">
+            <i data-lucide="rotate-ccw"></i>
+            Reset
+          </button>
+        </div>
+
       </div>
     </div>
 
-    <button onclick="window.print()"
-      class="bg-white/20 text-white px-4 py-2 rounded-xl
-             flex items-center gap-2 hover:bg-white/30 transition">
-      <i data-lucide="printer" class="w-4 h-4"></i>
-      Print
-    </button>
-  </div>
+    <!-- ✅ TABLE -->
+    <div class="cardBox overflow-x-auto">
+      <table class="tbl w-full min-w-[1200px] text-sm">
+        <thead>
+          <tr>
+            <th class="px-4 py-4 text-left">S.No</th>
+            <th class="px-4 py-4 text-left">Date</th>
+            <th class="px-4 py-4 text-left">Jobcard No</th>
+            <th class="px-4 py-4 text-left">Shift</th>
+            <th class="px-4 py-4 text-left">Machine No</th>
+            <th class="px-4 py-4 text-left">Operator Name</th>
+            <th class="px-4 py-4 text-left">Particular</th>
+            <th class="px-4 py-4 text-right">Order Qty</th>
+            <th class="px-4 py-4 text-right">Product Qty</th>
+            <th class="px-4 py-4 text-right">Balance Qty</th>
+          </tr>
+        </thead>
 
-  <!-- ✅ FILTER + SMALL BUTTONS -->
-  <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6">
+        <tbody id="jobcardBody">
+          <tr>
+            <td colspan="10" class="emptyMsg">
+              Enter Jobcard No to view records
+            </td>
+          </tr>
+        </tbody>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-
-      <!-- Jobcard Input -->
-      <div>
-        <label class="text-sm text-slate-600 font-medium">
-          Jobcard No
-        </label>
-        <input id="jobcardInput"
-          placeholder="Enter Jobcard No"
-          class="w-full border rounded-lg px-3 py-2 mt-1">
-      </div>
-
-      <!-- Search Button (Small) -->
-      <div>
-        <button onclick="searchJobcard()"
-          class="w-full sm:w-auto bg-teal-600 text-white
-                 px-4 py-2 text-sm rounded-lg shadow
-                 hover:bg-teal-700 transition flex items-center gap-2">
-          <i data-lucide="search" class="w-4 h-4"></i>
-          Search
-        </button>
-      </div>
-
-      <!-- Reset Button (Small) -->
-      <div>
-        <button onclick="resetJobcard()"
-          class="w-full sm:w-auto bg-slate-500 text-white
-                 px-4 py-2 text-sm rounded-lg shadow
-                 hover:bg-slate-600 transition flex items-center gap-2">
-          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-          Reset
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ✅ TABLE -->
-  <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-x-auto">
-
-    <div class="p-4 border-b text-sm text-slate-600">
-      Jobcard No: <b id="jobcardTitle">All</b>
+        <tfoot class="font-extrabold">
+          <tr>
+            <td colspan="7" class="px-4 py-4 text-right">Total</td>
+            <td class="px-4 py-4 text-right" id="tOrder">0.00</td>
+            <td class="px-4 py-4 text-right" id="tProd">0.00</td>
+            <td class="px-4 py-4 text-right" id="tBal">0.00</td>
+          </tr>
+        </tfoot>
+      </table>
     </div>
 
-    <table id="jobcardTable" class="w-full text-sm min-w-[900px]">
-      <thead class="bg-slate-100">
-        <tr>
-          <th class="p-3 text-left">Date</th>
-          <th class="p-3 text-left">Shift</th>
-          <th class="p-3 text-left">Machine</th>
-          <th class="p-3 text-left">Operator</th>
-          <th class="p-3 text-left">Particulars</th>
-          <th class="p-3 text-right">Order Qty</th>
-          <th class="p-3 text-right">Product Qty</th>
-          <th class="p-3 text-right">Balance</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr class="border-t hover:bg-slate-50">
-          <td class="p-3">10-04-2024</td>
-          <td class="p-3">DAY</td>
-          <td class="p-3">GT-1</td>
-          <td class="p-3">SENTHIL</td>
-          <td class="p-3">2XL TOP</td>
-          <td class="p-3 text-right">225</td>
-          <td class="p-3 text-right">225</td>
-          <td class="p-3 text-right">0</td>
-        </tr>
-
-        <tr class="border-t hover:bg-slate-50">
-          <td class="p-3">10-04-2024</td>
-          <td class="p-3">DAY</td>
-          <td class="p-3">GT-1</td>
-          <td class="p-3">SENTHIL</td>
-          <td class="p-3">AOP BOTTOM</td>
-          <td class="p-3 text-right">3500</td>
-          <td class="p-3 text-right">3500</td>
-          <td class="p-3 text-right">0</td>
-        </tr>
-
-        <tr class="border-t hover:bg-slate-50">
-          <td class="p-3">10-04-2024</td>
-          <td class="p-3">DAY</td>
-          <td class="p-3">GT-1</td>
-          <td class="p-3">SENTHIL</td>
-          <td class="p-3">L TOP</td>
-          <td class="p-3 text-right">500</td>
-          <td class="p-3 text-right">500</td>
-          <td class="p-3 text-right">0</td>
-        </tr>
-      </tbody>
-
-      <tfoot class="bg-slate-100 font-semibold">
-        <tr>
-          <td colspan="5" class="p-3 text-right">Total</td>
-          <td class="p-3 text-right">6375</td>
-          <td class="p-3 text-right">6375</td>
-          <td class="p-3 text-right">0</td>
-        </tr>
-      </tfoot>
-    </table>
   </div>
-
 </div>
-</div>
-{%endblock%}
-{%block extra_js%}
+{% endblock %}
 
-<!-- ✅ SCRIPT -->
+{% block extra_js %}
 <script>
-  lucide.createIcons()
+  lucide.createIcons();
 
-  // ✅ Search Function
+  // Demo Data
+  const DATA = [
+    { date: "10-04-2024", job: "JC-2404-0004", shift: "DAY", machine: "GT-1", op: "SENTHIL", part: "2XL TOP", oq: 225, pq: 225 },
+    { date: "10-04-2024", job: "JC-2404-0004", shift: "DAY", machine: "GT-1", op: "SENTHIL", part: "AOP BOTTOM", oq: 3500, pq: 3500 },
+    { date: "10-04-2024", job: "JC-2404-0004", shift: "DAY", machine: "GT-1", op: "SENTHIL", part: "L TOP", oq: 500, pq: 500 },
+  ];
+
+  function showAlert(msg) {
+    const box = document.getElementById("alertBox");
+    const txt = document.getElementById("alertMsg");
+    txt.innerText = msg;
+    box.classList.add("show");
+    // auto hide after 2.5 sec
+    clearTimeout(window.__alertTimer);
+    window.__alertTimer = setTimeout(() => box.classList.remove("show"), 2500);
+  }
+
   function searchJobcard() {
-    let input = document.getElementById("jobcardInput").value.trim()
-    document.getElementById("jobcardTitle").innerText = input || "All"
+    const val = jobcardInput.value.trim();
+    const body = jobcardBody;
+    body.innerHTML = "";
+
+    // ✅ EMPTY → ALERT
+    if (!val) {
+      showAlert("Please enter Jobcard No");
+      body.innerHTML = `<tr><td colspan="10" class="emptyMsg">Enter Jobcard No to view records</td></tr>`;
+      setTotal(0, 0, 0);
+      return;
+    }
+
+    let rows = DATA.filter(d => d.job === val);
+
+    // ✅ WRONG → ALERT
+    if (rows.length === 0) {
+      showAlert("Invalid Jobcard No");
+      body.innerHTML = `<tr><td colspan="10" class="emptyMsg">No records found for <b>${val}</b></td></tr>`;
+      setTotal(0, 0, 0);
+      return;
+    }
+
+    let to = 0, tp = 0, tb = 0;
+
+    rows.forEach((r, i) => {
+      let bal = r.oq - r.pq;
+      to += r.oq; tp += r.pq; tb += bal;
+
+      body.innerHTML += `
+      <tr>
+        <td class="px-4 py-4">${i + 1}</td>
+        <td class="px-4 py-4">${r.date}</td>
+        <td class="px-4 py-4">${r.job}</td>
+        <td class="px-4 py-4">${r.shift}</td>
+        <td class="px-4 py-4">${r.machine}</td>
+        <td class="px-4 py-4">${r.op}</td>
+        <td class="px-4 py-4">${r.part}</td>
+        <td class="px-4 py-4 text-right">${r.oq.toFixed(2)}</td>
+        <td class="px-4 py-4 text-right">${r.pq.toFixed(2)}</td>
+        <td class="px-4 py-4 text-right">${bal.toFixed(2)}</td>
+      </tr>`;
+    });
+
+    setTotal(to, tp, tb);
   }
 
-  // ✅ Reset Function
   function resetJobcard() {
-    document.getElementById("jobcardInput").value = ""
-    document.getElementById("jobcardTitle").innerText = "All"
-  }
-</script>
-{%endblock%}
+    jobcardInput.value = "";
+    document.getElementById("alertBox").classList.remove("show");
 
+    jobcardBody.innerHTML = `<tr><td colspan="10" class="emptyMsg">
+      Enter Jobcard No to view records</td></tr>`;
+
+    setTotal(0, 0, 0);
+  }
+
+  function setTotal(o, p, b) {
+    tOrder.innerText = o.toFixed(2);
+    tProd.innerText = p.toFixed(2);
+    tBal.innerText = b.toFixed(2);
+  }
+
+  // ✅ optional: Enter key press → search
+  jobcardInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") searchJobcard();
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "nav.html" %}
+{% block content %}
+
+<div style="padding:20px; background:white; margin:20px; border:1px solid #ccc;">
+  <h2>Quotation Details</h2>
+  <hr>
+
+  <p><b>Date:</b> {{ quotation.date }}</p>
+  <p><b>Quotation No:</b> {{ quotation.quotation_no }}</p>
+  <p><b>Created By:</b> {{ quotation.created_by }}</p>
+  <p><b>Customer Name:</b> {{ quotation.customer_name }}</p>
+  <p><b>Job Type:</b> {{ quotation.job_type }}</p>
+  <p><b>Fabric Type:</b> {{ quotation.fabric_type }}</p>
+  <p><b>Total Qty:</b> {{ quotation.total_qty }}</p>
+  <p><b>Total Value:</b> {{ quotation.total_value }}</p>
+
+  <br>
+  <a href="{% url 'quotation_list' %}" style="padding:8px 15px; background:#7cbf00; color:white; text-decoration:none;">
+    Back
+  </a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,1857 @@
+{% extends "nav.html" %}
+{% block title %}Job Card List{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* * {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+} */
+
+.joblist-page {
+    background-color:#f8f9fa;
+}
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background-color: #f8f9fa;
+padding: 0px;
+
+}
+.main-card {
+width: 100%;
+max-width: 100%;
+margin: 0 ;
+background-color: #fff;
+border-radius: 0;
+box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+/* overflow: hidden; */
+ min-height: calc(100vh - 0px);
+}
+.header {
+background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+color: #fff;
+padding: 9px 10px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+z-index: 9999
+}
+/* .container {
+    overflow: visible !important;
+} */
+.header-left {
+display: flex;
+align-items: center;
+gap: 15px;
+}
+.header-icon {
+background-color: rgba(255, 255, 255, 0.2);
+padding: 8px;
+border-radius: 8px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.header-icon svg {
+width: 20px;
+height: 20px;
+}
+.header-title h1 {
+font-size: 15px;
+font-weight: 600;
+margin-bottom: 2px;
+}
+.header-title p {
+font-size: 8px;
+opacity: .9;
+}
+.btn-new-jobcard {
+background: #fff;
+color: #1abc9c;
+border: none;
+padding: 8px 14px;
+border-radius: 6px;
+font-size: 11px;
+font-weight: 600;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 8px;
+transition: all .3s;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.btn-new-jobcard:hover {
+transform: translateY(-2px);
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+.btn-new-jobcard svg {
+width: 14px;
+height: 15px;
+}
+.filter-section {
+padding: 15px 10px 10px 10px;
+background: #fff;
+border-bottom: 1px solid #ecf0f1;
+}
+.filter-row {
+display: grid;
+grid-template-columns: repeat(7, 1fr);
+gap: 8px;
+margin-bottom: 10px;
+align-items: end;
+}
+.form-group {
+display: flex;
+flex-direction: column;
+}
+.form-group label {
+font-weight: 600;
+color: #2c3e50;
+margin-bottom: 5px;
+font-size: 13px;
+}
+.form-group input,
+.form-group select {
+padding: 8px 12px;
+border: 1px solid #ddd;
+border-radius: 6px;
+font-size: 14px;
+transition: all .3s;
+}
+.form-group input:focus,
+.form-group select:focus {
+outline: none;
+border-color: #1abc9c;
+box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.1);
+}
+.filter-actions {
+display: flex;
+gap: 10px;
+justify-content: flex-end;
+align-items: center;
+margin-top: 8px;
+margin-bottom: 0;
+}
+.btn-icon-action {
+background: #1abc9c;
+color: #fff;
+border: none;
+width: 45px;
+height: 45px;
+border-radius: 6px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all .3s;
+}
+.btn-icon-action:hover {
+background: #16a085;
+transform: translateY(-2px);
+}
+.btn-icon-action svg {
+width: 20px;
+height: 20px;
+}
+.btn-excel {
+background: #27ae60;
+}
+.btn-excel:hover {
+background: #229954;
+}
+.btn-print {
+background: #34495e;
+}
+.btn-print:hover {
+background: #2c3e50;
+}
+.container {
+padding: 15px 10px;
+}
+.form-row {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 10px;
+margin-bottom: 10px;
+}
+.required {
+color: #e74c3c;
+margin-left: 3px;
+}
+.input-with-button {
+display: flex;
+gap: 8px;
+}
+.input-with-button input {
+flex: 1;
+}
+.btn-icon {
+background: #1abc9c;
+color: #fff;
+border: none;
+padding: 10px 15px;
+border-radius: 6px;
+cursor: pointer;
+font-size: 14px;
+transition: background-color .3s;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.btn-icon:hover {
+background: #16a085;
+}
+.btn-icon svg {
+width: 18px;
+height: 18px;
+}
+.table-section {
+margin-top: 20px;
+overflow-x: auto;
+}
+table {
+width: 100%;
+border-collapse: collapse;
+margin-bottom: 20px;
+font-size: 13px;
+}
+thead {
+background: #1abc9c;
+color: #fff;
+}
+th,
+td {
+padding: 8px 10px;
+text-align: left;
+border: 1px solid #ddd;
+}
+th {
+font-weight: 600;
+white-space: nowrap;
+font-size: 13px;
+}
+td {
+font-size: 12.5px;
+}
+td input {
+width: 100%;
+padding: 6px 8px;
+border: 1px solid #ddd;
+border-radius: 4px;
+font-size: 12px;
+}
+td input:focus {
+outline: none;
+border-color: #1abc9c;
+}
+.btn-add {
+background: #1abc9c;
+color: #fff;
+border: none;
+padding: 10px 20px;
+border-radius: 4px;
+cursor: pointer;
+font-size: 13px;
+margin-bottom: 20px;
+display: inline-flex;
+align-items: center;
+gap: 8px;
+transition: all .3s;
+}
+.btn-add:hover {
+background: #16a085;
+transform: translateY(-2px);
+}
+.btn-add svg {
+width: 16px;
+height: 16px;
+}
+.btn-delete {
+background: #e74c3c;
+color: #fff;
+border: none;
+padding: 6px 12px;
+border-radius: 4px;
+cursor: pointer;
+font-size: 12px;
+transition: all .3s;
+}
+.btn-delete:hover {
+background: #c0392b;
+transform: scale(1.05);
+}
+.total-row {
+background: #f8f9fa;
+font-weight: 600;
+}
+.total-row td {
+border-top: 2px solid #2c3e50;
+}
+.total-label {
+text-align: right;
+padding-right: 20px;
+}
+.no-records {
+text-align: center;
+padding: 40px;
+color: #7f8c8d;
+}
+.no-records svg {
+width: 48px;
+height: 48px;
+margin-bottom: 10px;
+opacity: .5;
+}
+.page-section {
+display: none;
+}
+.page-section.active {
+display: block;
+}
+.jobcard-number {
+background: #f8f9fa;
+padding: 15px 20px;
+border-radius: 6px;
+margin-bottom: 20px;
+font-weight: 600;
+color: #2c3e50;
+font-size: 16px;
+}
+.jobcard-number span {
+color: #e74c3c;
+font-weight: 700;
+}
+.action-buttons {
+display: flex;
+gap: 5px;
+}
+.btn-icon-action-small {
+background: #95a5a6;
+color: #fff;
+border: none;
+padding: 4px;
+cursor: pointer;
+border-radius: 4px;
+transition: all .3s;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.btn-icon-action-small:hover {
+background: #7f8c8d;
+}
+.btn-icon-action-small svg {
+width: 16px;
+height: 16px;
+}
+.approval-text {
+font-size: 12px;
+font-weight: 500;
+color: #2c3e50;
+}
+.jobcard-inline {
+display: flex;
+gap: 10px;
+align-items: center;
+}
+.jobcard-inline input {
+flex: 1;
+}
+.items-table td input {
+border: none !important;
+border-radius: 0 !important;
+background: transparent !important;
+padding: 0 !important;
+height: 24px;
+box-shadow: none !important;
+border-bottom: 1px solid #d9dde3 !important;
+}
+.items-table td input:focus {
+outline: none !important;
+border-bottom: 2px solid #1abc9c !important;
+}
+.items-table td {
+vertical-align: middle;
+}
+.action-icons {
+display: flex;
+gap: 5px;
+justify-content: center;
+align-items: center;
+}
+.btn-delete-icon {
+background: #e74c3c;
+color: #fff;
+border: none;
+width: 32px;
+height: 32px;
+border-radius: 6px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.3s;
+padding: 0;
+}
+.btn-delete-icon:hover {
+background: #c0392b;
+transform: scale(1.1);
+}
+.btn-delete-icon svg {
+width: 18px;
+height: 18px;
+}
+.btn-add-icon {
+background: #1abc9c;
+color: #fff;
+border: none;
+width: 32px;
+height: 32px;
+border-radius: 6px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.3s;
+padding: 0;
+font-size: 20px;
+font-weight: bold;
+}
+.btn-add-icon:hover {
+background: #16a085;
+transform: scale(1.1);
+}
+.btn-submit-inline {
+background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+color: #fff;
+border: none;
+padding: 8px 24px;
+font-size: 13px;
+font-weight: 600;
+border-radius: 6px;
+cursor: pointer;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+transition: transform .2s;
+}
+.btn-submit-inline:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(26, 188, 156, 0.3);
+}
+.btn-back-inline {
+background: #95a5a6;
+color: #fff;
+border: none;
+padding: 8px 16px;
+border-radius: 6px;
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+transition: background-color .3s;
+}
+.btn-back-inline:hover {
+background: #7f8c8d;
+}
+.btns-right {
+grid-column: 3 / -1;
+justify-self: end;
+display: flex !important;
+flex-direction: row !important;
+align-items: flex-end !important;
+justify-content: flex-end !important;
+gap: 10px;
+}
+
+/* ✅ Remove number input arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Print Modal Styles */
+.print-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+}
+
+.print-modal-content {
+    background-color: #fff;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 900px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.print-modal-header {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: #fff;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px 8px 0 0;
+}
+
+.print-modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.btn-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.print-modal-body {
+    padding: 20px;
+}
+
+.print-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #ecf0f1;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-print-action,
+.btn-cancel-action {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-print-action {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: #fff;
+}
+
+.btn-print-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 188, 156, 0.4);
+}
+
+.btn-cancel-action {
+    background: #95a5a6;
+    color: #fff;
+}
+
+.btn-cancel-action:hover {
+    background: #7f8c8d;
+}
+
+/* Print Report Styles */
+.print-header {
+    text-align: center;
+    border-bottom: 2px solid #1abc9c;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.print-logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}
+
+.print-company-name {
+    color: #1abc9c;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+    text-transform: uppercase;
+}
+
+.print-address {
+    font-size: 12px;
+    color: #2c3e50;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.print-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #2c3e50;
+}
+
+.print-filters {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 4px;
+}
+
+.filter-value {
+    color: #34495e;
+}
+
+.print-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 15px;
+}
+
+.print-table th,
+.print-table td {
+    border: 1px solid #bdc3c7;
+    padding: 8px;
+    text-align: left;
+}
+
+.print-table th {
+    background: #1abc9c;
+    color: #fff;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.print-table tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.print-table tfoot {
+    font-weight: bold;
+    background: #ecf0f1;
+}
+
+.print-footer-info {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #bdc3c7;
+    font-size: 11px;
+    text-align: right;
+    color: #7f8c8d;
+    line-height: 1.8;
+}
+
+/* Print Media Query */
+@media print {
+    .print-modal-header,
+    .print-modal-footer {
+        display: none !important;
+    }
+    
+    .print-modal-content {
+        margin: 0;
+        width: 100%;
+        box-shadow: none;
+    }
+    
+    .print-modal {
+        position: static;
+        background: #fff;
+    }
+    
+    body * {
+        visibility: hidden;
+    }
+    
+    #printPreviewModal,
+    #printPreviewModal * {
+        visibility: visible;
+    }
+    
+    #printPreviewModal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- </head>
+<body> -->
+<div class="main-card">
+<div class="header">
+<div class="header-left">
+<div class="header-icon">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+</svg>
+</div>
+<div class="header-title">
+<h1 id="pageTitle">Job Creation List</h1>
+<p>Manage and track all jobcards</p>
+</div>
+</div>
+<button class="btn-new-jobcard" onclick="showFormView()">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+</svg>
+New Jobcard
+</button>
+</div>
+
+<div id="listView" class="page-section active">
+<div class="filter-section">
+<div class="filter-row">
+<div class="form-group">
+<label>Name</label>
+<input type="text" id="searchName" placeholder="Customer name" />
+</div>
+<div class="form-group">
+<label>From Date</label>
+<input type="date" id="fromDate" />
+</div>
+<div class="form-group">
+<label>To Date</label>
+<input type="date" id="toDate" />
+</div>
+<div class="form-group">
+<label>Jobtype</label>
+<select id="searchJobType">
+<option value="All">All</option>
+<option value="Printing">Production</option>
+<option value="Cutting">Reproduction</option>
+<option value="Stitching">Sticker</option>
+<option value="Finishing">Sample</option>
+</select>
+</div>
+<div class="form-group">
+<label>Status</label>
+<select id="searchStatus">
+<option value="Select">Select</option>
+<option value="Pending">Pending</option>
+<option value="Completed">Completed</option>
+<option value="In Progress">In Progress</option>
+</select>
+</div>
+<div class="form-group">
+<label>Fabric Type</label>
+<select id="searchFabricType">
+<option value="All">All</option>
+<option value="domestic">Domestic</option>
+<option value="Extra large">Extra Large</option>
+<option value="Extra Large(Empty)">Extra Large(Empty)</option>
+<option value="Extra Small">Extra Small</option>
+<option value="Extra Small(Empty)">Extra Small(Empty)</option>
+<option value="F Emboss Gel Embosing">F Emboss Gel Embosing</option>
+<option value="F Roll Form">F Roll Form</option>
+<option value="Garment Domestic">Garment Domestic</option>
+</select>
+</div>
+<div class="form-group">
+<label>Jobcard No</label>
+<div class="jobcard-inline">
+<input type="text" id="searchJobcardNo" placeholder="JC-YYMM-0001" />
+<button class="btn-icon-action" onclick="searchJobcards()" title="Search">
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+</svg>
+</button>
+<button class="btn-icon-action" onclick="resetSearch()" title="Reset" style="background-color:#95a5a6;">
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+<path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 1 1 .908-.418A6 6 0 1 1 8 2v1z" />
+<path d="M8 4H5.5a.5.5 0 0 1 0-1H8a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4z" />
+</svg>
+</button>
+</div>
+</div>
+</div>
+<div class="filter-actions">
+<button class="btn-icon-action btn-excel" onclick="exportToExcel()" title="Export to Excel">
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+<path d="M7.05 10.781c.172-.157.432-.301.75-.301.669 0 1.031.344 1.031 1.031v2.219H7.05v-2.949zm5.281-4.438v2.219h-1.688V6.343h1.688zm-5.281 0v2.219H5.363V6.343h1.687z" />
+<path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
+</svg>
+</button>
+<button class="btn-icon-action btn-print" onclick="showPrintPreview()" title="Print">
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+<path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+<path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z" />
+</svg>
+</button>
+</div>
+</div>
+<div class="container">
+<table>
+<thead>
+<tr>
+<th>S.No</th>
+<th>Date</th>
+<th>Jobcard No</th>
+<th>Customer</th>
+<th>Created By</th>
+<th>Job Type</th>
+<th>Fabric Type</th>
+<th>Total Qty</th>
+<th>Total Value</th>
+<th>Avg Rate</th>
+<th>L-Confirm Rate</th>
+<th>H-Confirm Rate</th>
+<th>Approval</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="jobcardsTableBody"></tbody>
+</table>
+<div id="noRecords" class="no-records" style="display:none;">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+</svg>
+<p>No Records!</p>
+</div>
+</div>
+</div>
+
+<div id="formView" class="page-section">
+<div class="container">
+<div class="jobcard-number">
+Jobcard No: <span id="jobcardNoDisplay">Auto Generated</span>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>Date</label>
+<input type="datetime-local" id="formDate" />
+</div>
+<div class="form-group">
+<label>Order By</label>
+<input type="text" id="orderBy" placeholder="Enter order by" />
+</div>
+<div class="form-group">
+<label>Customer Name <span class="required">*</span></label>
+<div class="input-with-button">
+<input type="text" id="customerName" placeholder="Type customer name..." />
+<button class="btn-icon" onclick="openPartyModal()" title="Create New Party">
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+<path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+<path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
+</svg>
+</button>
+</div>
+</div>
+<div class="form-group">
+<label>Style No <span class="required">*</span></label>
+<input type="text" id="styleNo" placeholder="Enter style number" />
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>Job Created By <span class="required">*</span></label>
+<input type="text" id="jobCreatedBy" value="admin" readonly />
+</div>
+<div class="form-group">
+<label>Style Name <span class="required">*</span></label>
+<input type="text" id="styleName" placeholder="Enter style name" />
+</div>
+<div class="form-group">
+<label>Customer PO No <span class="required">*</span></label>
+<input type="text" id="customerPONo" placeholder="Enter PO number" />
+</div>
+<div class="form-group">
+<label>Combo <span class="required">*</span></label>
+<input type="text" id="combo" placeholder="Enter combo" />
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>Job Type</label>
+<select id="jobType">
+<option value="">Select</option>
+<option value="Printing">Production</option>
+<option value="Cutting">Reproduction</option>
+<option value="Stitching">Sticker</option>
+<option value="Finishing">Sample</option>
+</select>
+</div>
+<div class="form-group">
+<label>Image Upload</label>
+<input type="file" id="imageUpload" accept="image/*" />
+</div>
+<div class="form-group">
+  <label>Designer Name <span class="required">*</span></label>
+
+  <input type="text" id="designerName" name="designerName" placeholder="Enter Designer Name">
+</div>
+<div class="form-group">
+<label>HSN Code</label>
+<input type="text" id="hsnCode" value="998821" readonly />
+</div>
+</div>
+<div class="table-section">
+<table class="items-table">
+<thead>
+<tr>
+<th style="width:50px;">S.No</th>
+<th>Particulars</th>
+<th>Width</th>
+<th>Height</th>
+<th>Rate</th>
+<th>Amt</th>
+<th>Confirmed Amt</th>
+<th>Confirmed rate</th>
+<th>Qty</th>
+<th>Value</th>
+<th style="width:100px;">Action</th>
+</tr>
+</thead>
+<tbody id="tableBody">
+<tr>
+<td>1</td>
+<td><input type="text" class="particulars" placeholder="Enter particulars" /></td>
+<td><input type="number" class="width" placeholder="Width" step="any" /></td>
+<td><input type="number" class="height" placeholder="Height" step="any" /></td>
+<td><input type="number" class="rate" placeholder="0.00" step="0.0001" /></td>
+<td><input type="number" class="amt" value="0.00" readonly /></td>
+<td><input type="number" class="confirmed-amt" placeholder="0.00" step="0.01" /></td>
+<td><input type="number" class="confirmed-rate" value="0.0000" readonly /></td>
+<td><input type="number" class="qty" placeholder="1" value="1" step="any" /></td>
+<td><input type="number" class="value" value="0.00" readonly /></td>
+<td>
+<div class="action-icons">
+<button class="btn-add-icon" onclick="addRow()" title="Add Row">+</button>
+<button class="btn-delete-icon" onclick="deleteRow(this)" title="Delete">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+</svg>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr class="total-row">
+<td colspan="5" class="total-label">Total</td>
+<td><input type="number" id="totalAmt" value="0.00" readonly /></td>
+<td><input type="number" id="totalConfirmedAmt" value="0.00" readonly /></td>
+<td colspan="2"></td>
+<td><input type="number" id="totalValue" value="0.00" readonly /></td>
+<td></td>
+</tr>
+</tfoot>
+</table>
+</div>
+<div class="form-row" style="margin-top: 20px; align-items: end;">
+<div class="form-group">
+<label>New Job Card Mistake</label>
+<input type="text" id="mistakeDetails" placeholder="Enter mistake details" style="font-size: 12px; padding: 6px 8px;" />
+</div>
+<div class="form-group">
+<label>Reason</label>
+<input type="text" id="reason" placeholder="Enter reason" style="font-size: 12px; padding: 6px 8px;" />
+</div>
+<div class="form-group btns-right">
+<button class="btn-back-inline" onclick="showListView()">Back to List</button>
+<button class="btn-submit-inline" onclick="submitJobcard()">SUBMIT</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Print Preview Modal -->
+<div id="printPreviewModal" class="print-modal" style="display:none;">
+    <div class="print-modal-content">
+        <div class="print-modal-header">
+            <h2>Jobcard Creation Print</h2>
+            <button class="btn-close" onclick="closePrintPreview()">×</button>
+        </div>
+        <div class="print-modal-body" id="printPreviewContent">
+            <!-- Content will be dynamically generated -->
+        </div>
+        <div class="print-modal-footer">
+            <button class="btn-print-action" onclick="printReport()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                    <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+                </svg>
+                Print Report
+            </button>
+            <button class="btn-cancel-action" onclick="closePrintPreview()">Close</button>
+        </div>
+    </div>
+</div>
+{% include 'jobcard/party_modal.html' %}
+{% endblock %}
+
+{% block extra_js %}
+
+<!-- ✅ INCLUDE PARTY MODAL HERE -->
+<!-- {% include 'jobcard/party_modal.html' %} -->
+
+<script>
+// ✅ CSRF Token helper function
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+let editingIndex = -1;
+
+document.addEventListener('DOMContentLoaded', function () {
+    const now = new Date();
+    document.getElementById('formDate').value = now.toISOString().slice(0, 16);
+    generateJobcardNumber();
+    loadJobcardsTable();
+});
+
+async function generateJobcardNumber() {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(-2);
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const prefix = `JC-${year}${month}-`;
+    
+    try {
+        // Fetch existing jobcards to find the next sequence number
+        const response = await fetch('/api/jobcards/');
+        if (response.ok) {
+            const data = await response.json();
+            const jobcards = data.jobcards || [];
+            
+            // Filter jobcards for current month and extract sequence numbers
+            const currentMonthCards = jobcards.filter(jc => 
+                jc.jobcardNo && jc.jobcardNo.startsWith(prefix)
+            );
+            
+            // Find the highest sequence number
+            let maxSequence = 0;
+            currentMonthCards.forEach(jc => {
+                const parts = jc.jobcardNo.split('-');
+                if (parts.length === 3) {
+                    const seq = parseInt(parts[2], 10);
+                    if (!isNaN(seq) && seq > maxSequence) {
+                        maxSequence = seq;
+                    }
+                }
+            });
+            
+            // Generate next sequence number
+            const nextSequence = String(maxSequence + 1).padStart(4, '0');
+            const jobcardNo = `${prefix}${nextSequence}`;
+            document.getElementById('jobcardNoDisplay').textContent = jobcardNo;
+            return jobcardNo;
+        }
+    } catch (error) {
+        console.error('Error generating jobcard number:', error);
+    }
+    
+    // Fallback to 0001 if API call fails
+    const jobcardNo = `${prefix}0001`;
+    document.getElementById('jobcardNoDisplay').textContent = jobcardNo;
+    return jobcardNo;
+}
+
+function showListView() {
+    document.getElementById('listView').classList.add('active');
+    document.getElementById('formView').classList.remove('active');
+    document.getElementById('pageTitle').textContent = 'Job Creation List';
+    loadJobcardsTable();
+}
+
+function showFormView() {
+    document.getElementById('listView').classList.remove('active');
+    document.getElementById('formView').classList.add('active');
+    document.getElementById('pageTitle').textContent = 'Jobcard Creation Form';
+    editingIndex = -1;
+    resetForm();
+}
+
+function resetForm() {
+    document.getElementById('formDate').value = new Date().toISOString().slice(0, 16);
+    document.getElementById('orderBy').value = '';
+    document.getElementById('customerName').value = '';
+    document.getElementById('styleNo').value = '';
+    document.getElementById('jobCreatedBy').value = 'admin';
+    document.getElementById('styleName').value = '';
+    document.getElementById('customerPONo').value = '';
+    document.getElementById('combo').value = '';
+    document.getElementById('jobType').value = '';
+    document.getElementById('designerName').value = '';
+    document.getElementById('mistakeDetails').value = '';
+    document.getElementById('reason').value = '';
+    document.getElementById('imageUpload').value = '';
+    
+    document.getElementById('tableBody').innerHTML = `
+    <tr>
+    <td>1</td>
+    <td><input type="text" class="particulars" placeholder="Enter particulars"></td>
+    <td><input type="number" class="width" placeholder="Width" step="any"></td>
+    <td><input type="number" class="height" placeholder="Height" step="any"></td>
+    <td><input type="number" class="rate" placeholder="0.00" step="0.0001"></td>
+    <td><input type="number" class="amt" value="0.00" readonly></td>
+    <td><input type="number" class="confirmed-amt" placeholder="0.00" step="0.01"></td>
+    <td><input type="number" class="confirmed-rate" value="0.0000" readonly></td>
+    <td><input type="number" class="qty" placeholder="1" value="1" step="any"></td>
+    <td><input type="number" class="value" value="0.00" readonly></td>
+    <td>
+    <div class="action-icons">
+    <button class="btn-add-icon" onclick="addRow()" title="Add Row">+</button>
+    <button class="btn-delete-icon" onclick="deleteRow(this)" title="Delete">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+    </svg>
+    </button>
+    </div>
+    </td>
+    </tr>`;
+    
+    document.getElementById('totalAmt').value = '0.00';
+    document.getElementById('totalConfirmedAmt').value = '0.00';
+    document.getElementById('totalValue').value = '0.00';
+    attachCalculationEvents();
+    generateJobcardNumber();
+}
+
+// ✅ FIXED: Correct URL path
+async function loadJobcardsTable() {
+    try {
+        const response = await fetch('/api/jobcards/');  // ✅ Changed from /jobcard/api/jobcards/
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Server response:', errorText);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        const jobcards = data.jobcards;
+        
+        const tbody = document.getElementById('jobcardsTableBody');
+        const noRecords = document.getElementById('noRecords');
+        
+        if (!jobcards || jobcards.length === 0) {
+            tbody.innerHTML = '';
+            noRecords.style.display = 'block';
+            return;
+        }
+        
+        noRecords.style.display = 'none';
+        tbody.innerHTML = '';
+        
+        jobcards.forEach((jobcard, index) => {
+            const row = document.createElement('tr');
+            const date = jobcard.date ? new Date(jobcard.date).toLocaleDateString('en-GB') : '';
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${date}</td>
+                <td>${jobcard.jobcardNo || ''}</td>
+                <td>${jobcard.customerName || ''}</td>
+                <td>${jobcard.jobCreatedBy || 'N/A'}</td>
+                <td>${jobcard.jobType || 'N/A'}</td>
+                <td>${jobcard.fabricType || 'N/A'}</td>
+                <td>${jobcard.totalQty || 0}</td>
+                <td>${(jobcard.totalValue || 0).toFixed(2)}</td>
+                <td>${(jobcard.avgRate || 0).toFixed(2)}</td>
+                <td>${(jobcard.lConfirmRate || 0).toFixed(2)}</td>
+                <td>${(jobcard.hConfirmRate || 0).toFixed(2)}</td>
+                <td><span class="approval-text">${jobcard.approval || 'Pending'}</span></td>
+                <td class="action-buttons">
+<button class="btn-icon-action-small btn-view" onclick="viewJobcard(${jobcard.id})" title="View">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    </svg>
+</button>
+<button class="btn-icon-action-small btn-edit" onclick="editJobcard(${jobcard.id})" title="Edit">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+</button>
+<button class="btn-icon-action-small btn-delete" onclick="deleteJobcard(${jobcard.id})" title="Delete">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+    </svg>
+</button>
+</td>
+            `;
+            tbody.appendChild(row);
+        });
+     } catch (error) {
+        console.error('Error loading jobcards:', error);
+    }
+}
+
+// ✅ FIXED: Correct URL path and better error handling
+async function submitJobcard() {
+    const requiredFields = ['customerName', 'styleNo', 'jobCreatedBy', 'styleName', 'customerPONo', 'combo', 'designerName'];
+    for (let field of requiredFields) {
+        if (!document.getElementById(field).value.trim()) {
+            alert('Please fill all required fields');
+            return;
+        }
+    }
+    
+    const tableRows = [];
+    document.querySelectorAll('#tableBody tr').forEach(row => {
+        const particulars = row.querySelector('.particulars').value;
+        const width = parseFloat(row.querySelector('.width').value) || 0;
+        const height = parseFloat(row.querySelector('.height').value) || 0;
+        const rate = parseFloat(row.querySelector('.rate').value) || 0;
+        const confirmedAmt = parseFloat(row.querySelector('.confirmed-amt').value) || 0;
+        const qty = parseFloat(row.querySelector('.qty').value) || 1;
+        
+        const sqInch = width * height;
+        const amt = sqInch * rate;
+        const confirmedRate = sqInch !== 0 ? confirmedAmt / sqInch : 0;
+        const value = confirmedAmt * qty;
+        
+        if (particulars || width || height || rate || qty) {
+            tableRows.push({
+                particulars,
+                width,
+                height,
+                rate,
+                qty,
+                sqInch: parseFloat(sqInch.toFixed(2)),
+                amt: parseFloat(amt.toFixed(2)),
+                confirmedAmt: parseFloat(confirmedAmt.toFixed(2)),
+                confirmedRate: parseFloat(confirmedRate.toFixed(4)),
+                value: parseFloat(value.toFixed(2))
+            });
+        }
+    });
+    
+    if (tableRows.length === 0) {
+        alert('Please add at least one row in the table');
+        return;
+    }
+    
+    let totalQty = 0;
+    let totalValue = 0;
+    let totalRate = 0;
+    tableRows.forEach(r => {
+        totalQty += r.qty;
+        totalValue += r.value;
+        totalRate += r.rate;
+    });
+    const avgRate = tableRows.length > 0 ? totalRate / tableRows.length : 0;
+    
+    const jobcardData = {
+        jobcardNo: document.getElementById('jobcardNoDisplay').textContent,
+        date: document.getElementById('formDate').value,
+        orderBy: document.getElementById('orderBy').value,
+        customerName: document.getElementById('customerName').value,
+        styleNo: document.getElementById('styleNo').value,
+        jobCreatedBy: document.getElementById('jobCreatedBy').value,
+        styleName: document.getElementById('styleName').value,
+        customerPONo: document.getElementById('customerPONo').value,
+        combo: document.getElementById('combo').value,
+        jobType: document.getElementById('jobType').value,
+        fabricType: document.getElementById('searchFabricType').value || 'N/A',
+        designerName: document.getElementById('designerName').value,
+        hsnCode: document.getElementById('hsnCode').value,
+        mistakeDetails: document.getElementById('mistakeDetails').value,
+        reason: document.getElementById('reason').value,
+        items: tableRows,
+        totalQty,
+        totalValue: parseFloat(totalValue.toFixed(2)),
+        avgRate: parseFloat(avgRate.toFixed(2)),
+        lConfirmRate: '0.00',
+        hConfirmRate: '0.00',
+        approval: 'Pending',
+        status: 'Pending'
+    };
+    
+    console.log('Sending data:', jobcardData);
+    
+    try {
+        const response = await fetch('/api/jobcards/create/', {  // ✅ Changed from /jobcard/api/jobcards/create/
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(jobcardData)
+        });
+        
+        // Check content type
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            console.error('Received non-JSON response:', text);
+            throw new Error('Server returned HTML instead of JSON. Check if the URL is correct.');
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Jobcard submitted successfully!');
+            showListView();
+        } else {
+            alert('Error: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Submit error:', error);
+        alert('Error submitting jobcard: ' + error.message);
+    }
+}
+
+// ✅ FIXED: Correct URL path
+async function searchJobcards() {
+    const searchName = document.getElementById('searchName').value.toLowerCase();
+    const fromDate = document.getElementById('fromDate').value;
+    const toDate = document.getElementById('toDate').value;
+    const jobType = document.getElementById('searchJobType').value;
+    const status = document.getElementById('searchStatus').value;
+    const jobcardNo = document.getElementById('searchJobcardNo').value.toLowerCase();
+    
+    try {
+        const response = await fetch('/api/jobcards/');  // ✅ Changed from /jobcard/api/jobcards/
+        const data = await response.json();
+        let jobcards = data.jobcards;
+        
+        const filtered = jobcards.filter(jobcard => {
+            let match = true;
+            if (searchName && !jobcard.customerName?.toLowerCase().includes(searchName)) match = false;
+            if (fromDate && jobcard.date < fromDate) match = false;
+            if (toDate && jobcard.date > toDate) match = false;
+            if (jobType !== 'All' && jobcard.jobType !== jobType) match = false;
+            if (status !== 'Select' && jobcard.status !== status) match = false;
+            if (jobcardNo && !jobcard.jobcardNo?.toLowerCase().includes(jobcardNo)) match = false;
+            return match;
+        });
+        
+        const tbody = document.getElementById('jobcardsTableBody');
+        const noRecords = document.getElementById('noRecords');
+        
+        if (filtered.length === 0) {
+            tbody.innerHTML = '';
+            noRecords.style.display = 'block';
+            return;
+        }
+        
+        noRecords.style.display = 'none';
+        tbody.innerHTML = '';
+        
+        filtered.forEach((jobcard, index) => {
+            const row = document.createElement('tr');
+            const date = jobcard.date ? new Date(jobcard.date).toLocaleDateString('en-GB') : '';
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${date}</td>
+                <td>${jobcard.jobcardNo || ''}</td>
+                <td>${jobcard.customerName || ''}</td>
+                <td>${jobcard.jobCreatedBy || 'N/A'}</td>
+                <td>${jobcard.jobType || 'N/A'}</td>
+                <td>${jobcard.fabricType || 'N/A'}</td>
+                <td>${jobcard.totalQty || 0}</td>
+                <td>${(jobcard.totalValue || 0).toFixed(2)}</td>
+                <td>${(jobcard.avgRate || 0).toFixed(2)}</td>
+                <td>${(jobcard.lConfirmRate || 0).toFixed(2)}</td>
+                <td>${(jobcard.hConfirmRate || 0).toFixed(2)}</td>
+                <td><span class="approval-text">${jobcard.approval || 'Pending'}</span></td>
+                <td class="action-buttons">
+                    <button class="btn-icon-action-small" onclick="viewJobcard(${jobcard.id})" title="View">👁️</button>
+                    <button class="btn-icon-action-small" onclick="editJobcard(${jobcard.id})" title="Edit">✏️</button>
+                    <button class="btn-icon-action-small" onclick="deleteJobcard(${jobcard.id})" title="Delete">🗑️</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Search error:', error);
+        alert('Error searching jobcards: ' + error.message);
+    }
+}
+
+function resetSearch() {
+    document.getElementById('searchName').value = '';
+    document.getElementById('fromDate').value = '';
+    document.getElementById('toDate').value = '';
+    document.getElementById('searchJobType').value = 'All';
+    document.getElementById('searchStatus').value = 'Select';
+    document.getElementById('searchJobcardNo').value = '';
+    loadJobcardsTable();
+}
+
+// function exportToExcel() {
+//     alert('Excel export will be implemented with Django backend');
+// }
+
+function exportToExcel() {
+    // Get the table data
+    const table = document.getElementById('jobcardsTableBody');
+    const rows = table.querySelectorAll('tr');
+    
+    // Prepare data for Excel
+    const excelData = [];
+    
+    // Add header row
+    excelData.push([
+        'S.No', 'Date', 'Jobcard No', 'Customer', 'Created By', 
+        'Job Type', 'Fabric Type', 'Total Qty', 'Total Value', 
+        'Avg Rate', 'L-Confirm Rate', 'H-Confirm Rate', 'Approval'
+    ]);
+    
+    // Add data rows
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const rowData = [];
+        for (let i = 0; i < 13; i++) {  // Get first 13 columns (excluding Actions)
+            rowData.push(cells[i] ? cells[i].innerText : '');
+        }
+        excelData.push(rowData);
+    });
+    
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(excelData);
+    
+    // Set column widths
+    ws['!cols'] = [
+        {wch: 5}, {wch: 12}, {wch: 15}, {wch: 20}, {wch: 12},
+        {wch: 12}, {wch: 15}, {wch: 10}, {wch: 12},
+        {wch: 10}, {wch: 12}, {wch: 12}, {wch: 10}
+    ];
+    
+    // Create workbook and download
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Job Cards');
+    
+    // Generate filename with date
+    const dateStr = new Date().toISOString().slice(0,10).replace(/-/g,'_');
+    XLSX.writeFile(wb, `JobCards_${dateStr}.xlsx`);
+}
+
+// function showPrintPreview() {
+//     alert('Print preview functionality will be added');
+// }
+
+
+function showPrintPreview() {
+    // Get filter values
+    const customerName = document.getElementById('searchName').value || 'All';
+    const fromDate = document.getElementById('fromDate').value || 'All';
+    const toDate = document.getElementById('toDate').value || 'All';
+    const jobType = document.getElementById('searchJobType').value || 'All';
+    
+    // Get table data
+    const tableBody = document.getElementById('jobcardsTableBody');
+    const rows = tableBody.querySelectorAll('tr');
+    
+    let tableHTML = `
+        <div class="print-header">
+            <img src="your-logo-path.png" alt="Logo" class="print-logo">
+            <div class="print-company-name">SRI AMMAN DIGITAL PRINTS</div>
+            <div class="print-address">
+                DOOR No: 1/2,1/3 KOMBAI THOTTAM MAIN ROAD,<br>
+                SELLANDIAMMAN THURAI ROAD,<br>
+                TIRUPPUR-641604 TAMILNADU STATE INDIA,<br>
+                Contact Office: 0421-4355333,+91 83442-33555,+91 83442-33888,<br>
+                Email Id : sriammandigitalprints@gmail.com/yahoo.com.
+            </div>
+        </div>
+        
+        <div class="print-title">Jobcard Creation Print</div>
+        
+        <div class="print-filters">
+            <div class="filter-item">
+                <span class="filter-label">Customer Name :</span>
+                <span class="filter-value">${customerName}</span>
+            </div>
+            <div class="filter-item">
+                <span class="filter-label">From Date :</span>
+                <span class="filter-value">${fromDate}</span>
+            </div>
+            <div class="filter-item">
+                <span class="filter-label">To Date :</span>
+                <span class="filter-value">${toDate}</span>
+            </div>
+            <div class="filter-item">
+                <span class="filter-label">Jobtype :</span>
+                <span class="filter-value">${jobType}</span>
+            </div>
+        </div>
+        
+        <table class="print-table">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Date</th>
+                    <th>Jobcard No</th>
+                    <th>Created By</th>
+                    <th>Customer Name</th>
+                    <th>Job Type</th>
+                    <th>Fabric Type</th>
+                    <th>Total Qty</th>
+                    <th>Total Value</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+    
+    let totalQty = 0;
+    let totalValue = 0;
+    
+    rows.forEach((row, index) => {
+        const cells = row.querySelectorAll('td');
+        const sno = cells[0]?.textContent || '';
+        const date = cells[1]?.textContent || '';
+        const jobcardNo = cells[2]?.textContent || '';
+        const createdBy = cells[4]?.textContent || '';
+        const customerName = cells[3]?.textContent || '';
+        const jobType = cells[5]?.textContent || '';
+        const fabricType = cells[6]?.textContent || '';
+        const qty = parseFloat(cells[7]?.textContent) || 0;
+        const value = parseFloat(cells[8]?.textContent) || 0;
+        
+        totalQty += qty;
+        totalValue += value;
+        
+        tableHTML += `
+            <tr>
+                <td>${sno}</td>
+                <td>${date}</td>
+                <td>${jobcardNo}</td>
+                <td>${createdBy}</td>
+                <td>${customerName}</td>
+                <td>${jobType}</td>
+                <td>${fabricType}</td>
+                <td style="text-align:right;">${qty}</td>
+                <td style="text-align:right;">${value.toFixed(2)}</td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="7" style="text-align:right;font-weight:bold;">Total :</td>
+                    <td style="text-align:right;font-weight:bold;">${totalQty}</td>
+                    <td style="text-align:right;font-weight:bold;">${totalValue.toFixed(2)}</td>
+                </tr>
+            </tfoot>
+        </table>
+        
+        <div class="print-footer-info">
+            Printed Date : ${new Date().toLocaleDateString('en-GB')}<br>
+            Printed Time : ${new Date().toLocaleTimeString('en-GB')}<br>
+            IP Address : ${window.location.hostname}
+        </div>
+    `;
+    
+    // Set content and show modal
+    document.getElementById('printPreviewContent').innerHTML = tableHTML;
+    document.getElementById('printPreviewModal').style.display = 'block';
+}
+
+function closePrintPreview() {
+    document.getElementById('printPreviewModal').style.display = 'none';
+}
+
+function printReport() {
+    window.print();
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('printPreviewModal');
+    if (event.target == modal) {
+        closePrintPreview();
+    }
+}
+function viewJobcard(id) {
+    alert('View functionality for jobcard ID: ' + id);
+}
+
+// ✅ FIXED: Correct URL path
+async function editJobcard(id) {
+    try {
+        const response = await fetch('/api/jobcards/');  // ✅ Changed from /jobcard/api/jobcards/
+        const data = await response.json();
+        const jobcard = data.jobcards.find(jc => jc.id === id);
+        
+        if (!jobcard) {
+            alert('Jobcard not found');
+            return;
+        }
+        
+        editingIndex = id;
+        document.getElementById('jobcardNoDisplay').textContent = jobcard.jobcardNo;
+        document.getElementById('formDate').value = jobcard.date ? jobcard.date.slice(0, 16) : '';
+        document.getElementById('orderBy').value = jobcard.orderBy || '';
+        document.getElementById('customerName').value = jobcard.customerName || '';
+        document.getElementById('styleNo').value = jobcard.styleNo || '';
+        document.getElementById('jobCreatedBy').value = jobcard.jobCreatedBy || 'admin';
+        document.getElementById('styleName').value = jobcard.styleName || '';
+        document.getElementById('customerPONo').value = jobcard.customerPONo || '';
+        document.getElementById('combo').value = jobcard.combo || '';
+        document.getElementById('jobType').value = jobcard.jobType || '';
+        document.getElementById('designerName').value = jobcard.designerName || '';
+        document.getElementById('hsnCode').value = jobcard.hsnCode || '998821';
+        document.getElementById('mistakeDetails').value = jobcard.mistakeDetails || '';
+        document.getElementById('reason').value = jobcard.reason || '';
+        
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        
+        const items = jobcard.items || [];
+        items.forEach((item, i) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${i + 1}</td>
+                <td><input type="text" class="particulars" value="${item.particulars || ''}" placeholder="Enter particulars"></td>
+                <td><input type="number" class="width" value="${item.width || ''}" placeholder="Width" step="any"></td>
+                <td><input type="number" class="height" value="${item.height || ''}" placeholder="Height" step="any"></td>
+                <td><input type="number" class="rate" value="${item.rate || 0}" placeholder="0" step="0.0001"></td>
+                <td><input type="number" class="amt" value="${item.amt || 0}" readonly></td>
+                <td><input type="number" class="confirmed-amt" value="${item.confirmedAmt || 0}" placeholder="0.00" step="0.01"></td>
+                <td><input type="number" class="confirmed-rate" value="${item.confirmedRate || 0}" readonly></td>
+                <td><input type="number" class="qty" value="${item.qty || 1}" placeholder="1" step="any"></td>
+                <td><input type="number" class="value" value="${item.value || 0}" readonly></td>
+                <td>
+                <div class="action-icons">
+                <button class="btn-add-icon" onclick="addRow()" title="Add Row">+</button>
+                <button class="btn-delete-icon" onclick="deleteRow(this)" title="Delete">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                </button>
+                </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+        
+        document.getElementById('totalAmt').value = (jobcard.totalValue || 0).toFixed(2);
+        document.getElementById('totalConfirmedAmt').value = (jobcard.totalValue || 0).toFixed(2);
+        document.getElementById('totalValue').value = (jobcard.totalValue || 0).toFixed(2);
+        
+        attachCalculationEvents();
+        showFormView();
+    } catch (error) {
+        console.error('Edit error:', error);
+        alert('Error loading jobcard for edit: ' + error.message);
+    }
+}
+
+// ✅ FIXED: Correct URL path
+async function deleteJobcard(id) {
+    if (confirm('Are you sure you want to delete this jobcard?')) {
+        try {
+            const response = await fetch(`/api/jobcards/${id}/delete/`, {  // ✅ Changed from /jobcard/api/jobcards/${id}/delete/
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            });
+            
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                console.error('Received non-JSON response:', text);
+                throw new Error('Server returned HTML instead of JSON.');
+            }
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                loadJobcardsTable();
+            } else {
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('Error deleting jobcard: ' + error.message);
+        }
+    }
+}
+
+function addRow() {
+    const tableBody = document.getElementById('tableBody');
+    const rowCount = tableBody.rows.length + 1;
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td>${rowCount}</td>
+        <td><input type="text" class="particulars" placeholder="Enter particulars"></td>
+        <td><input type="number" class="width" placeholder="Width" step="any"></td>
+        <td><input type="number" class="height" placeholder="Height" step="any"></td>
+        <td><input type="number" class="rate" placeholder="0.00" step="0.0001"></td>
+        <td><input type="number" class="amt" value="0.00" readonly></td>
+        <td><input type="number" class="confirmed-amt" placeholder="0.00" step="0.01"></td>
+        <td><input type="number" class="confirmed-rate" value="0.0000" readonly></td>
+        <td><input type="number" class="qty" placeholder="1" value="1" step="any"></td>
+        <td><input type="number" class="value" value="0.00" readonly></td>
+        <td>
+        <div class="action-icons">
+        <button class="btn-add-icon" onclick="addRow()" title="Add Row">+</button>
+        <button class="btn-delete-icon" onclick="deleteRow(this)" title="Delete">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+        </button>
+        </div>
+        </td>
+    `;
+    tableBody.appendChild(newRow);
+    updateSerialNumbers();
+    attachCalculationEvents();
+}
+
+function deleteRow(btn) {
+    const row = btn.closest('tr');
+    const tableBody = document.getElementById('tableBody');
+    if (tableBody.rows.length > 1) {
+        row.remove();
+        updateSerialNumbers();
+        calculateTotals();
+    } else {
+        alert('At least one row is required');
+    }
+}
+
+function updateSerialNumbers() {
+    const rows = document.querySelectorAll('#tableBody tr');
+    rows.forEach((row, index) => {
+        row.cells[0].textContent = index + 1;
+    });
+}
+
+function attachCalculationEvents() {
+    document.querySelectorAll('#tableBody tr').forEach(row => {
+        const widthInput = row.querySelector('.width');
+        const heightInput = row.querySelector('.height');
+        const rateInput = row.querySelector('.rate');
+        const qtyInput = row.querySelector('.qty');
+        const confirmedAmtInput = row.querySelector('.confirmed-amt');
+        
+        function calculate() {
+            const width = parseFloat(widthInput.value) || 0;
+            const height = parseFloat(heightInput.value) || 0;
+            const rate = parseFloat(rateInput.value) || 0;
+            const qty = parseFloat(qtyInput.value) || 1;
+            const confirmedAmt = parseFloat(confirmedAmtInput.value) || 0;
+            
+            const sqInch = width * height;
+            const amt = sqInch * rate;
+            const confirmedRate = sqInch !== 0 ? confirmedAmt / sqInch : 0;
+            const value = confirmedAmt * qty;
+            
+            row.querySelector('.amt').value = amt.toFixed(2);
+            row.querySelector('.confirmed-rate').value = confirmedRate.toFixed(4);
+            row.querySelector('.value').value = value.toFixed(2);
+            
+            calculateTotals();
+        }
+        
+        widthInput.addEventListener('input', calculate);
+        heightInput.addEventListener('input', calculate);
+        rateInput.addEventListener('input', calculate);
+        qtyInput.addEventListener('input', calculate);
+        confirmedAmtInput.addEventListener('input', calculate);
+    });
+}
+
+function calculateTotals() {
+    let totalAmt = 0;
+    let totalConfirmedAmt = 0;
+    let totalValue = 0;
+    
+    document.querySelectorAll('#tableBody tr').forEach(row => {
+        totalAmt += parseFloat(row.querySelector('.amt').value) || 0;
+        totalConfirmedAmt += parseFloat(row.querySelector('.confirmed-amt').value) || 0;
+        totalValue += parseFloat(row.querySelector('.value').value) || 0;
+    });
+    
+    document.getElementById('totalAmt').value = totalAmt.toFixed(2);
+    document.getElementById('totalConfirmedAmt').value = totalConfirmedAmt.toFixed(2);
+    document.getElementById('totalValue').value = totalValue.toFixed(2);
+}
+
+function openPartyModal() {
+    document.getElementById('partyModal').classList.add('active');
+    document.getElementById('partyName').focus();
+}
+
+function closePartyModal() {
+    document.getElementById('partyModal').classList.remove('active');
+    document.querySelectorAll('#partyModal .modal-body input, #partyModal .modal-body textarea').forEach(input => {
+        input.value = '';
+    });
+}
+
+function saveParty() {
+    const partyName = document.getElementById('partyName').value;
+    if (partyName.trim() === '') {
+        alert('Please enter party name');
+        return;
+    }
+    document.getElementById('customerName').value = partyName;
+    closePartyModal();
+    alert('Party created successfully!');
+}
+
+document.getElementById('partyModal').addEventListener('click', function (e) {
+    if (e.target === this) closePartyModal();
+});
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closePartyModal();
+});
+
+attachCalculationEvents();
+</script>
+{% endblock %}
+<!-- </body>
+</html> -->

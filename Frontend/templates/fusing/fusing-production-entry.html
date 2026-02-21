@@ -1,14 +1,12 @@
 {% extends "nav.html" %}
 {% block title %}Fusing Production Entry{% endblock %}
-
 {% block extra_head %}
 <script src="https://unpkg.com/lucide@latest"></script>
-
 <style>
   :root {
     --bg1: #f6fbff;
     --bg2: #f3fbf8;
-    --card: #ffffff;
+    --card: #fff;
     --text: #0f172a;
     --muted: #64748b;
     --muted2: #94a3b8;
@@ -25,13 +23,13 @@
   }
 
   * {
-    box-sizing: border-box;
+    box-sizing: border-box
   }
 
   body {
     margin: 0;
     font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
-    color: var(--text);
+    color: var(--text)
   }
 
   .page {
@@ -48,7 +46,7 @@
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 16px
   }
 
   /* Header */
@@ -61,14 +59,14 @@
     align-items: center;
     justify-content: space-between;
     gap: 14px;
-    color: #fff;
+    color: #fff
   }
 
   .hero-left {
     display: flex;
     align-items: center;
     gap: 12px;
-    min-width: 0;
+    min-width: 0
   }
 
   .hero-icon {
@@ -78,14 +76,14 @@
     display: grid;
     place-items: center;
     background: rgba(255, 255, 255, .16);
-    flex: 0 0 auto;
+    flex: 0 0 auto
   }
 
   .hero-title {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    min-width: 0;
+    min-width: 0
   }
 
   .hero-title h1 {
@@ -95,7 +93,7 @@
     letter-spacing: .2px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis
   }
 
   .hero-title p {
@@ -104,7 +102,7 @@
     font-size: 14px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis
   }
 
   /* Buttons */
@@ -118,35 +116,29 @@
     align-items: center;
     gap: 10px;
     transition: transform .08s ease, filter .15s ease;
-    user-select: none;
+    user-select: none
   }
 
   .btn:active {
-    transform: translateY(1px);
-  }
-
-  .btn.light {
-    background: rgba(255, 255, 255, .18);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, .25);
+    transform: translateY(1px)
   }
 
   .btn.primary {
     background: linear-gradient(135deg, var(--green1), var(--green2));
     color: #fff;
-    box-shadow: var(--shadowSoft);
+    box-shadow: var(--shadowSoft)
   }
 
   .btn.ghost {
     background: #fff;
     color: #0f172a;
-    border: 1px solid var(--line);
+    border: 1px solid var(--line)
   }
 
   .btn.small {
     padding: 9px 14px;
     border-radius: 12px;
-    font-size: 14px;
+    font-size: 14px
   }
 
   .btn.icon {
@@ -154,15 +146,15 @@
     border-radius: 12px;
     background: #fff;
     border: 1px solid var(--line);
-    box-shadow: none;
+    box-shadow: none
   }
 
   .btn.icon.edit {
-    color: #059669;
+    color: #059669
   }
 
   .btn.icon.del {
-    color: #ef4444;
+    color: #ef4444
   }
 
   /* Card */
@@ -171,47 +163,47 @@
     border: 1px solid var(--line);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    overflow: hidden;
+    overflow: hidden
   }
 
   .card-head {
-    padding: 18px 18px;
+    padding: 18px;
     border-bottom: 1px solid var(--line);
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 10px;
-    background: linear-gradient(180deg, rgba(14, 165, 166, .06), transparent);
+    background: linear-gradient(180deg, rgba(14, 165, 166, .06), transparent)
   }
 
   .card-head h2 {
     margin: 0;
     font-size: 20px;
-    letter-spacing: .2px;
+    letter-spacing: .2px
   }
 
   .subtxt {
     margin-top: 6px;
     font-size: 14px;
     color: var(--muted);
-    font-weight: 700;
+    font-weight: 700
   }
 
   .card-body {
-    padding: 18px;
+    padding: 18px
   }
 
-  /* Job Details grid (keep like earlier) */
+  /* Job Details grid */
   .grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px 22px;
+    gap: 18px 22px
   }
 
   .field {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 10px
   }
 
   .labelRow {
@@ -220,7 +212,7 @@
     gap: 10px;
     color: #475569;
     font-weight: 900;
-    font-size: 14px;
+    font-size: 14px
   }
 
   .labelRow svg {
@@ -228,13 +220,13 @@
     height: 20px !important;
     color: #64748b !important;
     stroke: #64748b !important;
-    flex: 0 0 auto;
+    flex: 0 0 auto
   }
 
   .req {
     color: var(--danger);
     font-weight: 900;
-    margin-left: 3px;
+    margin-left: 3px
   }
 
   .control {
@@ -245,24 +237,38 @@
     padding: 13px 14px;
     outline: none;
     font-size: 15px;
-    transition: border .15s ease, box-shadow .15s ease;
+    transition: border .15s ease, box-shadow .15s ease
   }
 
   .control:focus {
     border-color: rgba(14, 165, 166, .55);
-    box-shadow: 0 0 0 4px rgba(14, 165, 166, .12);
+    box-shadow: 0 0 0 4px rgba(14, 165, 166, .12)
   }
 
-  /* Table like your screenshot */
+  /* Display-only fields style */
+  .control.display-only {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+    cursor: default;
+    padding: 13px 14px;
+    border-radius: 12px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+  }
+
+  /* Table */
   .table-wrap {
-    overflow: auto;
+    overflow: auto
   }
 
   table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    min-width: 1100px;
+    min-width: 1100px
   }
 
   thead th {
@@ -272,7 +278,7 @@
     font-weight: 900;
     padding: 16px 16px;
     border-bottom: 1px solid #e5edf6;
-    white-space: nowrap;
+    white-space: nowrap
   }
 
   tbody td {
@@ -281,28 +287,28 @@
     font-size: 16px;
     color: #0f172a;
     white-space: nowrap;
-    vertical-align: middle;
+    vertical-align: middle
   }
 
   tbody tr:last-child td {
-    border-bottom: 0;
+    border-bottom: 0
   }
 
   tbody tr:hover td {
-    background: #fbfdff;
+    background: #fbfdff
   }
 
   .num {
     text-align: right;
-    font-variant-numeric: tabular-nums;
+    font-variant-numeric: tabular-nums
   }
 
   .total-row td {
     background: #f8fbff;
-    font-weight: 900;
+    font-weight: 900
   }
 
-  /* Bottom row inside production card (status + submit) */
+  /* Bottom row */
   .prod-bottom {
     padding: 18px;
     border-top: 1px solid var(--line);
@@ -311,19 +317,19 @@
     align-items: center;
     gap: 14px;
     flex-wrap: wrap;
-    background: linear-gradient(180deg, transparent, rgba(2, 44, 66, .02));
+    background: linear-gradient(180deg, transparent, rgba(2, 44, 66, .02))
   }
 
   .statusBox {
     min-width: 360px;
     max-width: 520px;
-    width: 40%;
+    width: 40%
   }
 
   .statusTitle {
     font-weight: 900;
     font-size: 16px;
-    margin-bottom: 10px;
+    margin-bottom: 10px
   }
 
   .submitBtn {
@@ -331,289 +337,138 @@
     justify-content: center;
     font-size: 16px;
     padding: 13px 18px;
-    border-radius: 16px;
+    border-radius: 16px
   }
 
-  /* Modal (your 2nd image style) */
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, .55);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 18px;
-    z-index: 9999;
-  }
-
-  .modal-backdrop.show {
-    display: flex;
-  }
-
-  .modal {
-    width: min(920px, 100%);
+  /* ✅ Inline add inputs inside table */
+  .tableInput {
+    width: 100%;
+    border: 1px solid #dbe7f3;
     background: #fff;
-    border-radius: 22px;
-    box-shadow: 0 30px 80px rgba(2, 44, 66, .35);
-    overflow: hidden;
+    border-radius: 10px;
+    padding: 10px 12px;
+    outline: none;
+    font-size: 14px
   }
 
-  .modal-head {
-    padding: 18px 22px;
+  .tableInput:focus {
+    border-color: rgba(14, 165, 166, .55);
+    box-shadow: 0 0 0 4px rgba(14, 165, 166, .12)
+  }
+
+  .inline-actions {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--line);
+    gap: 10px;
+    justify-content: flex-end
   }
 
-  .modal-head h3 {
-    margin: 0;
-    font-size: 26px;
-    letter-spacing: .2px;
+  /* ✅ Date input with calendar icon */
+  .dateWrap {
+    position: relative;
+    width: 100%
   }
 
-  .close-x {
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 12px;
+  .dateWrap .tableInput,
+  .dateWrap .control {
+    padding-right: 38px !important
   }
 
-  .close-x:hover {
-    background: #f3f6f9;
+  .dateWrap .calIcon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: #64748b;
+    pointer-events: none
   }
 
-  .modal-body {
-    padding: 18px 22px 8px;
+  /* ✅ Print button */
+  .btn.report {
+    background: #fff !important;
+    color: #0ea5a6 !important;
+    border: 0 !important;
+    box-shadow: 0 10px 22px rgba(2, 44, 66, .14) !important;
+    padding: 12px 18px !important;
+    border-radius: 16px !important;
+    font-weight: 900 !important
   }
 
-  .modal-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px 22px;
+  .btn.report svg {
+    width: 18px !important;
+    height: 18px !important;
+    color: #0ea5a6 !important;
+    stroke: #0ea5a6 !important
   }
 
-  .span2 {
-    grid-column: 1 / -1;
-  }
-
-  .modal-actions {
-    padding: 18px 22px 22px;
-    display: flex;
-    justify-content: center;
-    gap: 18px;
-  }
-
-  .btn.cancel {
-    background: #fff;
-    color: #0f172a;
-    border: 1px solid var(--line);
-    box-shadow: none;
-    min-width: 160px;
-    justify-content: center;
-  }
-
-  .btn.add {
-    background: linear-gradient(135deg, var(--teal2), var(--teal1));
-    color: #fff;
-    min-width: 180px;
-    justify-content: center;
-  }
-
-  @media (max-width: 1200px) {
+  @media (max-width:1200px) {
     .grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr))
     }
   }
 
-  @media (max-width: 760px) {
+  @media (max-width:760px) {
     .page {
-      padding: 12px;
+      padding: 12px
     }
 
     .hero {
       padding: 14px;
       flex-direction: column;
-      align-items: stretch;
+      align-items: stretch
     }
 
     .grid {
-      grid-template-columns: 1fr;
-    }
-
-    .modal-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr
     }
 
     .statusBox {
       width: 100%;
-      min-width: 0;
+      min-width: 0
     }
 
     .submitBtn {
-      width: 100%;
+      width: 100%
     }
 
-    .modal-actions {
-      flex-direction: column;
-    }
-
-    .btn.cancel,
-    .btn.add {
-      width: 100%;
+    .btn.report {
+      width: fit-content !important;
+      align-self: flex-start !important
     }
   }
 
-  /* ✅ Mobile: Job Details side-by-side (desktop no change) */
-  @media (max-width: 640px) {
+  /* ✅ Mobile: Job Details 2 columns */
+  @media (max-width:640px) {
     .job-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-      gap: 14px 14px !important;
+      gap: 14px 14px !important
     }
 
     .job-grid .field.half-m {
-      grid-column: span 1 !important;
+      grid-column: span 1 !important
     }
 
     .job-grid .field.full-m {
-      grid-column: 1 / -1 !important;
+      grid-column: 1 / -1 !important
     }
   }
 
-  /* ✅ Desktop: keep normal */
-  .prod-table {
-    overflow: auto;
-  }
-
-  /* ✅ Mobile: make rows as cards (NO horizontal scroll) */
-  @media (max-width: 640px) {
-
-    /* ✅ Desktop: keep normal */
-    .prod-table {
-      overflow: auto;
-    }
-
-    /* ✅ Mobile: card view like your 2nd image (label left, value right) */
-    @media (max-width: 640px) {
-
-      .prod-table {
-        overflow: visible !important;
-      }
-
-      .prod-table-table {
-        min-width: 0 !important;
-      }
-
-      /* hide table header */
-      .prod-table-table thead {
-        display: none !important;
-      }
-
-      /* table => blocks */
-      .prod-table-table,
-      .prod-table-table tbody,
-      .prod-table-table tr,
-      .prod-table-table td {
-        display: block !important;
-        width: 100% !important;
-      }
-
-      /* each row = CARD */
-      .prod-table-table tbody tr {
-        margin: 12px 12px;
-        background: #fff;
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        box-shadow: var(--shadowSoft);
-        overflow: hidden;
-      }
-
-      /* each cell = ONE LINE (label left, value right) */
-      .prod-table-table tbody td {
-        border: 0 !important;
-        padding: 10px 14px !important;
-        white-space: normal !important;
-
-        display: flex !important;
-        align-items: flex-start !important;
-        justify-content: space-between !important;
-        gap: 14px !important;
-      }
-
-      /* label (left) */
-      .prod-table-table tbody td::before {
-        content: attr(data-label);
-        display: block !important;
-        color: #64748b;
-        font-weight: 900;
-        font-size: 13px;
-        flex: 0 0 40%;
-        min-width: 120px;
-      }
-
-      /* value (right) */
-      .prod-table-table tbody td {
-        font-weight: 700;
-      }
-
-      /* long text wrap (Size etc.) */
-      .prod-table-table tbody td:nth-child(5) {
-        align-items: flex-start !important;
-      }
-
-      /* numbers align right like card */
-      .prod-table-table tbody td.num {
-        text-align: right !important;
-      }
-
-      /* (since your num class is on td) */
-      .prod-table-table tbody td.num::before {
-        text-align: left !important;
-      }
-
-      /* Action row bottom like 2nd image */
-      .prod-table-table tbody td.action-cell {
-        justify-content: flex-end !important;
-        padding: 12px 14px !important;
-        border-top: 1px solid var(--line) !important;
-        background: #f8fbff;
-      }
-
-      .prod-table-table tbody td.action-cell::before {
-        content: "Action";
-        flex: 1 1 auto;
-        min-width: unset;
-      }
-
-      /* Total row – make it look neat in card */
-      .prod-table-table .total-row td {
-        background: #f8fbff !important;
-        font-weight: 900 !important;
-      }
-    }
-  }
-
-
-
-  /* ✅ Mobile: show cards, hide table (desktop no change) */
+  /* Mobile cards */
   .mob-cards {
-    display: none;
+    display: none
   }
 
-  @media (max-width: 640px) {
-
-    /* hide table in mobile */
+  @media (max-width:640px) {
     .prod-table {
-      display: none !important;
+      display: none !important
     }
 
-    /* show cards */
     .mob-cards {
       display: flex !important;
       flex-direction: column;
       gap: 14px;
-      padding: 14px 12px 6px;
+      padding: 14px 12px 6px
     }
 
     .mcard {
@@ -622,38 +477,30 @@
       border-radius: 16px;
       box-shadow: var(--shadowSoft);
       padding: 14px 14px 12px;
-      position: relative;
+      position: relative
     }
 
     .mhead {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 10px;
+      gap: 10px
     }
 
     .mdate {
       font-weight: 900;
       font-size: 16px;
-      color: var(--text);
+      color: var(--text)
     }
 
     .micons {
       display: flex;
-      gap: 10px;
+      gap: 10px
     }
 
     .micons .btn.icon {
       padding: 9px 9px;
-      border-radius: 12px;
-    }
-
-    .msub {
-      margin-top: 4px;
-      color: var(--muted);
-      font-weight: 800;
-      font-size: 12.5px;
-      letter-spacing: .2px;
+      border-radius: 12px
     }
 
     .mline {
@@ -661,23 +508,23 @@
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      font-size: 14px;
+      font-size: 14px
     }
 
     .mline b {
-      font-weight: 900;
+      font-weight: 900
     }
 
     .mline span {
       font-weight: 800;
-      color: var(--text);
+      color: var(--text)
     }
 
     .mmetrics {
       margin-top: 12px;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
+      gap: 10px
     }
 
     .mbox {
@@ -685,57 +532,193 @@
       border: 1px solid #e7eef6;
       border-radius: 12px;
       padding: 10px 10px 9px;
-      text-align: center;
+      text-align: center
     }
 
     .mbox .k {
       color: var(--muted);
       font-weight: 900;
-      font-size: 12px;
+      font-size: 12px
     }
 
     .mbox .v {
       margin-top: 4px;
       font-weight: 900;
       font-size: 14px;
-      color: var(--text);
+      color: var(--text)
     }
   }
 
-  /* ✅ Print button -> Sample Jobcard style (white pill) */
-  .btn.report {
-    background: #ffffff !important;
-    color: #0ea5a6 !important;
-    /* purple text like sample */
-    border: 0 !important;
-    box-shadow: 0 10px 22px rgba(2, 44, 66, .14) !important;
-    padding: 12px 18px !important;
-    border-radius: 16px !important;
-    font-weight: 900 !important;
+  /* Modal (keep for Edit) */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    z-index: 9999
   }
 
-  .btn.report svg {
+  .modal-backdrop.show {
+    display: flex
+  }
+
+  .modal {
+    width: min(920px, 100%);
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 30px 80px rgba(2, 44, 66, .35);
+    overflow: hidden
+  }
+
+  .modal-head {
+    padding: 18px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line)
+  }
+
+  .modal-head h3 {
+    margin: 0;
+    font-size: 26px;
+    letter-spacing: .2px
+  }
+
+  .close-x {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 12px
+  }
+
+  .close-x:hover {
+    background: #f3f6f9
+  }
+
+  .modal-body {
+    padding: 18px 22px 8px
+  }
+
+  .modal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 22px
+  }
+
+  .span2 {
+    grid-column: 1 / -1
+  }
+
+  .modal-actions {
+    padding: 18px 22px 22px;
+    display: flex;
+    justify-content: center;
+    gap: 18px
+  }
+
+  .btn.cancel {
+    background: #fff;
+    color: #0f172a;
+    border: 1px solid var(--line);
+    box-shadow: none;
+    min-width: 160px;
+    justify-content: center
+  }
+
+  .btn.add {
+    background: linear-gradient(135deg, var(--teal2), var(--teal1));
+    color: #fff;
+    min-width: 180px;
+    justify-content: center
+  }
+
+  /* ✅✅ NEW: Move Jobcard No + Date ABOVE the Job Details line */
+  .job-headbar {
+    align-items: flex-end;
+  }
+
+  .job-head-fields {
+    display: flex;
+    gap: 14px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .job-head-fields .mini {
+    min-width: 240px;
+    max-width: 340px;
+  }
+
+  .job-head-fields .mini .labelMini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 900;
+    font-size: 13px;
+    color: #475569;
+    margin-bottom: 8px;
+  }
+
+  .job-head-fields .mini .labelMini svg {
     width: 18px !important;
     height: 18px !important;
-    color: #0ea5a6 !important;
-    stroke: #0ea5a6 !important;
+    color: #64748b !important;
+    stroke: #64748b !important;
   }
 
-  /* ✅ Mobile-la full width bar varaama compact-a iruka */
-  @media (max-width: 760px) {
-    .btn.report {
-      width: fit-content !important;
-      align-self: flex-start !important;
-      /* hero column aanaalum left-la irukum */
+  .job-head-fields .mini .control {
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+
+  /* ✅ Desktop: Job Details 5 columns */
+  .job-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  }
+
+  /* ✅ Medium screens */
+  @media (max-width:1200px) {
+    .job-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+  }
+
+  /* ✅ Small screens already you have (max-width:640px) - keep as it is */
+  @media (max-width:760px) {
+    .job-head-fields .mini {
+      min-width: 100%;
+      max-width: 100%;
+    }
+  }
+
+  /* Loading indicator for job details */
+  .job-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(14, 165, 166, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--teal1);
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
     }
   }
 </style>
 {% endblock %}
-
 {% block content %}
 <div class="page">
   <div class="wrap">
-
     <!-- Header -->
     <div class="hero">
       <div class="hero-left">
@@ -748,93 +731,95 @@
       <button type="button" class="btn report" onclick="window.print()">
         <i data-lucide="printer"></i> Print Report
       </button>
-
     </div>
-
     <!-- FORM -->
     <form id="fusingForm" method="post" class="card" autocomplete="off">
       {% csrf_token %}
-
-      <!-- Job Details (unchanged) -->
-      <div class="card-head">
+      <!-- ✅ Job Details Head (Jobcard No + Date moved here ABOVE the line) -->
+      <div class="card-head job-headbar">
         <div>
           <h2>Job Details</h2>
         </div>
-      </div>
-
-      <div class="card-body">
-        <div class="grid job-grid">
-
-          <div class="field half-m">
-            <div class="labelRow"><i data-lucide="file-text"></i> Jobcard No <span class="req">*</span></div>
-            <input class="control" name="jobcard_no" type="text" required value="">
+        <div class="job-head-fields">
+          <div class="mini">
+            <div class="labelMini">
+              <i data-lucide="file-text"></i> Jobcard No <span class="req">*</span>
+            </div>
+            <div class="dateWrap" style="position:relative">
+              <input class="control" name="jobcard_no" id="jobcard_no_input" type="text" required value="">
+              <span id="job_loading" class="job-loading" style="display:none"></span>
+            </div>
           </div>
-
-          <div class="field half-m">
-            <div class="labelRow"><i data-lucide="users"></i> Customer Name</div>
-            <input class="control" name="customer_name" type="text" value="">
+          <div class="mini">
+            <div class="labelMini">
+              <i data-lucide="calendar"></i> Date
+            </div>
+            <div class="dateWrap">
+              <input class="control" name="entry_date" type="datetime-local" value="">
+              <i class="calIcon" data-lucide="calendar"></i>
+            </div>
           </div>
-
-          <div class="field half-m">
-            <div class="labelRow"><i data-lucide="tag"></i> Style No</div>
-            <input class="control" name="style_no" type="text" value="">
-          </div>
-
-          <div class="field half-m">
-            <div class="labelRow"><i data-lucide="layers"></i> Job Type</div>
-            <input class="control" name="job_type" type="text" value="">
-          </div>
-
-          <div class="field half-m">
-            <div class="labelRow"><i data-lucide="user"></i> Job Created by</div>
-            <input class="control" name="job_created_by" type="text" value="">
-          </div>
-
-          <div class="field half-m">
-            <div class="labelRow"><i data-lucide="shirt"></i> Style Name</div>
-            <input class="control" name="style_name" type="text" value="">
-          </div>
-
-          <div class="field half-m">
-            <div class="labelRow"><i data-lucide="layers-3"></i> Fabric Type</div>
-            <input class="control" name="fabric_type" type="text" value="">
-          </div>
-
-          <div class="field half-m">
-            <div class="labelRow"><i data-lucide="hash"></i> Customer PO No</div>
-            <input class="control" name="customer_po_no" type="text" value="">
-          </div>
-
-          <div class="field half-m">
-            <div class="labelRow"><i data-lucide="palette"></i> Combo</div>
-            <input class="control" name="combo" type="text" value="">
-          </div>
-
-          <div class="field half-m">
-            <div class="labelRow"><i data-lucide="calculator"></i> Printed Qty</div>
-            <input class="control" name="printed_qty" type="number" min="0" step="1" value="">
-          </div>
-
-          <div class="field half-m">
-            <div class="labelRow"><i data-lucide="calendar"></i> Date</div>
-            <input class="control" name="entry_date" type="text" value="">
-          </div>
-
         </div>
       </div>
-
-      <!-- Production Records (MAKE EXACT like your screenshot) -->
+      <div class="card-body">
+        <div class="grid job-grid">
+          <div class="field half-m">
+            <div class="labelRow"><i data-lucide="users"></i> Customer Name</div>
+            <div class="control display-only" id="customer_name_display">-</div>
+            <input type="hidden" name="customer_name" id="customer_name">
+          </div>
+          <div class="field half-m">
+            <div class="labelRow"><i data-lucide="tag"></i> Style No</div>
+            <div class="control display-only" id="style_no_display">-</div>
+            <input type="hidden" name="style_no" id="style_no">
+          </div>
+          <div class="field half-m">
+            <div class="labelRow"><i data-lucide="layers"></i> Job Type</div>
+            <div class="control display-only" id="job_type_display">-</div>
+            <input type="hidden" name="job_type" id="job_type">
+          </div>
+          <div class="field half-m">
+            <div class="labelRow"><i data-lucide="user"></i> Job Created by</div>
+            <div class="control display-only" id="job_created_by_display">-</div>
+            <input type="hidden" name="job_created_by" id="job_created_by">
+          </div>
+          <div class="field half-m">
+            <div class="labelRow"><i data-lucide="shirt"></i> Style Name</div>
+            <div class="control display-only" id="style_name_display">-</div>
+            <input type="hidden" name="style_name" id="style_name">
+          </div>
+          <div class="field half-m">
+            <div class="labelRow"><i data-lucide="layers-3"></i> Fabric Type</div>
+            <div class="control display-only" id="fabric_type_display">-</div>
+            <input type="hidden" name="fabric_type" id="fabric_type">
+          </div>
+          <div class="field half-m">
+            <div class="labelRow"><i data-lucide="hash"></i> Customer PO No</div>
+            <div class="control display-only" id="customer_po_no_display">-</div>
+            <input type="hidden" name="customer_po_no" id="customer_po_no">
+          </div>
+          <div class="field half-m">
+            <div class="labelRow"><i data-lucide="palette"></i> Combo</div>
+            <div class="control display-only" id="combo_display">-</div>
+            <input type="hidden" name="combo" id="combo">
+          </div>
+          <div class="field half-m">
+            <div class="labelRow"><i data-lucide="calculator"></i> Printed Qty</div>
+            <div class="control display-only" id="printed_qty_display">-</div>
+            <input type="hidden" name="printed_qty" id="printed_qty">
+          </div>
+        </div>
+      </div>
+      <!-- Production Records -->
       <div class="card-head">
         <div>
           <h2>Production Records</h2>
           <div class="subtxt"><span id="foundCount">Found 0 Records</span></div>
         </div>
-
         <button type="button" class="btn primary" id="btnOpenModal">
           <i data-lucide="plus"></i> Add Entry
         </button>
       </div>
-
       <div class="table-wrap prod-table">
         <table class="prod-table-table">
           <thead>
@@ -850,11 +835,7 @@
               <th>Action</th>
             </tr>
           </thead>
-
-          <tbody id="prodBody">
-            <!-- rows by JS -->
-          </tbody>
-
+          <tbody id="prodBody"></tbody>
           <tbody>
             <tr class="total-row">
               <td colspan="5">Total</td>
@@ -866,10 +847,8 @@
           </tbody>
         </table>
       </div>
-
       <div class="mob-cards" id="prodCards"></div>
-
-      <!-- Production Status + Submit inside same card (like screenshot) -->
+      <!-- Production Status + Submit -->
       <div class="prod-bottom">
         <div class="statusBox">
           <div class="statusTitle">Production Status</div>
@@ -879,36 +858,31 @@
             <option value="Hold">Hold</option>
           </select>
         </div>
-
-        <button type="submit" class="btn primary submitBtn">
-          SUBMIT
-        </button>
+        <button type="submit" class="btn primary submitBtn">SUBMIT</button>
       </div>
-
-      <!-- Hidden JSON for backend -->
+      <!-- Hidden JSON -->
       <input type="hidden" name="production_rows_json" id="productionRowsJson" value="[]">
     </form>
-
   </div>
 </div>
-
-<!-- MODAL (Add Production) like your 2nd image -->
+<!-- ✅ Modal kept only for EDIT -->
 <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-head">
-      <h3 id="modalTitle">Add Production</h3>
+      <h3 id="modalTitle">Edit Production</h3>
       <button type="button" class="close-x" id="btnCloseModal" aria-label="Close">
         <i data-lucide="x"></i>
       </button>
     </div>
-
     <div class="modal-body">
       <div class="modal-grid">
         <div class="field">
           <div class="labelRow">Date</div>
-          <input class="control" type="text" id="m_date" placeholder="dd-mm-yyyy --:--">
+          <div class="dateWrap">
+            <input class="control" type="datetime-local" id="m_date">
+            <i class="calIcon" data-lucide="calendar"></i>
+          </div>
         </div>
-
         <div class="field">
           <div class="labelRow">Shift <span class="req">*</span></div>
           <select class="control" id="m_shift">
@@ -917,50 +891,41 @@
             <option>NIGHT SHIFT</option>
           </select>
         </div>
-
         <div class="field">
           <div class="labelRow">Machine <span class="req">*</span></div>
-          <input class="control" type="text" id="m_machine" placeholder="ROLL TO ROLL NO 1">
+          <select class="control" id="m_machine"></select>
         </div>
-
         <div class="field">
           <div class="labelRow">Operator <span class="req">*</span></div>
-          <input class="control" type="text" id="m_operator" placeholder="4">
+          <select class="control" id="m_operator"></select>
         </div>
-
         <div class="field span2">
           <div class="labelRow">Size <span class="req">*</span></div>
-          <input class="control" type="text" id="m_size" placeholder="ULTRA COLOUR BAG (58 x 37)">
+          <select class="control" id="m_size"></select>
         </div>
-
         <div class="field">
           <div class="labelRow">T.Qty</div>
           <input class="control" type="number" min="0" step="0.001" id="m_tqty" value="0">
         </div>
-
         <div class="field">
           <div class="labelRow">P.Qty <span class="req">*</span></div>
           <input class="control" type="number" min="0" step="0.001" id="m_pqty" value="0">
         </div>
-
         <div class="field span2">
           <div class="labelRow">Balance</div>
           <input class="control" type="text" id="m_balance" value="0.000" readonly>
         </div>
       </div>
     </div>
-
     <div class="modal-actions">
       <button type="button" class="btn cancel" id="btnCancelModal">Cancel</button>
-      <button type="button" class="btn add" id="btnModalAdd">ADD</button>
+      <button type="button" class="btn add" id="btnModalAdd">UPDATE</button>
     </div>
   </div>
 </div>
-
 <script>
   // Lucide
   if (window.lucide) lucide.createIcons();
-
   // Utils
   const fmt3 = (n) => {
     const x = Number(n);
@@ -970,22 +935,42 @@
     const x = Number(v);
     return Number.isFinite(x) ? x : 0;
   };
-  const esc = (s) => String(s ?? "")
-    .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
-
+  const esc = (s) =>
+    String(s ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  // ✅ Dropdown Data (change values anytime)
+  const MACHINE_LIST = ["ROLL TO ROLL NO 1", "ROLL TO ROLL NO 2", "FLAT BED 1"];
+  const OPERATOR_LIST = ["Anagogul", "Kumar", "Ravi", "Suresh"]; // ✅ names only
+  const SIZE_LIST = ["28", "30", "32", "34", "36", "38", "40", "42"]; // ✅ numbers only
+  function fillSelect(selectEl, list, placeholder = "--Select--") {
+    if (!selectEl) return;
+    selectEl.innerHTML = "";
+    const opt0 = document.createElement("option");
+    opt0.value = "";
+    opt0.textContent = placeholder;
+    selectEl.appendChild(opt0);
+    list.forEach(v => {
+      const o = document.createElement("option");
+      o.value = v;
+      o.textContent = v;
+      selectEl.appendChild(o);
+    });
+  }
   // State
   let rows = [];
   let editIndex = -1;
-
-  // Elements (table + totals)
+  let inlineAddOpen = false;
+  // Elements
   const prodBody = document.getElementById("prodBody");
   const foundCount = document.getElementById("foundCount");
   const totT = document.getElementById("totT");
   const totP = document.getElementById("totP");
   const totB = document.getElementById("totB");
   const rowsHidden = document.getElementById("productionRowsJson");
-
   // Modal elements
   const modalBackdrop = document.getElementById("modalBackdrop");
   const btnOpenModal = document.getElementById("btnOpenModal");
@@ -993,7 +978,6 @@
   const btnCancelModal = document.getElementById("btnCancelModal");
   const btnModalAdd = document.getElementById("btnModalAdd");
   const modalTitle = document.getElementById("modalTitle");
-
   const mDate = document.getElementById("m_date");
   const mShift = document.getElementById("m_shift");
   const mMachine = document.getElementById("m_machine");
@@ -1002,209 +986,441 @@
   const mTqty = document.getElementById("m_tqty");
   const mPqty = document.getElementById("m_pqty");
   const mBalance = document.getElementById("m_balance");
-
-  function openModal(mode = "add", index = -1) {
+  // Fill modal dropdowns once
+  fillSelect(mMachine, MACHINE_LIST, "--Select--");
+  fillSelect(mOperator, OPERATOR_LIST, "--Select--");
+  fillSelect(mSize, SIZE_LIST, "--Select--");
+  function openEditModal(index) {
     editIndex = index;
-    modalTitle.textContent = (mode === "edit") ? "Edit Production" : "Add Production";
-
-    if (mode === "edit" && rows[index]) {
-      const r = rows[index];
-      mDate.value = r.date || "";
-      mShift.value = r.shift || "";
-      mMachine.value = r.machine || "";
-      mOperator.value = r.operator || "";
-      mSize.value = r.size || "";
-      mTqty.value = r.tqty ?? 0;
-      mPqty.value = r.pqty ?? 0;
-      mBalance.value = fmt3(num(mTqty.value) - num(mPqty.value));
-    } else {
-      clearModal();
-    }
-
+    modalTitle.textContent = "Edit Production";
+    const r = rows[index];
+    mDate.value = r.date || "";
+    mShift.value = r.shift || "";
+    mMachine.value = r.machine || "";
+    mOperator.value = r.operator || "";
+    mSize.value = r.size || "";
+    mTqty.value = r.tqty ?? 0;
+    mPqty.value = r.pqty ?? 0;
+    mBalance.value = fmt3(num(mTqty.value) - num(mPqty.value));
     modalBackdrop.classList.add("show");
     modalBackdrop.setAttribute("aria-hidden", "false");
     if (window.lucide) lucide.createIcons();
     setTimeout(() => mShift.focus(), 0);
   }
-
   function closeModal() {
     modalBackdrop.classList.remove("show");
     modalBackdrop.setAttribute("aria-hidden", "true");
     editIndex = -1;
   }
-
-  function clearModal() {
-    mDate.value = "";
-    mShift.value = "";
-    mMachine.value = "";
-    mOperator.value = "";
-    mSize.value = "";
-    mTqty.value = 0;
-    mPqty.value = 0;
-    mBalance.value = "0.000";
-  }
-
   function updateModalBalance() {
     mBalance.value = fmt3(num(mTqty.value) - num(mPqty.value));
   }
   mTqty.addEventListener("input", updateModalBalance);
   mPqty.addEventListener("input", updateModalBalance);
-
-  btnOpenModal.addEventListener("click", () => openModal("add"));
   btnCloseModal.addEventListener("click", closeModal);
   btnCancelModal.addEventListener("click", closeModal);
-
-  modalBackdrop.addEventListener("click", (e) => {
-    if (e.target === modalBackdrop) closeModal();
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modalBackdrop.classList.contains("show")) closeModal();
-  });
-
-  function syncHidden() {
-    rowsHidden.value = JSON.stringify(rows);
-  }
-
+  modalBackdrop.addEventListener("click", (e) => { if (e.target === modalBackdrop) closeModal(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && modalBackdrop.classList.contains("show")) closeModal(); });
+  function syncHidden() { rowsHidden.value = JSON.stringify(rows); }
   function calcTotals() {
     let t = 0, p = 0, b = 0;
-    rows.forEach(r => {
-      t += num(r.tqty);
-      p += num(r.pqty);
-      b += num(r.balance);
-    });
+    rows.forEach(r => { t += num(r.tqty); p += num(r.pqty); b += num(r.balance); });
     totT.textContent = fmt3(t);
     totP.textContent = fmt3(p);
     totB.textContent = fmt3(b);
   }
-
+  function isMobileNow() {
+    return window.matchMedia && window.matchMedia("(max-width: 640px)").matches;
+  }
+  // ✅ Inline editor row (dropdown + calendar icon)
+  function buildInlineEditorRow() {
+    const tr = document.createElement("tr");
+    tr.className = "inline-editor-row";
+    tr.innerHTML = `
+<td>
+<div class="dateWrap">
+<input class="tableInput" id="i_date" type="datetime-local">
+<i class="calIcon" data-lucide="calendar"></i>
+</div>
+</td>
+<td>
+<select class="tableInput" id="i_shift">
+<option value="">--Select--</option>
+<option>DAY SHIFT</option>
+<option>NIGHT SHIFT</option>
+</select>
+</td>
+<td><select class="tableInput" id="i_machine"></select></td>
+<td><select class="tableInput" id="i_operator"></select></td>
+<td><select class="tableInput" id="i_size"></select></td>
+<td class="num"><input class="tableInput" id="i_tqty" type="number" min="0" step="0.001" value="0"></td>
+<td class="num"><input class="tableInput" id="i_pqty" type="number" min="0" step="0.001" value="0"></td>
+<td class="num"><input class="tableInput" id="i_bal" type="text" value="0.000" readonly></td>
+<td>
+<div class="inline-actions">
+<button type="button" class="btn icon edit" id="i_save" title="Save">
+<i data-lucide="pencil"></i>
+</button>
+<button type="button" class="btn icon del" id="i_cancel" title="Cancel">
+<i data-lucide="trash-2"></i>
+</button>
+</div>
+</td>
+`;
+    return tr;
+  }
+  function updateInlineBalance() {
+    const t = num(document.getElementById("i_tqty").value);
+    const p = num(document.getElementById("i_pqty").value);
+    document.getElementById("i_bal").value = fmt3(t - p);
+  }
+  function closeInlineAdd() {
+    inlineAddOpen = false;
+    render();
+  }
+  function saveInlineAdd() {
+    const date = document.getElementById("i_date").value || "";
+    const shift = document.getElementById("i_shift").value;
+    const machine = document.getElementById("i_machine").value;
+    const operator = document.getElementById("i_operator").value; // ✅ dropdown name only
+    const size = document.getElementById("i_size").value;         // ✅ numbers only
+    const t = num(document.getElementById("i_tqty").value);
+    const p = num(document.getElementById("i_pqty").value);
+    if (!shift || !machine || !operator || !size || document.getElementById("i_pqty").value === "") {
+      alert("Shift, Machine, Operator, Size and P.Qty are required.");
+      return;
+    }
+    rows.push({ date, shift, machine, operator, size, tqty: t, pqty: p, balance: (t - p) });
+    syncHidden(); calcTotals();
+    inlineAddOpen = false;
+    render();
+  }
+  // ✅ Mobile add card (dropdown + calendar icon)
+  function buildMobileAddCard() {
+    const div = document.createElement("div");
+    div.className = "mcard";
+    div.innerHTML = `
+<div class="mhead">
+<div class="mdate">Add Entry</div>
+<div class="micons">
+<button type="button" class="btn icon edit" id="mi_save" title="Save">
+<i data-lucide="pencil"></i>
+</button>
+<button type="button" class="btn icon del" id="mi_cancel" title="Cancel">
+<i data-lucide="trash-2"></i>
+</button>
+</div>
+</div>
+<div class="mline"><b>Date:</b>
+<span class="dateWrap" style="width:100%">
+<input class="tableInput" id="mi_date" type="datetime-local">
+<i class="calIcon" data-lucide="calendar"></i>
+</span>
+</div>
+<div class="mline"><b>Shift:</b>
+<span style="width:100%">
+<select class="tableInput" id="mi_shift">
+<option value="">--Select--</option>
+<option>DAY SHIFT</option>
+<option>NIGHT SHIFT</option>
+</select>
+</span>
+</div>
+<div class="mline"><b>Machine:</b>
+<span style="width:100%"><select class="tableInput" id="mi_machine"></select></span>
+</div>
+<div class="mline"><b>Operator:</b>
+<span style="width:100%"><select class="tableInput" id="mi_operator"></select></span>
+</div>
+<div class="mline"><b>Size:</b>
+<span style="width:100%"><select class="tableInput" id="mi_size"></select></span>
+</div>
+<div class="mmetrics">
+<div class="mbox">
+<div class="k">T.Qty</div>
+<div class="v"><input class="tableInput" id="mi_tqty" type="number" min="0" step="0.001" value="0"></div>
+</div>
+<div class="mbox">
+<div class="k">P.Qty *</div>
+<div class="v"><input class="tableInput" id="mi_pqty" type="number" min="0" step="0.001" value="0"></div>
+</div>
+<div class="mbox">
+<div class="k">Bal</div>
+<div class="v"><input class="tableInput" id="mi_bal" type="text" value="0.000" readonly></div>
+</div>
+</div>
+`;
+    return div;
+  }
+  function updateMobileInlineBal() {
+    const t = num(document.getElementById("mi_tqty").value);
+    const p = num(document.getElementById("mi_pqty").value);
+    document.getElementById("mi_bal").value = fmt3(t - p);
+  }
+  function saveMobileInlineAdd() {
+    const date = document.getElementById("mi_date").value || "";
+    const shift = document.getElementById("mi_shift").value;
+    const machine = document.getElementById("mi_machine").value;
+    const operator = document.getElementById("mi_operator").value;
+    const size = document.getElementById("mi_size").value;
+    const t = num(document.getElementById("mi_tqty").value);
+    const p = num(document.getElementById("mi_pqty").value);
+    if (!shift || !machine || !operator || !size || document.getElementById("mi_pqty").value === "") {
+      alert("Shift, Machine, Operator, Size and P.Qty are required.");
+      return;
+    }
+    rows.push({ date, shift, machine, operator, size, tqty: t, pqty: p, balance: (t - p) });
+    syncHidden(); calcTotals();
+    inlineAddOpen = false;
+    render();
+  }
   function render() {
-    // desktop table
     prodBody.innerHTML = "";
-
-    // mobile cards
     const cards = document.getElementById("prodCards");
     if (cards) cards.innerHTML = "";
-
+    // ✅ Inline add UI (desktop)
+    if (inlineAddOpen && !isMobileNow()) {
+      const editorRow = buildInlineEditorRow();
+      prodBody.appendChild(editorRow);
+      fillSelect(document.getElementById("i_machine"), MACHINE_LIST, "--Select--");
+      fillSelect(document.getElementById("i_operator"), OPERATOR_LIST, "--Select--");
+      fillSelect(document.getElementById("i_size"), SIZE_LIST, "--Select--");
+      document.getElementById("i_tqty").addEventListener("input", updateInlineBalance);
+      document.getElementById("i_pqty").addEventListener("input", updateInlineBalance);
+      document.getElementById("i_save").addEventListener("click", saveInlineAdd);
+      document.getElementById("i_cancel").addEventListener("click", closeInlineAdd);
+      updateInlineBalance();
+      if (window.lucide) lucide.createIcons();
+      setTimeout(() => document.getElementById("i_shift").focus(), 0);
+    }
+    // ✅ Inline add UI (mobile card)
+    if (inlineAddOpen && isMobileNow() && cards) {
+      const addCard = buildMobileAddCard();
+      cards.appendChild(addCard);
+      fillSelect(document.getElementById("mi_machine"), MACHINE_LIST, "--Select--");
+      fillSelect(document.getElementById("mi_operator"), OPERATOR_LIST, "--Select--");
+      fillSelect(document.getElementById("mi_size"), SIZE_LIST, "--Select--");
+      document.getElementById("mi_tqty").addEventListener("input", updateMobileInlineBal);
+      document.getElementById("mi_pqty").addEventListener("input", updateMobileInlineBal);
+      document.getElementById("mi_save").addEventListener("click", saveMobileInlineAdd);
+      document.getElementById("mi_cancel").addEventListener("click", closeInlineAdd);
+      updateMobileInlineBal();
+      if (window.lucide) lucide.createIcons();
+      setTimeout(() => document.getElementById("mi_shift").focus(), 0);
+    }
+    // existing rows render
     rows.forEach((r, i) => {
-      // ✅ Desktop table row (unchanged look)
       const tr = document.createElement("tr");
       tr.innerHTML = `
-      <td>${esc(r.date)}</td>
-      <td>${esc(r.shift)}</td>
-      <td>${esc(r.machine)}</td>
-      <td>${esc(r.operator)}</td>
-      <td>${esc(r.size)}</td>
-      <td class="num">${fmt3(r.tqty)}</td>
-      <td class="num">${fmt3(r.pqty)}</td>
-      <td class="num">${fmt3(r.balance)}</td>
-      <td>
-        <button type="button" class="btn icon edit" data-edit="${i}" title="Edit">
-      <i data-lucide="pencil"></i>
-    </button>
-        <button type="button" class="btn icon del" data-del="${i}" title="Delete">
-          <i data-lucide="trash-2"></i>
-        </button>
-      </td>
-    `;
+<td>${esc(r.date)}</td>
+<td>${esc(r.shift)}</td>
+<td>${esc(r.machine)}</td>
+<td>${esc(r.operator)}</td>
+<td>${esc(r.size)}</td>
+<td class="num">${fmt3(r.tqty)}</td>
+<td class="num">${fmt3(r.pqty)}</td>
+<td class="num">${fmt3(r.balance)}</td>
+<td>
+<button type="button" class="btn icon edit" data-edit="${i}" title="Edit">
+<i data-lucide="pencil"></i>
+</button>
+<button type="button" class="btn icon del" data-del="${i}" title="Delete">
+<i data-lucide="trash-2"></i>
+</button>
+</td>
+`;
       prodBody.appendChild(tr);
-
-      // ✅ Mobile card (your 2nd image)
       if (cards) {
         const card = document.createElement("div");
         card.className = "mcard";
         card.innerHTML = `
-      <div class="mhead">
-  <div class="mdate">${esc(r.date || "")}</div>
-  <div class="micons">
-    <button type="button" class="btn icon edit" data-edit="${i}" title="Edit">
-      <i data-lucide="pencil"></i>
-    </button>
-    <button type="button" class="btn icon del" data-del="${i}" title="Delete">
-      <i data-lucide="trash-2"></i>
-    </button>
-  </div>
-</div>  
-
-        <div class="mline"><b>Shift:</b> <span>${esc(r.shift || "")}</span></div>
-        <div class="mline"><b>Machine:</b> <span>${esc(r.machine || "")}</span></div>
-
-
-        <div class="mline"><b>Operator:</b> <span>${esc(r.operator || "")}</span></div>
-        <div class="mline"><b>Size:</b> <span>${esc(r.size || "")}</span></div>
-
-        <div class="mmetrics">
-          <div class="mbox">
-            <div class="k">T.Qty</div>
-            <div class="v">${fmt3(r.tqty)}</div>
-          </div>
-          <div class="mbox">
-            <div class="k">P.Qty</div>
-            <div class="v">${fmt3(r.pqty)}</div>
-          </div>
-          <div class="mbox">
-            <div class="k">Bal</div>
-            <div class="v">${fmt3(r.balance)}</div>
-          </div>
-        </div>
-      `;
+<div class="mhead">
+<div class="mdate">${esc(r.date || "")}</div>
+<div class="micons">
+<button type="button" class="btn icon edit" data-edit="${i}" title="Edit"><i data-lucide="pencil"></i></button>
+<button type="button" class="btn icon del" data-del="${i}" title="Delete"><i data-lucide="trash-2"></i></button>
+</div>
+</div>
+<div class="mline"><b>Shift:</b> <span>${esc(r.shift || "")}</span></div>
+<div class="mline"><b>Machine:</b> <span>${esc(r.machine || "")}</span></div>
+<div class="mline"><b>Operator:</b> <span>${esc(r.operator || "")}</span></div>
+<div class="mline"><b>Size:</b> <span>${esc(r.size || "")}</span></div>
+<div class="mmetrics">
+<div class="mbox"><div class="k">T.Qty</div><div class="v">${fmt3(r.tqty)}</div></div>
+<div class="mbox"><div class="k">P.Qty</div><div class="v">${fmt3(r.pqty)}</div></div>
+<div class="mbox"><div class="k">Bal</div><div class="v">${fmt3(r.balance)}</div></div>
+</div>
+`;
         cards.appendChild(card);
       }
     });
-
     foundCount.textContent = `Found ${rows.length} Records`;
-
-    // bind edit/delete for both table + cards
+    // bind edit/delete
     document.querySelectorAll("[data-edit]").forEach(btn => {
-      btn.onclick = () => openModal("edit", Number(btn.getAttribute("data-edit")));
+      btn.onclick = () => openEditModal(Number(btn.getAttribute("data-edit")));
     });
     document.querySelectorAll("[data-del]").forEach(btn => {
       btn.onclick = () => {
         const idx = Number(btn.getAttribute("data-del"));
         if (confirm("Delete this row?")) {
           rows.splice(idx, 1);
-          syncHidden();
-          calcTotals();
-          render();
+          syncHidden(); calcTotals(); render();
         }
       };
     });
-
     if (window.lucide) lucide.createIcons();
   }
-
-
+  // ✅ Add Entry click -> inline open
+  btnOpenModal.addEventListener("click", () => {
+    inlineAddOpen = true;
+    render();
+  });
+  // ✅ Modal update (edit only)
   btnModalAdd.addEventListener("click", () => {
+    if (editIndex < 0) return;
     if (!mShift.value || !mMachine.value || !mOperator.value || !mSize.value || mPqty.value === "") {
       alert("Shift, Machine, Operator, Size and P.Qty are required.");
       return;
     }
-
     const t = num(mTqty.value);
     const p = num(mPqty.value);
-    const bal = t - p;
-
-    const payload = {
+    rows[editIndex] = {
       date: mDate.value || "",
       shift: mShift.value,
       machine: mMachine.value,
-      operator: mOperator.value,
-      size: mSize.value,
-      tqty: t,
-      pqty: p,
-      balance: bal
+      operator: mOperator.value, // ✅ names only
+      size: mSize.value,         // ✅ numbers only
+      tqty: t, pqty: p, balance: (t - p)
     };
-
-    if (editIndex >= 0) rows[editIndex] = payload;
-    else rows.push(payload);
-
-    syncHidden();
-    calcTotals();
-    render();
-    closeModal();
+    syncHidden(); calcTotals(); render(); closeModal();
   });
 
+  // ✅ JOB CARD AUTO-POPULATE FUNCTIONALITY
+  const jobcardInput = document.getElementById('jobcard_no_input');
+  const jobLoading = document.getElementById('job_loading');
+
+  // Clear job details when jobcard field is emptied
+  jobcardInput.addEventListener('input', function () {
+    if (this.value.trim() === '') {
+      clearJobDetails();
+    }
+  });
+
+  // Fetch job details when field loses focus or Enter is pressed
+  jobcardInput.addEventListener('blur', fetchJobDetailsOnValid);
+  jobcardInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      fetchJobDetailsOnValid();
+    }
+  });
+
+  function fetchJobDetailsOnValid() {
+    const jobcardNo = jobcardInput.value.trim();
+    if (jobcardNo.length >= 3) { // Only fetch if minimum characters entered
+      fetchJobDetails(jobcardNo);
+    }
+  }
+
+  function showLoading() {
+    jobLoading.style.display = 'inline-block';
+    clearJobDetails(); // Clear previous data while loading
+  }
+
+  function hideLoading() {
+    jobLoading.style.display = 'none';
+  }
+
+  function clearJobDetails() {
+    const fields = [
+      'customer_name', 'style_no', 'job_type', 'job_created_by',
+      'style_name', 'fabric_type', 'customer_po_no', 'combo', 'printed_qty'
+    ];
+
+    fields.forEach(field => {
+      document.getElementById(`${field}_display`).textContent = '-';
+      document.getElementById(field).value = '';
+    });
+  }
+
+  function populateJobDetails(data) {
+    const fields = [
+      'customer_name', 'style_no', 'job_type', 'job_created_by',
+      'style_name', 'fabric_type', 'customer_po_no', 'combo', 'printed_qty'
+    ];
+
+    fields.forEach(field => {
+      if (data[field] !== undefined && data[field] !== null) {
+        document.getElementById(`${field}_display`).textContent = data[field];
+        document.getElementById(field).value = data[field];
+      } else {
+        document.getElementById(`${field}_display`).textContent = '-';
+        document.getElementById(field).value = '';
+      }
+    });
+  }
+
+  function fetchJobDetails(jobcardNo) {
+    showLoading();
+
+    // ✅ REAL IMPLEMENTATION - Uncomment and configure your endpoint
+    /*
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    fetch(`/api/job-details/?jobcard_no=${encodeURIComponent(jobcardNo)}`, {
+      method: 'GET',
+      headers: {
+        'X-CSRFToken': csrftoken,
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Job not found');
+      }
+      return response.json();
+    })
+    .then(data => {
+      populateJobDetails(data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Job details not found for this Job Card Number');
+      clearJobDetails();
+    })
+    .finally(() => {
+      hideLoading();
+    });
+    */
+
+    // ✅ SIMULATION FOR TESTING - Replace with real API call above
+    setTimeout(() => {
+      // Simulate successful response
+      const mockData = {
+        customer_name: "ABC Textiles",
+        style_no: "ST-2024-105",
+        job_type: "Export Order",
+        job_created_by: "Rajesh Kumar",
+        style_name: "Summer Collection 2024",
+        fabric_type: "Cotton Blend",
+        customer_po_no: "PO-2024-7890",
+        combo: "Navy Blue/White",
+        printed_qty: "5000"
+      };
+
+      // Simulate not found scenario for demo
+      if (jobcardNo === "NOTFOUND") {
+        alert('Job details not found for this Job Card Number');
+        clearJobDetails();
+      } else {
+        populateJobDetails(mockData);
+      }
+
+      hideLoading();
+    }, 800);
+  }
+
   // init
-  updateModalBalance();
   syncHidden();
   calcTotals();
   render();

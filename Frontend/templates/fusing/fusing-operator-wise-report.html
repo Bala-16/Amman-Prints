@@ -6,6 +6,164 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  /* ✅ Reset button (grey) */
+  .btnReset {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    height: 48px;
+    min-width: 170px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 12px;
+    background: #e5e7eb;
+    color: #111827;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .btnReset svg {
+    width: 20px !important;
+    height: 20px !important;
+    color: #111827 !important;
+    stroke: #111827 !important;
+  }
+
+  /* ✅ Search button */
+  .btnSearch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 48px;
+    min-width: 170px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 12px;
+    background: #0d9488;
+    color: #fff;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .btnSearch svg {
+    width: 20px !important;
+    height: 20px !important;
+    color: #fff !important;
+    stroke: #fff !important;
+  }
+
+  /* ✅ Mobile cards */
+  .mobile-cards {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    #operatorTable {
+      display: none !important;
+    }
+
+    .mobile-cards {
+      display: block !important;
+    }
+
+    .mcard {
+      background: rgba(255, 255, 255, .92);
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(2, 6, 23, .10);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .mcard .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .mcard .jc {
+      font-weight: 900;
+      font-size: 20px;
+      color: #0f172a;
+    }
+
+    .mcard .date {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .mcard .badge {
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #e6fffa;
+      color: #0f766e;
+      white-space: nowrap;
+    }
+
+    .mgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 18px;
+      margin-top: 10px;
+    }
+
+    .mitem .k {
+      font-size: 12px;
+      color: #0f172a;
+      font-weight: 900;
+    }
+
+    .mitem .v {
+      font-size: 15px;
+      color: #0f172a;
+      font-weight: 400;
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    .mqty {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .mqty .box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .mqty .box .k {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 800;
+    }
+
+    .mqty .box .v {
+      font-size: 18px;
+      font-weight: 900;
+      margin-top: 4px;
+      color: #0f172a;
+      text-align: right;
+    }
+  }
+
+  /* ✅ total row style */
+  .total-row td {
+    font-weight: 800;
+    background: rgba(248, 250, 252, 0.9);
+  }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -13,16 +171,23 @@
   <div class="max-w-[1600px] mx-auto space-y-6">
 
     <!-- HEADER -->
-    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-4 sm:p-6 shadow-xl flex flex-col sm:flex-row items-start sm:items-center gap-4">
+    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-4 sm:p-6 shadow-xl
+                flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="h-12 w-12 flex items-center justify-center rounded-xl bg-white/20">
           <i data-lucide="user" class="text-white w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="text-xl sm:text-2xl font-bold text-white"> Operator Wise Report</h1>
+          <h1 class="text-xl sm:text-2xl font-bold text-white">Operator Wise Report</h1>
           <p class="text-teal-100 text-sm sm:text-base">Production summary by operator</p>
         </div>
       </div>
+
+      <button onclick="window.print()"
+        class="bg-white text-teal-700 px-4 py-2 rounded-lg shadow flex items-center gap-2 hover:scale-105 transition">
+        <i data-lucide="printer" class="w-4 h-4"></i>
+        Print Report
+      </button>
     </div>
 
     <!-- FILTERS -->
@@ -38,51 +203,64 @@
       <div>
         <label class="text-sm sm:text-base">Operator</label>
         <select id="operator" class="w-full border rounded px-3 py-2 text-sm sm:text-base">
-          <option>GOLU KUMAR</option>
-          <option>RAHUL</option>
-          <option>SURESH</option>
+          <option value="">--Select--</option>
+          {% for op in operators %}
+          <option value="{{ op }}"></option>
+          {% endfor %}
         </select>
       </div>
+
       <div class="flex items-end gap-2">
-        <button id="searchBtn" class="bg-teal-600 text-white px-4 sm:px-6 py-2 rounded-lg flex items-center gap-2 hover:bg-teal-700 transition">
-          <i data-lucide="search" class="w-4 h-4"></i> Search
+        <button type="button" class="btnSearch" id="searchBtn">
+          <i data-lucide="search"></i>
+          Search
         </button>
-        <button id="resetBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 sm:px-6 py-2 rounded-lg shadow flex items-center justify-center gap-2">
+        <button type="button" class="btnReset" id="resetBtn">
+          <i data-lucide="rotate-ccw"></i>
           Reset
         </button>
       </div>
     </div>
 
-    <!-- CHARTS -->
-    <!-- <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-      <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 h-[260px] sm:h-[300px]">
-        <h3 class="font-semibold mb-2 text-sm sm:text-base">Operator Production</h3>
-        <canvas id="operatorBar" class="w-full h-full"></canvas>
-      </div>
-      <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 h-[260px] sm:h-[300px]">
-        <h3 class="font-semibold mb-2 text-sm sm:text-base">Production Share</h3>
-        <canvas id="operatorPie" class="w-full h-full"></canvas>
-      </div>
-    </div> -->
-
     <!-- TABLE -->
     <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg overflow-x-auto">
-      <table class="w-full text-sm sm:text-base min-w-[700px]" id="operatorTable">
+      <table class="w-full text-sm sm:text-base min-w-[1100px]" id="operatorTable">
         <thead class="bg-slate-100">
           <tr>
+            <th class="p-2 sm:p-3 text-left">S.No</th>
             <th class="p-2 sm:p-3 text-left">Date</th>
             <th class="p-2 sm:p-3 text-left">Jobcard No</th>
+            <th class="p-2 sm:p-3 text-left">Customer Name</th>
             <th class="p-2 sm:p-3 text-left">Shift</th>
+            <th class="p-2 sm:p-3 text-left">Machine No</th>
             <th class="p-2 sm:p-3 text-left">Operator</th>
-            <th class="p-2 sm:p-3 text-left">Machine</th>
-            <th class="p-2 sm:p-3 text-left">Particular</th>
+            <th class="p-2 sm:p-3 text-left">Particulars</th>
             <th class="p-2 sm:p-3 text-right">Order Qty</th>
-            <th class="p-2 sm:p-3 text-right">Produced Qty</th>
+            <th class="p-2 sm:p-3 text-right">Product Qty</th>
+            <th class="p-2 sm:p-3 text-right">Balance Qty</th>
           </tr>
         </thead>
-        <tbody id="tableBody"></tbody>
+
+        <tbody id="tableBody">
+          <!-- initial -->
+          <tr>
+            <td class="p-4 text-center text-slate-500" colspan="11">No Records</td>
+          </tr>
+        </tbody>
+
+        <tfoot>
+          <tr class="total-row border-t">
+            <td class="p-2 sm:p-3" colspan="8" style="text-align:center;">Total</td>
+            <td class="p-2 sm:p-3 text-right" id="totOrder">0.00</td>
+            <td class="p-2 sm:p-3 text-right" id="totProd">0.00</td>
+            <td class="p-2 sm:p-3 text-right" id="totBal">0.00</td>
+          </tr>
+        </tfoot>
       </table>
     </div>
+
+    <!-- ✅ MOBILE CARDS -->
+    <div id="mobileCards" class="mobile-cards"></div>
 
   </div>
 </div>
@@ -90,91 +268,169 @@
 
 {% block extra_js %}
 <script>
-lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 
-// Sample operator data
-let rows = [
- {date:"03-04-2024", jc:"JC-2404-0004", shift:"DAY", op:"GOLU KUMAR", mach:"FLAT BED NO 3", part:"XL-5 DESIGN", order:1500, produced:600},
- {date:"04-04-2024", jc:"JC-2404-0005", shift:"DAY", op:"RAHUL", mach:"FLAT BED NO 4", part:"XL-6 DESIGN", order:1600, produced:900},
- {date:"05-04-2024", jc:"JC-2404-0006", shift:"DAY", op:"SURESH", mach:"ROLL TO ROLL NO 1", part:"L-5 DESIGN", order:1200, produced:700}
-];
+  const tbody = document.getElementById("tableBody");
+  const fromDate = document.getElementById("fromDate");
+  const toDate = document.getElementById("toDate");
+  const operatorEl = document.getElementById("operator");
+  const searchBtn = document.getElementById("searchBtn");
+  const resetBtn = document.getElementById("resetBtn");
 
-const tbody = document.getElementById("tableBody");
-const fromDate = document.getElementById("fromDate");
-const toDate = document.getElementById("toDate");
-const operatorInput = document.getElementById("operator");
-const searchBtn = document.getElementById("searchBtn");
-const resetBtn = document.getElementById("resetBtn");
+  const totOrder = document.getElementById("totOrder");
+  const totProd = document.getElementById("totProd");
+  const totBal = document.getElementById("totBal");
 
-// Charts
-const barCtx = document.getElementById("operatorBar").getContext("2d");
-const pieCtx = document.getElementById("operatorPie").getContext("2d");
+  const API_URL = "{% url 'operator_report_api' %}";
 
-let barChart = new Chart(barCtx, {
-  type: "bar",
-  data: { labels: [], datasets:[{label:"Produced Qty", data:[], backgroundColor:"#14b8a6"}]},
-  options:{ responsive:true, maintainAspectRatio:false, scales:{y:{beginAtZero:true}}}
-});
+  function esc(s) {
+    return String(s ?? "")
+      .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+  }
 
-let pieChart = new Chart(pieCtx, {
-  type: "doughnut",
-  data: { labels:[], datasets:[{data:[], backgroundColor:["#0d9488","#22c55e","#38bdf8"]}] },
-  options:{ responsive:true, maintainAspectRatio:false }
-});
+  // ✅ Mobile cards renderer (உங்க design same)
+  function renderCards(data) {
+    const mobileCards = document.getElementById("mobileCards");
+    if (!mobileCards) return;
+    mobileCards.innerHTML = "";
 
-// Render table and charts
-function renderTable(data){
-  tbody.innerHTML="";
-  const operatorMap = {};
-  data.forEach((r)=>{
-    tbody.innerHTML += `
-      <tr class="border-t hover:bg-slate-50">
-        <td class="p-2 sm:p-3">${r.date}</td>
-        <td class="p-2 sm:p-3 font-medium">${r.jc}</td>
-        <td class="p-2 sm:p-3">${r.shift}</td>
-        <td class="p-2 sm:p-3">${r.op}</td>
-        <td class="p-2 sm:p-3">${r.mach}</td>
-        <td class="p-2 sm:p-3">${r.part}</td>
-        <td class="p-2 sm:p-3 text-right">${r.order}</td>
-        <td class="p-2 sm:p-3 text-right">${r.produced}</td>
-      </tr>`;
-    operatorMap[r.op]=(operatorMap[r.op]||0)+r.produced;
-  });
+    if (!data || data.length === 0) {
+      mobileCards.innerHTML = `<div class="mcard"><div class="jc">No Records</div></div>`;
+      return;
+    }
 
-  // Update charts
-  barChart.data.labels = Object.keys(operatorMap);
-  barChart.data.datasets[0].data = Object.values(operatorMap);
-  barChart.update();
+    data.forEach(r => {
+      mobileCards.innerHTML += `
+        <div class="mcard">
+          <div class="top">
+            <div>
+              <div class="jc">${esc(r.jobcard_no)}</div>
+              <div class="date">${esc(r.date)}</div>
+            </div>
+            <div class="badge">${esc(r.shift)}</div>
+          </div>
 
-  pieChart.data.labels = Object.keys(operatorMap);
-  pieChart.data.datasets[0].data = Object.values(operatorMap);
-  pieChart.update();
-}
+          <div class="mgrid">
+            <div class="mitem">
+              <div class="k">Operator</div>
+              <div class="v">${esc(r.operator)}</div>
+            </div>
+            <div class="mitem">
+              <div class="k">Machine</div>
+              <div class="v">${esc(r.machine_no)}</div>
+            </div>
+            <div class="mitem" style="grid-column: 1 / -1;">
+              <div class="k">Particular</div>
+              <div class="v">${esc(r.particulars)}</div>
+            </div>
+          </div>
 
-// Initial render
-renderTable(rows);
+          <div class="mqty">
+            <div class="box">
+              <div class="k">Order Qty</div>
+              <div class="v">${Number(r.order_qty || 0).toFixed(2)}</div>
+            </div>
+            <div class="box">
+              <div class="k">Product Qty</div>
+              <div class="v">${Number(r.product_qty || 0).toFixed(2)}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
 
-// Search functionality
-searchBtn.addEventListener("click", ()=>{
-  const from = fromDate.value;
-  const to = toDate.value;
-  const op = operatorInput.value;
+  function setTotals(order = 0, prod = 0, bal = 0) {
+    totOrder.textContent = Number(order).toFixed(2);
+    totProd.textContent = Number(prod).toFixed(2);
+    totBal.textContent = Number(bal).toFixed(2);
+  }
 
-  const filtered = rows.filter(r=>{
-    let valid = true;
-    if(from) valid = valid && r.date >= from;
-    if(to) valid = valid && r.date <= to;
-    if(op) valid = valid && r.op.toLowerCase().includes(op.toLowerCase());
-    return valid;
-  });
+  function showNoRecords() {
+    tbody.innerHTML = `<tr><td class="p-4 text-center text-slate-500" colspan="11">No Records</td></tr>`;
+    setTotals(0, 0, 0);
+    renderCards([]);
+  }
 
-  renderTable(filtered);
-});
+  function renderTable(data) {
+    tbody.innerHTML = "";
 
-// Reset
-resetBtn.addEventListener("click", ()=>{
-  fromDate.value=""; toDate.value=""; operatorInput.value="";
-  renderTable(rows);
-});
+    if (!data || data.length === 0) {
+      showNoRecords();
+      return;
+    }
+
+    let sumOrder = 0, sumProd = 0, sumBal = 0;
+
+    data.forEach((r, idx) => {
+      const o = Number(r.order_qty || 0);
+      const p = Number(r.product_qty || 0);
+      const b = Number(r.balance_qty || (o - p));
+
+      sumOrder += o; sumProd += p; sumBal += b;
+
+      tbody.innerHTML += `
+        <tr class="border-t hover:bg-slate-50">
+          <td class="p-2 sm:p-3">${idx + 1}</td>
+          <td class="p-2 sm:p-3">${esc(r.date)}</td>
+          <td class="p-2 sm:p-3 font-medium">${esc(r.jobcard_no)}</td>
+          <td class="p-2 sm:p-3">${esc(r.customer_name)}</td>
+          <td class="p-2 sm:p-3">${esc(r.shift)}</td>
+          <td class="p-2 sm:p-3">${esc(r.machine_no)}</td>
+          <td class="p-2 sm:p-3">${esc(r.operator)}</td>
+          <td class="p-2 sm:p-3">${esc(r.particulars)}</td>
+          <td class="p-2 sm:p-3 text-right">${o.toFixed(2)}</td>
+          <td class="p-2 sm:p-3 text-right">${p.toFixed(2)}</td>
+          <td class="p-2 sm:p-3 text-right">${b.toFixed(2)}</td>
+        </tr>
+      `;
+    });
+
+    setTotals(sumOrder, sumProd, sumBal);
+    renderCards(data);
+  }
+
+  async function fetchData() {
+    const params = new URLSearchParams();
+    if (fromDate.value) params.set("from", fromDate.value);
+    if (toDate.value) params.set("to", toDate.value);
+    if (operatorEl.value) params.set("operator", operatorEl.value);
+
+    try {
+      const res = await fetch(`${API_URL}?${params.toString()}`, {
+        headers: { "X-Requested-With": "XMLHttpRequest" }
+      });
+
+      if (!res.ok) {
+        // ✅ Error வந்தாலும் "No Records" தான் காட்டணும்
+        console.error("API error:", res.status);
+        showNoRecords();
+        return;
+      }
+
+      const json = await res.json();
+      // json = { rows: [...] }
+      renderTable(json.rows || []);
+    } catch (err) {
+      console.error(err);
+      // ✅ network error -> No Records
+      showNoRecords();
+    }
+  }
+
+  function resetFilters() {
+    fromDate.value = "";
+    toDate.value = "";
+    operatorEl.value = "";
+    showNoRecords();
+    if (window.lucide) lucide.createIcons();
+  }
+
+  searchBtn.addEventListener("click", fetchData);
+  resetBtn.addEventListener("click", resetFilters);
+
+  // initial
+  showNoRecords();
 </script>
 {% endblock %}

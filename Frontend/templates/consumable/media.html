@@ -9,9 +9,20 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-.tab-btn{padding:10px 18px;border-radius:12px;font-weight:500;background:#f1f5f9}
-.tab-btn.active{background:linear-gradient(to right,#0d9488,#06b6d4);color:white}
-th{white-space:nowrap}
+.step-enter {
+  animation: fadeSlide .35s ease-out;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 </style>
 </head>
 
@@ -23,19 +34,23 @@ th{white-space:nowrap}
 <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl">
 <h1 class="text-2xl font-bold text-white">Media Management</h1>
 </div>
+<div class="bg-white p-6 rounded-xl shadow-lg">
+  <div id="steps" class="flex w-full"></div>
+</div>
 
 <!-- TABS -->
-<div class="bg-white rounded-xl shadow p-2 flex gap-2">
+<!-- <div class="bg-white rounded-xl shadow p-2 flex gap-2">
 <button class="tab-btn active" onclick="showTab('mediapurchaseForm')">Media Purchase Form</button>
 <button class="tab-btn" onclick="showTab('mediapurchaseList')">Purchase List</button>
 <button class="tab-btn" onclick="showTab('mediaentryForm')">Media Entry Form</button>
 <button class="tab-btn" onclick="showTab('mediareport')">Media Report</button>
 <button class="tab-btn" onclick="showTab('mediaconsolidated')"> Media Consolidated</button>
-</div>
+</div> -->
 
 <!-- ================= PURCHASE FORM ================= -->
 <div id="mediapurchaseForm" class="tab-content bg-white rounded-xl shadow p-6">
 <!-- HEADER -->
+ <div class="space-y-4">
 <div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-5 shadow-xl flex justify-between items-center">
   <h1 class="text-xl font-bold text-white">Media Purchase Form</h1>
 </div>
@@ -151,7 +166,7 @@ th{white-space:nowrap}
 SUBMIT
 </button>
 </div>
-
+</div>
 </div>
 
 <script>
@@ -220,14 +235,13 @@ function addRow(){
 
 
 <!-- ================= PURCHASE LIST ================= -->
- <div id="mediapurchaseList" class="tab-content bg-white rounded-xl shadow p-6">
+ <div id="mediapurchaseList" class="tab-content bg-white rounded-xl shadow p-6 space-y-6">
  <!-- HEADER -->
-  <div class="bg-gradient-to-r from-teal-700 to-cyan-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+  <div class="bg-gradient-to-r from-teal-700 to-cyan-600 rounded-xl p-4 shadow-xl flex justify-between items-center">
     <h1 class="text-2xl font-bold text-white">
       Media Purchase List
     </h1>
-
-    <button onclick="openForm()" class="bg-white text-teal-700 px-4 py-2 rounded-lg shadow flex items-center gap-2 hover:scale-105 transition">
+    <button onclick="goStep(1)" class="bg-white text-teal-700 px-4 py-2 rounded-lg shadow flex items-center gap-2 hover:scale-105 transition">
       <i data-lucide="plus"></i>
       Add Purchase
     </button>
@@ -405,7 +419,7 @@ function deleteData(i) {
 </div>
 
 <!-- ================= MEDIA ENTRY FORM ================= -->
-<div id="mediaentryForm" class="tab-content hidden bg-white rounded-xl shadow p-6">
+<div id="mediaentryForm" class="tab-content hidden bg-white rounded-xl shadow p-6 space-y-6">
 <!-- HEADER -->
 <div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-5 shadow-xl flex justify-between items-center">
   <h1 class="text-xl font-bold text-white">Media Entry Form</h1>
@@ -597,7 +611,7 @@ function addRow(){
 }
 </script>
 <!-- ================= INK REPORT ================= -->
-<div id="mediareport" class="tab-content hidden bg-white rounded-xl shadow p-6">
+<div id="mediareport" class="tab-content hidden bg-white rounded-xl shadow p-6 space-y-6">
     <!-- HEADER -->
 <div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
   <h1 class="text-2xl font-bold text-white flex items-center gap-2">
@@ -752,7 +766,7 @@ function exportExcel(){
 
 
 <!-- ================= CONSOLIDATED ================= -->
-<div id="mediaconsolidated" class="tab-content hidden bg-white rounded-xl shadow p-6">
+<div id="mediaconsolidated" class="tab-content hidden bg-white rounded-xl shadow p-6 space-y-6">
  <!-- HEADER -->
 <div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
   <h1 class="text-2xl font-bold text-white flex items-center gap-2">
@@ -900,6 +914,77 @@ function exportExcel(){
   XLSX.writeFile(wb, "Media_Usage_Console_Report.xlsx")
 }
 </script>
+<script>
+/* ---------------- STEPPER STATE ---------------- */
+let currentStep = 1
+
+const stepMap = {
+  1: "mediapurchaseForm",
+  2: "mediapurchaseList",
+  3: "mediaentryForm",
+  4: "mediareport",
+  5: "mediaconsolidated"
+}
+
+const steps = [
+  { id: 1, name: "Purchase", icon: "shopping-cart", color: "from-teal-500 to-cyan-500" },
+  { id: 2, name: "Purchase List", icon: "list", color: "from-sky-500 to-blue-500" },
+  { id: 3, name: "Ink Entry", icon: "edit-3", color: "from-purple-500 to-pink-500" },
+  { id: 4, name: "Report", icon: "bar-chart-3", color: "from-lime-500 to-green-500" },
+  { id: 5, name: "Consolidated", icon: "activity", color: "from-emerald-500 to-teal-600" },
+]
+
+/* ---------------- RENDER STEPPER ---------------- */
+function renderStepper() {
+  const el = document.getElementById("steps")
+  el.innerHTML = ""
+
+  steps.forEach((s, i) => {
+    const active = currentStep === s.id
+    const done = currentStep > s.id
+
+    el.innerHTML += `
+      <div class="flex flex-1 items-center">
+        <div class="flex flex-col items-center gap-2">
+          <button onclick="goStep(${s.id})"
+            class="flex h-14 w-14 items-center justify-center rounded-2xl shadow-lg transition-all
+            ${active ? `bg-gradient-to-br ${s.color} scale-110` :
+              done ? "bg-gradient-to-br from-green-400 to-emerald-500" :
+              "bg-white"}">
+            <i data-lucide="${s.icon}" class="${active || done ? "text-white" : "text-gray-400"}"></i>
+          </button>
+          <span class="text-xs font-semibold ${active ? "text-gray-900" : "text-gray-500"}">
+            ${s.name}
+          </span>
+        </div>
+        ${i < steps.length - 1
+          ? `<div class="mx-4 flex-1 h-1 rounded-full ${done ? "bg-green-400" : "bg-gray-200"}"></div>`
+          : ""}
+      </div>
+    `
+  })
+
+  lucide.createIcons()
+}
+
+/* ---------------- NAV ---------------- */
+function goStep(step) {
+  currentStep = step
+
+  document.querySelectorAll(".tab-content").forEach(t =>
+    t.classList.add("hidden")
+  )
+
+  document.getElementById(stepMap[step]).classList.remove("hidden")
+
+  renderStepper()
+}
+
+/* INIT */
+goStep(1)
+</script>
+
+
 
 <style>
 @media print {

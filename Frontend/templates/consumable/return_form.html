@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Consumable Return Form</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-lime-50/30 to-green-50/30 p-6">
+
+<div class="max-w-[1800px] mx-auto space-y-6">
+
+<!-- HEADER -->
+<div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+  <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+    <i data-lucide="rotate-ccw"></i> Consumable Return Form
+  </h1>
+</div>
+
+<!-- INFO BAR -->
+<div class="bg-white/90 rounded-xl shadow-lg p-6 flex justify-between items-center">
+
+  <div class="flex gap-8 items-center">
+    <div class="flex gap-2">
+      <span class="font-semibold text-slate-600">Return No</span>
+      <span class="font-bold text-green-700">CRT-2601-0001</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="font-semibold text-red-600">Purchase No *</span>
+      <input class="border-b-2 border-green-500 focus:outline-none px-2">
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <span class="font-semibold">Date & Time</span>
+    <input type="datetime-local" class="border rounded px-3 py-2"
+      value="2026-01-27T11:25">
+  </div>
+
+</div>
+
+<!-- ENTRY TABLE -->
+<div class="bg-white/90 rounded-xl shadow-lg overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+  <th class="p-3 text-left">S.No</th>
+  <th class="p-3 text-left">Date</th>
+  <th class="p-3 text-left">Invoice No</th>
+  <th class="p-3 text-left">Supplier Name</th>
+  <th class="p-3 text-left">Particulars</th>
+  <th class="p-3 text-right">Qty</th>
+  <th class="p-3 text-right">Mtr / Qty</th>
+  <th class="p-3 text-right">Total Mtr</th>
+  <th class="p-3 text-center">Action</th>
+</tr>
+</thead>
+
+<tbody id="returnTable">
+<tr>
+  <td class="p-2">1</td>
+  <td class="p-2">
+    <input type="datetime-local" class="border rounded px-2 py-1 w-full">
+  </td>
+  <td class="p-2">
+    <select class="border rounded px-2 py-1 w-full">
+      <option>Select</option>
+      <option>INV-1001</option>
+      <option>INV-1002</option>
+    </select>
+  </td>
+  <td class="p-2">
+    <select class="border rounded px-2 py-1 w-full">
+      <option>Select</option>
+      <option>ABC Supplier</option>
+      <option>XYZ Traders</option>
+    </select>
+  </td>
+  <td class="p-2">
+    <select class="border rounded px-2 py-1 w-full">
+      <option>Select</option>
+      <option>36-R6</option>
+      <option>44-R9</option>
+    </select>
+  </td>
+  <td class="p-2">
+    <input type="number" class="border rounded px-2 py-1 w-full qty" oninput="calcRow(this)">
+  </td>
+  <td class="p-2">
+    <input type="number" class="border rounded px-2 py-1 w-full rate" oninput="calcRow(this)">
+  </td>
+  <td class="p-2 text-right font-semibold total">0.00</td>
+  <td class="p-2 text-center">
+    <button onclick="addRow()" class="bg-teal-600 text-white px-3 py-1 rounded">ADD</button>
+  </td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- TOTAL -->
+<div class="flex justify-end gap-16 mt-6 text-lg font-semibold">
+  <span>Total</span>
+  <span id="grandTotal">0.00</span>
+</div>
+
+<!-- SAVE -->
+<div class="flex justify-center mt-10">
+<button class="bg-gradient-to-r from-teal-600 to-cyan-600 text-white px-16 py-3 rounded-lg shadow hover:scale-105 transition">
+SAVE
+</button>
+</div>
+
+</div>
+
+<script>
+lucide.createIcons()
+
+function addRow(){
+  const table = document.getElementById("returnTable")
+  const rowNo = table.rows.length + 1
+
+  table.insertAdjacentHTML("beforeend", `
+<tr>
+  <td class="p-2">${rowNo}</td>
+  <td class="p-2"><input type="datetime-local" class="border rounded px-2 py-1 w-full"></td>
+  <td class="p-2">
+    <select class="border rounded px-2 py-1 w-full">
+      <option>Select</option><option>INV-1001</option>
+    </select>
+  </td>
+  <td class="p-2">
+    <select class="border rounded px-2 py-1 w-full">
+      <option>Select</option><option>ABC Supplier</option>
+    </select>
+  </td>
+  <td class="p-2">
+    <select class="border rounded px-2 py-1 w-full">
+      <option>Select</option><option>36-R6</option>
+    </select>
+  </td>
+  <td class="p-2">
+    <input type="number" class="border rounded px-2 py-1 w-full qty" oninput="calcRow(this)">
+  </td>
+  <td class="p-2">
+    <input type="number" class="border rounded px-2 py-1 w-full rate" oninput="calcRow(this)">
+  </td>
+  <td class="p-2 text-right font-semibold total">0.00</td>
+  <td class="p-2 text-center">
+    <button onclick="this.closest('tr').remove();calcGrand()" class="bg-red-500 text-white px-3 py-1 rounded">DEL</button>
+  </td>
+</tr>
+`)
+}
+
+function calcRow(el){
+  const row = el.closest("tr")
+  const qty = Number(row.querySelector(".qty")?.value || 0)
+  const rate = Number(row.querySelector(".rate")?.value || 0)
+  const total = qty * rate
+  row.querySelector(".total").innerText = total.toFixed(2)
+  calcGrand()
+}
+
+function calcGrand(){
+  let grand = 0
+  document.querySelectorAll(".total").forEach(t=>{
+    grand += Number(t.innerText || 0)
+  })
+  document.getElementById("grandTotal").innerText = grand.toFixed(2)
+}
+</script>
+
+</body>
+</html>

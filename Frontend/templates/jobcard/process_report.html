@@ -1,463 +1,1096 @@
 {% extends "nav.html" %}
-
-{% block title %}Job Card process report{% endblock %}
+{% block title %}Jobcard Process Report{% endblock %}
 
 {% block extra_head %}
-<!-- Lucide Icons -->
-<script src="https://unpkg.com/lucide@latest"></script>
-
+{% load static %}
 <style>
-    /* push content below fixed navbar */
-    .main-content {
-        padding-top: 5px;
-        /* adjust to navbar height */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+    
+    .report-header {
+        background: #14b8a6;
+        color: white;
+        padding: 15px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        /* margin-top: 10px; */
     }
-
-    .container {
-        max-width: 1600px;
-        margin: 24px auto;
-        /* margin fix */
-        padding: 0 12px;
-        /* horizontal padding for mobile */
+    
+    .search-section {
+        background: white;
+        padding: 15px 20px;
+        margin: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        gap: 15px;
+        align-items: end;
+    }
+    
+    .search-group {
         display: flex;
         flex-direction: column;
-        gap: 24px;
-        box-sizing: border-box;
+        gap: 5px;
     }
-
-    /* Header */
-    .page-header {
-        background: linear-gradient(to right, #4f46e5, #7c3aed, #4f46e5);
-        padding: 24px;
-        border-radius: 12px 12px 0 0;
-        color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    
+    .search-group label {
+        font-weight: bold;
+        font-size: 13px;
+        color: #333;
     }
-
-    /* Buttons */
-    .btn {
-        padding: 10px 16px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition: 0.3s;
-    }
-
-    .btn-print {
-        background: white;
-        color: #4f46e5;
-    }
-
-    .btn-print:hover {
-        background: #eef2ff;
-        transform: scale(1.05);
-    }
-
-    .btn-search {
-        background: linear-gradient(to right, #4f46e5, #7c3aed);
-        color: white;
-    }
-
-    .btn-search:hover {
-        transform: scale(1.05);
-    }
-
-    /* Reset Button */
-    .btn-reset {
-        background: #e5e7eb;
-        color: #3730a3;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .btn-reset:hover {
-        background: #c7d2fe;
-        transform: scale(1.05);
-    }
-
-    /* Card */
-    .card {
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 12px;
-        padding: 24px;
-        border: 2px solid rgba(99, 102, 241, 0.2);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-    }
-
-    /* Form */
-    label {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 6px;
-        display: block;
-        color: #3730a3;
-    }
-
-    input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 6px;
-        border: 1px solid #c7d2fe;
+    
+    .search-group input {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        width: 300px;
         font-size: 14px;
     }
-
-    input:focus {
-        outline: none;
-        border-color: #6366f1;
-        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-    }
-
-    .row {
-        display: flex;
-        gap: 16px;
-        align-items: end;
-        flex-wrap: wrap;
-    }
-
-    /* Customer details */
-    .details {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 16px;
-    }
-
-    /* Collapsible */
-    .collapsible {
-        border-radius: 12px;
-        overflow: hidden;
-        border: 2px solid rgba(99, 102, 241, 0.2);
-    }
-
-    .collapsible-header {
-        padding: 16px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    
+    .search-btn {
+        background: #14b8a6;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 3px;
         cursor: pointer;
-        font-weight: 700;
+        font-size: 16px;
+        height: 38px;
     }
-
-    .collapsible-content {
-        display: block;
+    
+    .search-btn:hover {
+        background: #14b8a6;
     }
-
-    .hidden {
-        display: none;
+    
+    .print-btn {
+        background: #34495e;
+        color: white;
+        border: none;
+        width: 45px;
+        height: 38px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        margin-left: auto;
+        padding: 0;
     }
-
-    /* Tables */
+    
+    .print-btn:hover {
+        background: #2c3e50;
+        transform: translateY(-2px);
+    }
+    
+    .print-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .main-container {
+        background: white;
+        margin: 20px;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .section-title {
+        font-weight: bold;
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #14b8a6;
+    }
+    
+    .customer-details {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 25px;
+        border: 1px solid #ddd;
+    }
+    
+    .customer-row {
+        display: flex;
+        margin-bottom: 10px;
+    }
+    
+    .customer-row:last-child {
+        margin-bottom: 0;
+    }
+    
+    .customer-label {
+        width: 150px;
+        font-weight: bold;
+        font-size: 13px;
+        color: #333;
+    }
+    
+    .customer-value {
+        flex: 1;
+        font-size: 13px;
+        color: #555;
+    }
+    
+    .report-section {
+        margin-bottom: 25px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    
+    .report-title {
+        background: #f0f7e6;
+        color: #206960;
+        padding: 10px 15px;
+        font-weight: bold;
+        font-size: 14px;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .table-wrapper {
+        overflow-x: auto;
+    }
+    
     table {
         width: 100%;
         border-collapse: collapse;
+        font-size: 12px;
+    }
+    
+    th {
+        background: #f0f4f7;
+        padding: 10px 8px;
+        text-align: left;
+        border-bottom: 2px solid #ddd;
+        font-weight: bold;
+        color: #333;
+        white-space: nowrap;
+    }
+    
+    td {
+        padding: 8px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    tbody tr:hover {
+        background: #f9f9f9;
+    }
+    
+    .text-right {
+        text-align: right;
+    }
+    
+    .total-row td {
+        background: #e8f5e9 !important;
+        font-weight: bold;
+        border-top: 2px solid #14b8a6;
+    }
+    
+    .no-records {
+        padding: 30px;
+        text-align: center;
+        color: #999;
+        font-size: 13px;
+        font-style: italic;
+        display: none;
+    }
+    
+    .no-records.show {
+        display: block;
+    }
+    
+    .table-hidden {
+        display: none;
     }
 
-    th,
-    td {
-        padding: 12px;
-        border-bottom: 1px solid #e5e7eb;
+    /* Print Modal Styles */
+    .print-modal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        overflow: auto;
+    }
+
+    .print-modal-content {
+        background-color: #fff;
+        margin: 20px auto;
+        width: 90%;
+        max-width: 900px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .print-modal-header {
+        background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+        color: #fff;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .print-modal-header h2 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 28px;
+        cursor: pointer;
+        line-height: 1;
+        padding: 0;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: background 0.3s;
+    }
+
+    .btn-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .print-modal-body {
+        padding: 20px;
+    }
+
+    .print-modal-footer {
+        padding: 15px 20px;
+        border-top: 1px solid #ecf0f1;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .btn-print-action,
+    .btn-cancel-action {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
         font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+
+    .btn-print-action {
+        background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+        color: #fff;
+    }
+
+    .btn-print-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 188, 156, 0.4);
+    }
+
+    .btn-cancel-action {
+        background: #95a5a6;
+        color: #fff;
+    }
+
+    .btn-cancel-action:hover {
+        background: #7f8c8d;
+    }
+
+    /* Print Report Styles */
+    .print-header {
+        text-align: center;
+        border-bottom: 2px solid #1abc9c;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .print-logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 10px;
+    }
+
+    .print-company-name {
+        color: #1abc9c;
+        font-size: 24px;
+        font-weight: bold;
+        margin: 10px 0;
+        text-transform: uppercase;
+    }
+
+    .print-address {
+        font-size: 12px;
+        color: #2c3e50;
+        line-height: 1.6;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .print-title {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        margin: 20px 0;
+        color: #2c3e50;
+    }
+
+    .print-customer-info {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+    }
+
+    .print-customer-row {
+        display: flex;
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    .print-customer-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .print-customer-label {
+        width: 150px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .print-customer-value {
+        flex: 1;
+        color: #34495e;
+    }
+
+    .print-report-section {
+        margin-bottom: 25px;
+    }
+
+    .print-report-title {
+        font-size: 14px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px dashed #bdc3c7;
+    }
+
+    .print-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin-bottom: 15px;
+    }
+
+    .print-table th,
+    .print-table td {
+        border: 1px solid #bdc3c7;
+        padding: 6px;
         text-align: left;
     }
 
-    th {
-        font-weight: 700;
+    .print-table th {
+        background: #1abc9c;
+        color: #fff;
+        font-weight: 600;
     }
 
-    td.text-right {
+    .print-table tfoot {
+        font-weight: bold;
+        background: #ecf0f1;
+    }
+
+    .print-footer-info {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px dashed #bdc3c7;
+        font-size: 11px;
         text-align: right;
+        color: #7f8c8d;
+        line-height: 1.8;
     }
-
-    .total-row {
-        font-weight: 700;
-    }
-
-    /* Color themes */
-    .indigo {
-        background: linear-gradient(to right, #eef2ff, #f5f3ff);
-    }
-
-    .violet {
-        background: linear-gradient(to right, #f5f3ff, #ede9fe);
-    }
-
-    .emerald {
-        background: linear-gradient(to right, #ecfdf5, #f0fdfa);
-    }
-
-
-
-
-    /* ✅ Mobile view only: make header like "User Type" card */
-    @media (max-width: 768px) {
-
-        /* header card layout */
-        .page-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 14px;
-            border-radius: 14px;
-            padding: 20px;
+    
+    @media print {
+        .search-section, .print-btn, .report-header {
+            display: none;
         }
-
-        /* title + description should stack nicely */
-        .page-header h1 {
+        .main-container {
             margin: 0;
-            font-size: 28px;
-            font-weight: 800;
-            line-height: 1.2;
-        }
-
-        .page-header p {
-            margin-top: 6px;
-            font-size: 14px;
-            opacity: 0.95;
-        }
-
-        /* ✅ Print button goes below like "Add User Type" button */
-        .page-header .btn-print {
-            width: 200px;
-            justify-content: center;
-            border-radius: 12px;
-            padding: 12px 14px;
+            box-shadow: none;
         }
     }
 
-
-
-    /* ✅ Mobile only: table horizontal scroll */
-    @media (max-width: 768px) {
-
-        .table-scroll {
+    @media print {
+        .print-modal-header,
+        .print-modal-footer {
+            display: none !important;
+        }
+        
+        .print-modal-content {
+            margin: 0;
             width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            /* smooth scroll iPhone */
+            box-shadow: none;
         }
-
-        /* keep table wide so scrolling comes */
-        .table-scroll table {
-            min-width: 900px;
-            /* adjust if you want more/less scroll */
-            width: max-content;
+        
+        .print-modal {
+            position: static;
+            background: #fff;
         }
-
-        /* optional: make header stick while scrolling (nice) */
-        .table-scroll thead th {
-            position: sticky;
+        
+        body * {
+            visibility: hidden;
+        }
+        
+        #printPreviewModal,
+        #printPreviewModal * {
+            visibility: visible;
+        }
+        
+        #printPreviewModal {
+            position: absolute;
+            left: 0;
             top: 0;
-            background: #f8fafc;
-            z-index: 2;
-        }
-    }
-
-
-
-    /* Responsive adjustments */
-    @media(max-width:768px) {
-
-        .flex.gap-2 {
-            display: flex;
-            flex-direction: row;
-            width: 80%;
-            gap: 12px;
-
-        }
-
-        .flex.gap-2 .btn {
-            flex: 1;
-            justify-content: center;
+            width: 100%;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="main-content"></div>
-<div class="container">
+<div class="report-header">Jobcard Process Report</div>
 
-    <!-- Header -->
-    <div class="page-header">
-        <div>
-            <h1><i data-lucide="file-text"></i> Jobcard Process Report</h1>
-            <p>Complete job processing details and status</p>
-        </div>
-        <button class="btn btn-print" onclick="window.print()">
-            <i data-lucide="printer"></i> Print Report
-        </button>
+<div class="search-section">
+    <div class="search-group">
+        <label>Jobcard No</label>
+        <input type="text" id="jobcardNo" placeholder="Enter Jobcard Number">
     </div>
-
-    <!-- Search -->
-    <div class="card">
-        <div class="row">
-            <div style="flex:1">
-                <label>Jobcard No</label>
-                <input type="text" id="jobcardNo" placeholder="Enter jobcard number...">
-            </div>
-
-            <div class="flex gap-2">
-                <button class="btn btn-search" onclick="searchJobcard()">
-                    <i data-lucide="search"></i> Search
-                </button>
-                <button class="btn btn-reset" onclick="resetJobcard()">
-                    <i data-lucide="refresh-cw"></i> Reset
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Customer Details -->
-    <div class="card">
-        <h3>Customer Details</h3>
-        <div class="details">
-            <div><label>Customer Name</label>
-                <p>-</p>
-            </div>
-            <div><label>Address</label>
-                <p>-</p>
-            </div>
-            <div><label>Quantity</label>
-                <p>0.00</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Printing Report -->
-    <div class="collapsible">
-        <div class="collapsible-header indigo" onclick="toggle('print')">
-            Printing Report <i id="printIcon" data-lucide="chevron-up"></i>
-        </div>
-        <div id="print" class="collapsible-content">
-            <div class="table-scroll">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Date</th>
-                            <th>Shift</th>
-                            <th>Machine</th>
-                            <th>Operator</th>
-                            <th>Particulars</th>
-                            <th class="text-right">O.Qty</th>
-                            <th class="text-right">P.Qty</th>
-                            <th class="text-right">Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="total-row">
-                            <td colspan="6">Total</td>
-                            <td class="text-right">0.00</td>
-                            <td class="text-right">0.00</td>
-                            <td class="text-right">0.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Fusing Report -->
-    <div class="collapsible">
-        <div class="collapsible-header violet" onclick="toggle('fusing')">
-            Fusing Report <i id="fusingIcon" data-lucide="chevron-up"></i>
-        </div>
-        <div id="fusing" class="collapsible-content">
-            <div class="table-scroll">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Date</th>
-                            <th>Shift</th>
-                            <th>Machine</th>
-                            <th>Operator</th>
-                            <th>Particulars</th>
-                            <th class="text-right">O.Qty</th>
-                            <th class="text-right">P.Qty</th>
-                            <th class="text-right">Balance</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="total-row">
-                            <td colspan="6">Total</td>
-                            <td class="text-right">0.00</td>
-                            <td class="text-right">0.00</td>
-                            <td class="text-right">0.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delivery Report -->
-    <div class="collapsible">
-        <div class="collapsible-header emerald" onclick="toggle('delivery')">
-            Delivery Report <i id="deliveryIcon" data-lucide="chevron-up"></i>
-        </div>
-        <div id="delivery" class="collapsible-content">
-            <div class="table-scroll">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Date</th>
-                            <th>DC No</th>
-                            <th>Particulars</th>
-                            <th class="text-right">Inward</th>
-                            <th class="text-right">Outward</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="total-row">
-                            <td colspan="4">Balance</td>
-                            <td class="text-right">0.00</td>
-                            <td class="text-right">0.00</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
+    
+    <button type="button" class="search-btn" onclick="searchJobcard()"> Search</button>
+    <button type="button" class="print-btn" onclick="showPrintPreview()" title="Print">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+            <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+        </svg>
+    </button>
 </div>
+
+<div class="main-container">
+    <!-- Customer Details -->
+    <div class="section-title">Customer Details</div>
+    <div class="customer-details">
+        <div class="customer-row">
+            <div class="customer-label">Customer Name</div>
+            <div class="customer-value" id="customerName">-</div>
+        </div>
+        <div class="customer-row">
+            <div class="customer-label">Address</div>
+            <div class="customer-value" id="address">-</div>
+        </div>
+        <div class="customer-row">
+            <div class="customer-label">Quantity</div>
+            <div class="customer-value" id="quantity">0.00</div>
+        </div>
+    </div>
+    
+    <!-- Printing Report -->
+    <div class="report-section">
+        <div class="report-title">Printing Report</div>
+        <div class="table-wrapper">
+            <table id="printingTable">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Date</th>
+                        <th>Shift</th>
+                        <th>Machine No</th>
+                        <th>Operator</th>
+                        <th>Particulars</th>
+                        <th class="text-right">O.Qty</th>
+                        <th class="text-right">P.Qty</th>
+                        <th class="text-right">Balance</th>
+                    </tr>
+                </thead>
+                <tbody id="printingBody">
+                </tbody>
+                <tfoot id="printingFooter" style="display: none;">
+                    <tr class="total-row">
+                        <td colspan="6" class="text-right">Total</td>
+                        <td class="text-right" id="printingOQty">0.00</td>
+                        <td class="text-right" id="printingPQty">0.00</td>
+                        <td class="text-right" id="printingBalance">0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="printingNoRecords" class="no-records show">No Records</div>
+        </div>
+    </div>
+    
+    <!-- Fusing Report -->
+    <div class="report-section">
+        <div class="report-title">Fusing Report</div>
+        <div class="table-wrapper">
+            <table id="fusingTable">
+                <thead>
+                    <tr>
+                        <th>Sno</th>
+                        <th>Date</th>
+                        <th>Shift</th>
+                        <th>Machine No</th>
+                        <th>Operator</th>
+                        <th>Particulars</th>
+                        <th class="text-right">O.Qty</th>
+                        <th class="text-right">P.Qty</th>
+                        <th class="text-right">Balance</th>
+                    </tr>
+                </thead>
+                <tbody id="fusingBody">
+                </tbody>
+                <tfoot id="fusingFooter" style="display: none;">
+                    <tr class="total-row">
+                        <td colspan="6" class="text-right">Total</td>
+                        <td class="text-right" id="fusingOQty">0.00</td>
+                        <td class="text-right" id="fusingPQty">0.00</td>
+                        <td class="text-right" id="fusingBalance">0.00</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="fusingNoRecords" class="no-records show">No Records</div>
+        </div>
+    </div>
+    
+    <!-- Delivery Report -->
+    <div class="report-section">
+        <div class="report-title">Delivery Report</div>
+        <div class="table-wrapper">
+            <table id="deliveryTable">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Date</th>
+                        <th>DC No</th>
+                        <th>Particulars</th>
+                        <th class="text-right">Inward</th>
+                        <th class="text-right">Outward</th>
+                    </tr>
+                </thead>
+                <tbody id="deliveryBody">
+                </tbody>
+                <tfoot id="deliveryFooter" style="display: none;">
+                    <tr class="total-row">
+                        <td colspan="4" class="text-right">Total</td>
+                        <td class="text-right" id="deliveryInward">0.00</td>
+                        <td class="text-right" id="deliveryOutward">0.00</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="4" class="text-right">Balance</td>
+                        <td class="text-right" id="deliveryBalance">0.00</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div id="deliveryNoRecords" class="no-records show">No Records</div>
+        </div>
+    </div>
+</div>
+
+<!-- Print Preview Modal -->
+<div id="printPreviewModal" class="print-modal" style="display:none;">
+    <div class="print-modal-content">
+        <div class="print-modal-header">
+            <h2>Jobcard Process Report - Print Preview</h2>
+            <button class="btn-close" onclick="closePrintPreview()">×</button>
+        </div>
+        <div class="print-modal-body" id="printPreviewContent">
+            <!-- Content will be dynamically generated -->
+        </div>
+        <div class="print-modal-footer">
+            <button class="btn-print-action" onclick="printReport()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                    <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+                </svg>
+                Print Report
+            </button>
+            <button class="btn-cancel-action" onclick="closePrintPreview()">Close</button>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    lucide.createIcons();
+    // Initialize - Show empty state on page load
+    window.onload = function() {
+        showEmptyState();
+    };
 
-    function toggle(id) {
-        const content = document.getElementById(id);
-        const icon = document.getElementById(id + "Icon");
-
-        content.classList.toggle("hidden");
-        icon.setAttribute(
-            "data-lucide",
-            content.classList.contains("hidden") ? "chevron-down" : "chevron-up"
-        );
-        lucide.createIcons();
+    // Show empty state
+    function showEmptyState() {
+        document.getElementById('customerName').textContent = '-';
+        document.getElementById('address').textContent = '-';
+        document.getElementById('quantity').textContent = '0.00';
+        
+        displayPrintingReport([]);
+        displayFusingReport([]);
+        displayDeliveryReport([]);
     }
 
-    function searchJobcard() {
-        const jobcard = document.getElementById("jobcardNo").value;
-        alert("Search clicked for Jobcard: " + jobcard);
+    // Display printing report
+    function displayPrintingReport(data) {
+        const tbody = document.getElementById('printingBody');
+        const noRecords = document.getElementById('printingNoRecords');
+        const table = document.getElementById('printingTable');
+        const footer = document.getElementById('printingFooter');
+        
+        tbody.innerHTML = '';
+        
+        if (!data || data.length === 0) {
+            table.classList.add('table-hidden');
+            noRecords.classList.add('show');
+            footer.style.display = 'none';
+            return;
+        }
+        
+        table.classList.remove('table-hidden');
+        noRecords.classList.remove('show');
+        footer.style.display = 'table-footer-group';
+        
+        let totalOQty = 0;
+        let totalPQty = 0;
+        
+        data.forEach(item => {
+            const balance = item.o_qty - item.p_qty;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.s_no}</td>
+                <td>${item.date}</td>
+                <td>${item.shift}</td>
+                <td>${item.machine_no}</td>
+                <td>${item.operator}</td>
+                <td>${item.particulars}</td>
+                <td class="text-right">${Number(item.o_qty).toFixed(2)}</td>
+                <td class="text-right">${Number(item.p_qty).toFixed(2)}</td>
+                <td class="text-right">${balance.toFixed(2)}</td>
+            `;
+            tbody.appendChild(row);
+            
+            totalOQty += Number(item.o_qty);
+            totalPQty += Number(item.p_qty);
+        });
+        
+        document.getElementById('printingOQty').textContent = totalOQty.toFixed(2);
+        document.getElementById('printingPQty').textContent = totalPQty.toFixed(2);
+        document.getElementById('printingBalance').textContent = (totalOQty - totalPQty).toFixed(2);
     }
 
-    function resetJobcard() {
-        document.getElementById("jobcardNo").value = "";
+    // Display fusing report
+    function displayFusingReport(data) {
+        const tbody = document.getElementById('fusingBody');
+        const noRecords = document.getElementById('fusingNoRecords');
+        const table = document.getElementById('fusingTable');
+        const footer = document.getElementById('fusingFooter');
+        
+        tbody.innerHTML = '';
+        
+        if (!data || data.length === 0) {
+            table.classList.add('table-hidden');
+            noRecords.classList.add('show');
+            footer.style.display = 'none';
+            return;
+        }
+        
+        table.classList.remove('table-hidden');
+        noRecords.classList.remove('show');
+        footer.style.display = 'table-footer-group';
+        
+        let totalOQty = 0;
+        let totalPQty = 0;
+        
+        data.forEach(item => {
+            const balance = item.o_qty - item.p_qty;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.sno || item.s_no}</td>
+                <td>${item.date}</td>
+                <td>${item.shift}</td>
+                <td>${item.machine_no}</td>
+                <td>${item.operator}</td>
+                <td>${item.particulars}</td>
+                <td class="text-right">${Number(item.o_qty).toFixed(2)}</td>
+                <td class="text-right">${Number(item.p_qty).toFixed(2)}</td>
+                <td class="text-right">${balance.toFixed(2)}</td>
+            `;
+            tbody.appendChild(row);
+            
+            totalOQty += Number(item.o_qty);
+            totalPQty += Number(item.p_qty);
+        });
+        
+        document.getElementById('fusingOQty').textContent = totalOQty.toFixed(2);
+        document.getElementById('fusingPQty').textContent = totalPQty.toFixed(2);
+        document.getElementById('fusingBalance').textContent = (totalOQty - totalPQty).toFixed(2);
+    }
+
+    // Display delivery report
+    function displayDeliveryReport(data) {
+        const tbody = document.getElementById('deliveryBody');
+        const noRecords = document.getElementById('deliveryNoRecords');
+        const table = document.getElementById('deliveryTable');
+        const footer = document.getElementById('deliveryFooter');
+        
+        tbody.innerHTML = '';
+        
+        if (!data || data.length === 0) {
+            table.classList.add('table-hidden');
+            noRecords.classList.add('show');
+            footer.style.display = 'none';
+            return;
+        }
+        
+        table.classList.remove('table-hidden');
+        noRecords.classList.remove('show');
+        footer.style.display = 'table-footer-group';
+        
+        let totalInward = 0;
+        let totalOutward = 0;
+        
+        data.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.s_no}</td>
+                <td>${item.date}</td>
+                <td>${item.dc_no}</td>
+                <td>${item.particulars}</td>
+                <td class="text-right">${Number(item.inward).toFixed(2)}</td>
+                <td class="text-right">${Number(item.outward).toFixed(2)}</td>
+            `;
+            tbody.appendChild(row);
+            
+            totalInward += Number(item.inward);
+            totalOutward += Number(item.outward);
+        });
+        
+        document.getElementById('deliveryInward').textContent = totalInward.toFixed(2);
+        document.getElementById('deliveryOutward').textContent = totalOutward.toFixed(2);
+        document.getElementById('deliveryBalance').textContent = (totalInward - totalOutward).toFixed(2);
+    }
+
+    // Search jobcard - FETCH FROM DJANGO API
+    async function searchJobcard() {
+        const jobcardNo = document.getElementById('jobcardNo').value.trim();
+        
+        if (!jobcardNo) {
+            alert('Please enter Jobcard Number');
+            return;
+        }
+        
+        try {
+            // Show loading
+            document.getElementById('customerName').textContent = 'Loading...';
+            
+            // Fetch from Django API
+            const response = await fetch(`/api/jobcard/${jobcardNo}/process-details/`);
+            const result = await response.json();
+            
+            if (result.success) {
+                const data = result.data;
+                
+                // Display customer details
+                document.getElementById('customerName').textContent = data.customerName || '-';
+                document.getElementById('address').textContent = data.address || '-';
+                document.getElementById('quantity').textContent = Number(data.quantity).toFixed(2);
+                
+                // Display reports
+                displayPrintingReport(data.printing);
+                displayFusingReport(data.fusing);
+                displayDeliveryReport(data.delivery);
+            } else {
+                alert('Jobcard not found!');
+                showEmptyState();
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error fetching jobcard details');
+            showEmptyState();
+        }
+    }
+
+    // Allow Enter key to search
+    document.getElementById('jobcardNo').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchJobcard();
+        }
+    });
+
+    // Print Preview Function
+    function showPrintPreview() {
+        const jobcardNo = document.getElementById('jobcardNo').value.trim();
+        const customerName = document.getElementById('customerName').textContent;
+        const address = document.getElementById('address').textContent;
+        const quantity = document.getElementById('quantity').textContent;
+        
+        if (!jobcardNo || customerName === '-') {
+            alert('Please search for a jobcard first');
+            return;
+        }
+        
+        // Get table data
+        const printingRows = document.querySelectorAll('#printingBody tr');
+        const fusingRows = document.querySelectorAll('#fusingBody tr');
+        const deliveryRows = document.querySelectorAll('#deliveryBody tr');
+        
+        let printHTML = `
+            <div class="print-header">
+                <img src="/static/images/logo.png" alt="Logo" class="print-logo" onerror="this.style.display='none'">
+                <div class="print-company-name">SRI AMMAN DIGITAL PRINTS</div>
+                <div class="print-address">
+                    DOOR No: 1/2,1/3 KOMBAI THOTTAM MAIN ROAD,<br>
+                    SELLANDIAMMAN THURAI ROAD,<br>
+                    TIRUPPUR-641604 TAMILNADU STATE INDIA,<br>
+                    Contact Office: 0421-4355333,+91 83442-33555,+91 83442-33888,<br>
+                    Email Id : sriammandigitalprints@gmail.com/yahoo.com.
+                </div>
+            </div>
+            
+            <div class="print-title">Customer Details</div>
+            
+            <div class="print-customer-info">
+                <div class="print-customer-row">
+                    <div class="print-customer-label">Customer Name</div>
+                    <div class="print-customer-value">${customerName}</div>
+                </div>
+                <div class="print-customer-row">
+                    <div class="print-customer-label">Address</div>
+                    <div class="print-customer-value">${address}</div>
+                </div>
+                <div class="print-customer-row">
+                    <div class="print-customer-label">Quantity</div>
+                    <div class="print-customer-value">${quantity}</div>
+                </div>
+            </div>
+        `;
+        
+        // Printing Report
+        if (printingRows.length > 0) {
+            printHTML += `
+                <div class="print-report-section">
+                    <div class="print-report-title">Printing Report</div>
+                    <table class="print-table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>Shift</th>
+                                <th>Machine No</th>
+                                <th>Operator</th>
+                                <th>Particulars</th>
+                                <th style="text-align:right;">O.Qty</th>
+                                <th style="text-align:right;">P.Qty</th>
+                                <th style="text-align:right;">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            let printingOQty = 0, printingPQty = 0;
+            printingRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const oQty = parseFloat(cells[6]?.textContent) || 0;
+                const pQty = parseFloat(cells[7]?.textContent) || 0;
+                printingOQty += oQty;
+                printingPQty += pQty;
+                
+                printHTML += `
+                    <tr>
+                        <td>${cells[0]?.textContent}</td>
+                        <td>${cells[1]?.textContent}</td>
+                        <td>${cells[2]?.textContent}</td>
+                        <td>${cells[3]?.textContent}</td>
+                        <td>${cells[4]?.textContent}</td>
+                        <td>${cells[5]?.textContent}</td>
+                        <td style="text-align:right;">${oQty.toFixed(2)}</td>
+                        <td style="text-align:right;">${pQty.toFixed(2)}</td>
+                        <td style="text-align:right;">${(oQty - pQty).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            
+            printHTML += `
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="6" style="text-align:right;font-weight:bold;">Total</td>
+                                <td style="text-align:right;font-weight:bold;">${printingOQty.toFixed(2)}</td>
+                                <td style="text-align:right;font-weight:bold;">${printingPQty.toFixed(2)}</td>
+                                <td style="text-align:right;font-weight:bold;">${(printingOQty - printingPQty).toFixed(2)}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            `;
+        }
+        
+        // Fusing Report
+        if (fusingRows.length > 0) {
+            printHTML += `
+                <div class="print-report-section">
+                    <div class="print-report-title">Fusing Report</div>
+                    <table class="print-table">
+                        <thead>
+                            <tr>
+                                <th>Sno</th>
+                                <th>Date</th>
+                                <th>Shift</th>
+                                <th>Machine No</th>
+                                <th>Operator</th>
+                                <th>Particulars</th>
+                                <th style="text-align:right;">O.Qty</th>
+                                <th style="text-align:right;">P.Qty</th>
+                                <th style="text-align:right;">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            let fusingOQty = 0, fusingPQty = 0;
+            fusingRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const oQty = parseFloat(cells[6]?.textContent) || 0;
+                const pQty = parseFloat(cells[7]?.textContent) || 0;
+                fusingOQty += oQty;
+                fusingPQty += pQty;
+                
+                printHTML += `
+                    <tr>
+                        <td>${cells[0]?.textContent}</td>
+                        <td>${cells[1]?.textContent}</td>
+                        <td>${cells[2]?.textContent}</td>
+                        <td>${cells[3]?.textContent}</td>
+                        <td>${cells[4]?.textContent}</td>
+                        <td>${cells[5]?.textContent}</td>
+                        <td style="text-align:right;">${oQty.toFixed(2)}</td>
+                        <td style="text-align:right;">${pQty.toFixed(2)}</td>
+                        <td style="text-align:right;">${(oQty - pQty).toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            
+            printHTML += `
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="6" style="text-align:right;font-weight:bold;">Total</td>
+                                <td style="text-align:right;font-weight:bold;">${fusingOQty.toFixed(2)}</td>
+                                <td style="text-align:right;font-weight:bold;">${fusingPQty.toFixed(2)}</td>
+                                <td style="text-align:right;font-weight:bold;">${(fusingOQty - fusingPQty).toFixed(2)}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            `;
+        }
+        
+        // Delivery Report
+        if (deliveryRows.length > 0) {
+            printHTML += `
+                <div class="print-report-section">
+                    <div class="print-report-title">Delivery Report</div>
+                    <table class="print-table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Date</th>
+                                <th>DC No</th>
+                                <th>Particulars</th>
+                                <th style="text-align:right;">Inward</th>
+                                <th style="text-align:right;">Outward</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            let deliveryInward = 0, deliveryOutward = 0;
+            deliveryRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const inward = parseFloat(cells[4]?.textContent) || 0;
+                const outward = parseFloat(cells[5]?.textContent) || 0;
+                deliveryInward += inward;
+                deliveryOutward += outward;
+                
+                printHTML += `
+                    <tr>
+                        <td>${cells[0]?.textContent}</td>
+                        <td>${cells[1]?.textContent}</td>
+                        <td>${cells[2]?.textContent}</td>
+                        <td>${cells[3]?.textContent}</td>
+                        <td style="text-align:right;">${inward.toFixed(2)}</td>
+                        <td style="text-align:right;">${outward.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+            
+            printHTML += `
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" style="text-align:right;font-weight:bold;">Total</td>
+                                <td style="text-align:right;font-weight:bold;">${deliveryInward.toFixed(2)}</td>
+                                <td style="text-align:right;font-weight:bold;">${deliveryOutward.toFixed(2)}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" style="text-align:right;font-weight:bold;">Balance</td>
+                                <td style="text-align:right;font-weight:bold;">${(deliveryInward - deliveryOutward).toFixed(2)}</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            `;
+        }
+        
+        printHTML += `
+            <div class="print-footer-info">
+                Printed Date : ${new Date().toLocaleDateString('en-GB')}<br>
+                Printed Time : ${new Date().toLocaleTimeString('en-GB')}<br>
+                IP Address : ${window.location.hostname || '127.0.0.1'}
+            </div>
+        `;
+        
+        document.getElementById('printPreviewContent').innerHTML = printHTML;
+        document.getElementById('printPreviewModal').style.display = 'block';
+    }
+
+    function closePrintPreview() {
+        document.getElementById('printPreviewModal').style.display = 'none';
+    }
+
+    function printReport() {
+        window.print();
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('printPreviewModal');
+        if (event.target == modal) {
+            closePrintPreview();
+        }
     }
 </script>
 {% endblock %}

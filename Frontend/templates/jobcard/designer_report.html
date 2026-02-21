@@ -1,406 +1,561 @@
 {% extends "nav.html" %}
-
-
 {% block title %}Designer Report{% endblock %}
 
 {% block extra_head %}
-
-<!-- Lucide Icons -->
-<script src="https://unpkg.com/lucide@latest"></script>
-
-
-
 <style>
-    body {
-        margin: 0;
-        font-family: "Segoe UI", sans-serif;
-        background: linear-gradient(135deg, #f8fafc, #f3e8ff, #fdf2f8);
-        min-height: 100vh;
-        padding: 24px;
+  /* ✅ ONLY THIS PAGE (nav untouched) */
+  .designer-page {
+    background: #f5f5f5;
+    padding: 0;
+    margin: 0;
+    min-height: calc(100vh - 60px);
+    font-family: Arial, sans-serif;
+    width: 100%;
+  }
+
+  .designer-header {
+    background: #1abc9c;
+    color: #fff;
+    padding: 12px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+    width: 100%;
+  }
+
+  .designer-filter {
+    background: #fff;
+    padding: 15px 20px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    border: 1px solid #ddd;
+    margin: 0;
+  }
+
+  .designer-filter .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .designer-filter .filter-group label {
+    font-weight: bold;
+    font-size: 13px;
+    color: #333;
+  }
+
+  .designer-filter .filter-group input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 200px;
+    font-size: 13px;
+    outline: none;
+  }
+
+  .designer-filter .filter-group input:focus {
+    border-color: #1abc9c;
+  }
+
+  .designer-filter .search-btn {
+    background: #1abc9c;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+  }
+
+  .designer-filter .search-btn:hover {
+    background: #16a085;
+  }
+
+  .designer-filter .print-btn {
+    background: #34495e;
+    color: #fff;
+    border: none;
+    width: 45px;
+    height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    margin-left: auto;
+    padding: 0;
+  }
+
+  .designer-filter .print-btn:hover {
+    background: #2c3e50;
+    transform: translateY(-2px);
+  }
+
+  .designer-filter .print-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .designer-table-container {
+    background: #fff;
+    margin: 0;
+    overflow-x: auto;
+    border: 1px solid #ddd;
+  }
+
+  .designer-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .designer-table-container thead {
+    background: #f0f4f7;
+  }
+
+  .designer-table-container th,
+  .designer-table-container td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+  }
+
+  .designer-table-container th {
+    font-weight: bold;
+    color: #333;
+  }
+
+  .designer-table-container tbody tr:nth-child(even) {
+    background: #f9f9f9;
+  }
+
+  .text-right { text-align: right; }
+
+  .total-row {
+    background: #e8f5e9 !important;
+    font-weight: bold;
+  }
+
+  .no-records {
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  /* Print Modal Styles */
+  .print-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+  }
+
+  .print-modal-content {
+    background-color: #fff;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 900px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .print-modal-header {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: #fff;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .print-modal-header h2 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .btn-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.3s;
+  }
+
+  .btn-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .print-modal-body {
+    padding: 20px;
+  }
+
+  .print-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #ecf0f1;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .btn-print-action,
+  .btn-cancel-action {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+  }
+
+  .btn-print-action {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: #fff;
+  }
+
+  .btn-print-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 188, 156, 0.4);
+  }
+
+  .btn-cancel-action {
+    background: #95a5a6;
+    color: #fff;
+  }
+
+  .btn-cancel-action:hover {
+    background: #7f8c8d;
+  }
+
+  /* Print Report Styles */
+  .print-header {
+    text-align: center;
+    border-bottom: 2px solid #1abc9c;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+
+  .print-logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+  }
+
+  .print-company-name {
+    color: #1abc9c;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 10px 0;
+    text-transform: uppercase;
+  }
+
+  .print-address {
+    font-size: 12px;
+    color: #2c3e50;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .print-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 20px 0;
+    color: #2c3e50;
+  }
+
+  .print-filters {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+
+  .filter-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter-label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 4px;
+  }
+
+  .filter-value {
+    color: #34495e;
+  }
+
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 15px;
+  }
+
+  .print-table th,
+  .print-table td {
+    border: 1px solid #bdc3c7;
+    padding: 8px;
+    text-align: left;
+  }
+
+  .print-table th {
+    background: #1abc9c;
+    color: #fff;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .print-table tr:nth-child(even) {
+    background: #f8f9fa;
+  }
+
+  .print-table tfoot {
+    font-weight: bold;
+    background: #ecf0f1;
+  }
+
+  .print-footer-info {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #bdc3c7;
+    font-size: 11px;
+    text-align: right;
+    color: #7f8c8d;
+    line-height: 1.8;
+  }
+
+  /* Print Media Query */
+  @media print {
+    .print-modal-header,
+    .print-modal-footer {
+      display: none !important;
     }
-
-    .container {
-        max-width: 1600px;
-        margin-top: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
+    
+    .print-modal-content {
+      margin: 0;
+      width: 100%;
+      box-shadow: none;
     }
-
-    /* Header */
-    .h0 {
-        background: linear-gradient(to right, #7c3aed, #db2777, #7c3aed);
-        padding: 24px;
-        border-radius: 12px 12px 0 0;
-        color: #fff;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    
+    .print-modal {
+      position: static;
+      background: #fff;
     }
-
-    .header h1 {
-        margin: 0;
-        font-size: 22px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+    
+    body * {
+      visibility: hidden;
     }
-
-    .header p {
-        margin-top: 6px;
-        font-size: 14px;
-        opacity: 0.9;
+    
+    #printPreviewModal,
+    #printPreviewModal * {
+      visibility: visible;
     }
-
-    .btn {
-        padding: 10px 16px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition: 0.3s;
+    
+    #printPreviewModal {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
     }
+  }
 
-    .btn-print {
-        background: white;
-        color: #7c3aed;
+  @media print {
+    .designer-filter .search-btn,
+    .designer-filter .print-btn {
+      display: none;
     }
-
-    .btn-print:hover {
-        background: #f3e8ff;
-        transform: scale(1.05);
+    .designer-page {
+      padding: 0;
+      background: #fff;
     }
-
-    /* Card */
-    .card {
-        background: rgba(255, 255, 255, 0.85);
-        border-radius: 12px;
-        padding: 24px;
-        border: 2px solid rgba(192, 132, 252, 0.3);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    .designer-table-container {
+      border: none;
     }
-
-    /* Filters */
-    .filters {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 16px;
-        align-items: end;
-    }
-
-    label {
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 6px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        color: #581c87;
-    }
-
-    input {
-        width: 90%;
-        padding: 10px;
-        border-radius: 6px;
-        border: 1px solid #d8b4fe;
-        font-size: 14px;
-    }
-
-    input:focus {
-        outline: none;
-        border-color: #a855f7;
-        box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
-    }
-
-    .btn-search {
-        background: linear-gradient(to right, #7c3aed, #db2777);
-        color: white;
-    }
-
-    .btn-search:hover {
-        transform: scale(1.05);
-    }
-
-    /* Table */
-    .table-wrapper {
-        overflow-x: auto;
-        padding: 0;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    thead tr {
-        background: linear-gradient(to right, #f3e8ff, #fdf2f8);
-    }
-
-    th,
-    td {
-        padding: 12px;
-        font-size: 14px;
-        border-bottom: 1px solid #e5e7eb;
-        text-align: left;
-    }
-
-    th {
-        color: #581c87;
-        font-weight: 700;
-    }
-
-    td.text-right {
-        text-align: right;
-    }
-
-    .no-data {
-        text-align: center;
-        padding: 60px 0;
-        color: #6b7280;
-    }
-
-    .no-data svg {
-        width: 48px;
-        height: 48px;
-        margin-bottom: 12px;
-        color: #d8b4fe;
-    }
-
-
-    /* ✅ Mobile view ONLY: make .h0 like User Type card */
-    @media (max-width: 768px) {
-
-        /* header card stack */
-        .h0 {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 14px;
-            border-radius: 14px;
-            padding: 18px;
-        }
-
-        /* title -> look like User Type */
-        .h0 h1 {
-            font-size: 26px;
-            font-weight: 800;
-            line-height: 1.2;
-            margin: 0;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        /* icon box style (first image like) */
-        .h0 h1 svg {
-            width: 22px;
-            height: 22px;
-            flex: 0 0 auto;
-            padding: 12px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.18);
-        }
-
-        /* subtitle */
-        .h0 p {
-            margin: 6px 0 0 0;
-            font-size: 13px;
-            opacity: 0.95;
-        }
-
-        /* button below like Add User Type */
-        .h0 .btn-print {
-            width: auto;
-            /* not full width */
-            min-width: 170px;
-            /* looks like user type button */
-            justify-content: center;
-            border-radius: 12px;
-            padding: 12px 16px;
-        }
-
-        /* keep button and text aligned left */
-        .h0>div {
-            width: 100%;
-        }
-
-
-
-    }
-
-
-    /* ✅ Nav full width fix + content spacing (NO HTML changes) */
-    body {
-        padding: 0 !important;
-        /* remove page padding so nav can be full */
-    }
-
-    /* keep your page content padding inside container */
-    .container {
-        padding: 24px;
-        /* same as old body padding */
-        max-width: 1600px;
-        margin: 10px auto 0;
-    }
-
-    /* If nav is fixed, give top space for content (optional but safe) */
-    .main-content-gap {
-        height: 0;
-    }
-
-    @media (max-width: 768px) {
-        .container {
-            padding: 16px;
-        }
-    }
-
-
-    .btn-row {
-        display: flex;
-        gap: 19px;
-        align-items: center;
-        justify-content: flex-end;
-    }
-
-    .btn-row .btn {
-        min-width: 150px;
-        justify-content: center;
-    }
-
-    .btn-reset {
-        background: #e5e7eb;
-        color: #3730a3;
-    }
-
-    .btn-reset:hover {
-        background: #c7d2fe;
-        transform: scale(1.03);
-    }
-
-    /* Mobile: full width stacked if you want */
-    @media (max-width:768px) {
-        /* .btn-row {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .btn-row .btn {
-            width: 100%;
-            min-width: 0;
-        } */
-
-        .btn-row {
-            display: flex;
-            flex-direction: row !important;
-            gap: 12px;
-            align-items: center;
-        }
-
-        /* both buttons equal width */
-        .btn-row .btn {
-            width: 50% !important;
-            min-width: 0 !important;
-            justify-content: center;
-        }
-
-        /* lucide replaces <i> with <svg> - so target svg */
-        .h0 h1 svg.lucide {
-            display: inline-block !important;
-            width: 22px !important;
-            height: 22px !important;
-
-            /* make sure it is visible */
-            stroke: #fff !important;
-            color: #fff !important;
-            fill: none !important;
-            stroke-width: 2 !important;
-
-            /* icon box look */
-            padding: 12px !important;
-            border-radius: 14px !important;
-            background: rgba(255, 255, 255, 0.18) !important;
-
-            /* important: padding keep panna box-sizing */
-            box-sizing: content-box !important;
-            flex: 0 0 auto !important;
-        }
-
-        /* sometimes svg gets clipped */
-        .h0 h1 {
-            overflow: visible !important;
-        }
-
-
-    }
+  }
 </style>
-<!-- </head> -->
 {% endblock %}
 
-
-
 {% block content %}
+<div class="designer-page">
 
-<div class="container">
+  <!-- ✅ Teal heading bar -->
+  <div class="designer-header">Sample Jobcard Designer Report</div>
 
-    <!-- Header -->
-    <div class="h0">
-        <div>
-            <h1>
-                <i data-lucide="file-bar-chart"></i>
-                Sample Jobcard Designer Report
-            </h1>
-            <p>Track job cards by designer performance</p>
-        </div>
-        <button class="btn btn-print" onclick="window.print()">
-            <i data-lucide="printer"></i>
-            Print Report
-        </button>
+  <!-- ✅ Filters -->
+  <form method="get" class="designer-filter">
+    <div class="filter-group">
+      <label>From Date</label>
+      <input type="date" name="from_date" id="fromDate" value="{{ from_date }}">
     </div>
 
-    <!-- Filters -->
-    <div class="card">
-        <div class="filters">
-            <div>
-                <label><i data-lucide="calendar"></i> From Date</label>
-                <input type="date" id="fromDate" value="2026-01-08">
-            </div>
-
-            <div>
-                <label><i data-lucide="calendar"></i> To Date</label>
-                <input type="date" id="toDate" value="2026-01-08">
-            </div>
-
-            <div>
-                <label>Designer Name</label>
-                <input type="text" id="designerName" placeholder="Enter designer name...">
-            </div>
-
-            <!-- <button class="btn btn-search" onclick="searchDesignerReport()">
-                <i data-lucide="search"></i>
-                Search
-            </button> -->
-
-            <div class="btn-row">
-                <button class="btn btn-search" onclick="searchDesignerReport()">
-                    <i data-lucide="search"></i>
-                    Search
-                </button>
-
-                <button class="btn btn-reset" type="button" onclick="resetDesignerReport()">
-                    <i data-lucide="refresh-cw"></i>
-                    Reset
-                </button>
-            </div>
-
-        </div>
+    <div class="filter-group">
+      <label>To Date</label>
+      <input type="date" name="to_date" id="toDate" value="{{ to_date }}">
     </div>
 
-    <!-- Table -->
-    <div class="card table-wrapper">
-        <table>
+    <div class="filter-group">
+      <label>Designer Name</label>
+      <input type="text" name="designer_name" id="designerName" value="{{ designer_name }}" placeholder="Enter Designer Name">
+    </div>
+
+    <button type="submit" class="search-btn" title="Search"> Search</button>
+    <button type="button" class="print-btn" onclick="showPrintPreview()" title="Print">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+        <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+      </svg>
+    </button>
+  </form>
+
+  <!-- ✅ Table -->
+  <div class="designer-table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Date</th>
+          <th>Jobcard No</th>
+          <th>Customer Name</th>
+          <th>Designer</th>
+          <th>Design Name</th>
+          <th class="text-right">No.of Pcs</th>
+          <th class="text-right">Sample Value</th>
+        </tr>
+      </thead>
+      <tbody id="reportTableBody">
+        {% if report_data %}
+          {% for data in report_data %}
+          <tr>
+            <td>{{ data.s_no }}</td>
+            <td>{{ data.date|date:"d-m-Y" }}</td>
+            <td>{{ data.jobcard_no }}</td>
+            <td>{{ data.customer_name }}</td>
+            <td>{{ data.designer }}</td>
+            <td>{{ data.design_name }}</td>
+            <td class="text-right">{{ data.no_of_pcs|floatformat:2 }}</td>
+            <td class="text-right">{{ data.sample_value|floatformat:2 }}</td>
+          </tr>
+          {% endfor %}
+          <tr class="total-row">
+            <td colspan="6" class="text-right">Total</td>
+            <td class="text-right">{{ total_pcs|floatformat:2 }}</td>
+            <td class="text-right">{{ total_value|floatformat:2 }}</td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="8" class="no-records">No Records!</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Print Preview Modal -->
+<div id="printPreviewModal" class="print-modal" style="display:none;">
+    <div class="print-modal-content">
+        <div class="print-modal-header">
+            <h2>Designer Wise Report Print Preview</h2>
+            <button class="btn-close" onclick="closePrintPreview()">×</button>
+        </div>
+        <div class="print-modal-body" id="printPreviewContent">
+            <!-- Content will be dynamically generated -->
+        </div>
+        <div class="print-modal-footer">
+            <button class="btn-print-action" onclick="printReport()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                    <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+                </svg>
+                Print Report
+            </button>
+            <button class="btn-cancel-action" onclick="closePrintPreview()">Close</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showPrintPreview() {
+    // Get filter values
+    const fromDate = document.getElementById('fromDate').value || 'All';
+    const toDate = document.getElementById('toDate').value || 'All';
+    const designerName = document.getElementById('designerName').value || 'All';
+    
+    // Get table data
+    const tableBody = document.getElementById('reportTableBody');
+    const rows = tableBody.querySelectorAll('tr');
+    
+    let tableHTML = `
+        <div class="print-header">
+            <img src="/static/images/logo.png" alt="Logo" class="print-logo" onerror="this.style.display='none'">
+            <div class="print-company-name">SRI AMMAN DIGITAL PRINTS</div>
+            <div class="print-address">
+                DOOR No: 1/2,1/3 KOMBAI THOTTAM MAIN ROAD,<br>
+                SELLANDIAMMAN THURAI ROAD,<br>
+                TIRUPPUR-641604 TAMILNADU STATE INDIA,<br>
+                Contact Office: 0421-4355333,+91 83442-33555,+91 83442-33888,<br>
+                Email Id : sriammandigitalprints@gmail.com/yahoo.com.
+            </div>
+        </div>
+        
+        <div class="print-title">Sample Jobcard Designer wise Report</div>
+        
+        <div class="print-filters">
+            <div class="filter-item">
+                <span class="filter-label">From Date :</span>
+                <span class="filter-value">${fromDate}</span>
+            </div>
+            <div class="filter-item">
+                <span class="filter-label">Designer Name :</span>
+                <span class="filter-value">${designerName}</span>
+            </div>
+            <div class="filter-item">
+                <span class="filter-label">To Date :</span>
+                <span class="filter-value">${toDate}</span>
+            </div>
+        </div>
+        
+        <table class="print-table">
             <thead>
                 <tr>
                     <th>S.No</th>
@@ -409,49 +564,85 @@
                     <th>Customer Name</th>
                     <th>Designer</th>
                     <th>Design Name</th>
-                    <th>No of Pcs</th>
-                    <th class="text-right">Total</th>
-                    <th class="text-right">Sample Value</th>
+                    <th style="text-align:right;">No.Of Pcs</th>
+                    <th style="text-align:right;">Sample Value</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
+            <tbody>
+    `;
+    
+    let totalPcs = 0;
+    let totalValue = 0;
+    let hasRecords = false;
+    
+    rows.forEach((row, index) => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length > 0 && !row.classList.contains('total-row')) {
+            const sno = cells[0]?.textContent || '';
+            const date = cells[1]?.textContent || '';
+            const jobcardNo = cells[2]?.textContent || '';
+            const customerName = cells[3]?.textContent || '';
+            const designer = cells[4]?.textContent || '';
+            const designName = cells[5]?.textContent || '';
+            const noOfPcs = parseFloat(cells[6]?.textContent) || 0;
+            const sampleValue = parseFloat(cells[7]?.textContent) || 0;
+            
+            totalPcs += noOfPcs;
+            totalValue += sampleValue;
+            hasRecords = true;
+            
+            tableHTML += `
                 <tr>
-                    <td colspan="9" class="no-data">
-                        <i data-lucide="file-bar-chart"></i>
-                        <div><strong>No Records Found</strong></div>
-                        <div>Select filters to view designer report</div>
-                    </td>
+                    <td>${sno}</td>
+                    <td>${date}</td>
+                    <td>${jobcardNo}</td>
+                    <td>${customerName}</td>
+                    <td>${designer}</td>
+                    <td>${designName}</td>
+                    <td style="text-align:right;">${noOfPcs.toFixed(2)}</td>
+                    <td style="text-align:right;">${sampleValue.toFixed(2)}</td>
                 </tr>
+            `;
+        }
+    });
+    
+    tableHTML += `
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" style="text-align:right;font-weight:bold;">Total</td>
+                    <td style="text-align:right;font-weight:bold;">${totalPcs.toFixed(2)}</td>
+                    <td style="text-align:right;font-weight:bold;">${totalValue.toFixed(2)}</td>
+                </tr>
+            </tfoot>
         </table>
-    </div>
+        
+        <div class="print-footer-info">
+            Printed Date : ${new Date().toLocaleDateString('en-GB')}<br>
+            Printed Time : ${new Date().toLocaleTimeString('en-GB')}<br>
+            IP Address : ${window.location.hostname || '127.0.0.1'}
+        </div>
+    `;
+    
+    // Set content and show modal
+    document.getElementById('printPreviewContent').innerHTML = tableHTML;
+    document.getElementById('printPreviewModal').style.display = 'block';
+}
 
-</div>
-{% endblock %}
+function closePrintPreview() {
+    document.getElementById('printPreviewModal').style.display = 'none';
+}
 
-{% block extra_js %}
+function printReport() {
+    window.print();
+}
 
-<script>
-    function resetDesignerReport() {
-        document.getElementById("fromDate").value = "";
-        document.getElementById("toDate").value = "";
-        document.getElementById("designerName").value = "";
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('printPreviewModal');
+    if (event.target == modal) {
+        closePrintPreview();
     }
-
-    lucide.createIcons();
-
-    function searchDesignerReport() {
-        const fromDate = document.getElementById("fromDate").value;
-        const toDate = document.getElementById("toDate").value;
-        const designerName = document.getElementById("designerName").value;
-
-        console.log("Search clicked", {
-            fromDate,
-            toDate,
-            designerName
-        });
-
-        alert("Search functionality can be connected to backend later.");
-    }
+}
 </script>
 {% endblock %}

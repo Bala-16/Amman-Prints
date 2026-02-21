@@ -6,6 +6,168 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  /* Reset button (grey) */
+  .btnReset {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    height: 48px;
+    min-width: 170px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 12px;
+    background: #e5e7eb;
+    color: #111827;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .btnReset svg {
+    width: 20px !important;
+    height: 20px !important;
+    color: #111827 !important;
+    stroke: #111827 !important;
+  }
+
+  /* Search button */
+  .btnSearch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 48px;
+    min-width: 170px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 12px;
+    background: #07a49c;
+    color: #fff;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .btnSearch svg {
+    width: 20px !important;
+    height: 20px !important;
+    color: #fff !important;
+    stroke: #fff !important;
+  }
+
+  /* ✅ Mobile: table hide + cards show (Customer Wise) */
+  .mobile-cards {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .customerTableWrap {
+      display: none !important;
+    }
+
+    .mobile-cards {
+      display: block !important;
+    }
+
+    .mcard {
+      background: rgba(255, 255, 255, .92);
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(2, 6, 23, .10);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .mcard .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .mcard .jc {
+      font-weight: 900;
+      font-size: 20px;
+      color: #0f172a;
+    }
+
+    .mcard .date {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .mcard .badge {
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #e6fffa;
+      color: #0f766e;
+      white-space: nowrap;
+    }
+
+    .mgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 18px;
+      margin-top: 10px;
+    }
+
+    .mitem .k {
+      font-size: 12px;
+      color: #0f172a;
+      font-weight: 900;
+    }
+
+    .mitem .v {
+      font-size: 15px;
+      color: #0f172a;
+      font-weight: 400;
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    .mqty {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .mqty .box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .mqty .box .k {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 800;
+    }
+
+    .mqty .box .v {
+      font-size: 18px;
+      font-weight: 900;
+      margin-top: 4px;
+      color: #0f172a;
+      text-align: right;
+    }
+  }
+
+  @media (max-width: 768px) {
+    #customerTable {
+      display: none !important;
+    }
+
+    .customerTableWrap {
+      overflow: visible !important;
+    }
+  }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -13,7 +175,8 @@
   <div class="max-w-[1600px] mx-auto space-y-6">
 
     <!-- HEADER -->
-    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div
+      class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <div class="h-12 w-12 flex items-center justify-center rounded-xl bg-white/20">
           <i data-lucide="layers" class="text-white w-6 h-6"></i>
@@ -23,6 +186,12 @@
           <p class="text-teal-100 text-sm">Production summary by customer</p>
         </div>
       </div>
+
+      <button onclick="window.print()"
+        class="bg-white text-teal-700 px-4 py-2 rounded-lg shadow flex items-center gap-2 hover:scale-105 transition">
+        <i data-lucide="printer" class="w-4 h-4"></i>
+        Print Report
+      </button>
     </div>
 
     <!-- FILTERS -->
@@ -37,53 +206,56 @@
       </div>
       <div>
         <label class="text-sm text-slate-600">Customer Name</label>
-        <input type="text" id="customerName" placeholder="TANGIBLES" class="w-full border rounded px-3 py-2">
+        <input type="text" id="customerName" placeholder="Type Customer Name..."
+          class="w-full border rounded px-3 py-2">
       </div>
       <div class="flex items-end gap-2">
-        <button id="searchBtn" class="bg-teal-600 text-white px-6 py-2 rounded-lg shadow hover:scale-105 transition flex items-center gap-2">
-          <i data-lucide="search" class="w-4 h-4"></i> Search
+        <button type="button" class="btnSearch" id="searchBtn">
+          <i data-lucide="search"></i>
+          Search
         </button>
-        <button id="resetBtn" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg shadow hover:scale-105 transition flex items-center gap-2">
+        <button type="button" class="btnReset" id="resetBtn">
+          <i data-lucide="rotate-ccw"></i>
           Reset
         </button>
       </div>
     </div>
 
-    <!-- CHARTS -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 sm:p-10 h-[260px]">
-        <h3 class="font-semibold mb-2">Order vs Production</h3>
-        <canvas id="barChart"></canvas>
-      </div>
-
-      <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 sm:p-10 h-[260px]">
-        <h3 class="font-semibold mb-2">Balance Distribution</h3>
-        <canvas id="pieChart"></canvas>
-      </div>
-    </div>
+    <!-- ✅ CHARTS REMOVED -->
 
     <!-- TABLE -->
-    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg overflow-x-auto">
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg overflow-x-auto customerTableWrap">
+
       <div class="p-4 border-b text-sm text-slate-600">
         Found <b id="recordCount">0</b> Records
       </div>
 
-      <table class="w-full text-sm min-w-[800px]">
+      <table id="customerTable" class="w-full text-sm min-w-[900px]">
         <thead class="bg-slate-100">
           <tr>
+            <th class="p-3 text-left">S.No</th>
             <th class="p-3 text-left">Date</th>
             <th class="p-3 text-left">Jobcard No</th>
-            <th class="p-3 text-left">Customer</th>
+            <th class="p-3 text-left">Customer Name</th>
             <th class="p-3 text-left">Shift</th>
-            <th class="p-3 text-left">Machine</th>
+            <th class="p-3 text-left">Machine No</th>
             <th class="p-3 text-left">Operator</th>
             <th class="p-3 text-left">Particulars</th>
             <th class="p-3 text-right">Order Qty</th>
             <th class="p-3 text-right">Product Qty</th>
-            <th class="p-3 text-right">Balance</th>
+            <th class="p-3 text-right">Balance Qty</th>
           </tr>
         </thead>
         <tbody id="customerTableBody"></tbody>
+
+        <tfoot class="bg-slate-50 font-semibold">
+          <tr class="border-t">
+            <td colspan="8" class="p-3 text-right">Total</td>
+            <td class="p-3 text-right" id="tOrder">0.00</td>
+            <td class="p-3 text-right" id="tProd">0.00</td>
+            <td class="p-3 text-right" id="tBal">0.00</td>
+          </tr>
+        </tfoot>
       </table>
     </div>
 
@@ -93,104 +265,200 @@
 
 {% block extra_js %}
 <script>
-lucide.createIcons();
+  lucide.createIcons();
 
-// Sample data
-let customerData = [
-  { date: "2024-04-03", jobcard: "JC-2404-0002", customer: "TANGIBLES", shift: "DAY (09–21)", machine: "FLAT BED NO 4", operator: "VINAY", particular: "70 – 6 Color Each", order: 233, produced: 235 },
-  { date: "2024-04-04", jobcard: "JC-2404-0003", customer: "M.B GARMENTS", shift: "DAY (09–21)", machine: "FLAT BED NO 3", operator: "AJITH", particular: "65 – 6 Color Each", order: 300, produced: 200 }
-];
+  // Sample data
+  let customerData = [
+    { date: "2024-04-03", jobcard: "JC-2404-0002", customer: "TANGIBLES", shift: "DAY (09–21)", machine: "FLAT BED NO 4", operator: "VINAY", particular: "70 – 6 Color Each", order: 233, produced: 235 },
+    { date: "2024-04-04", jobcard: "JC-2404-0003", customer: "M.B GARMENTS", shift: "DAY (09–21)", machine: "FLAT BED NO 3", operator: "AJITH", particular: "65 – 6 Color Each", order: 300, produced: 200 }
+  ];
 
-const tableBody = document.getElementById("customerTableBody");
-const fromDate = document.getElementById("fromDate");
-const toDate = document.getElementById("toDate");
-const customerName = document.getElementById("customerName");
-const searchBtn = document.getElementById("searchBtn");
-const resetBtn = document.getElementById("resetBtn");
-const recordCount = document.getElementById("recordCount");
+  const tableBody = document.getElementById("customerTableBody");
+  const fromDate = document.getElementById("fromDate");
+  const toDate = document.getElementById("toDate");
+  const customerName = document.getElementById("customerName");
+  const searchBtn = document.getElementById("searchBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const recordCount = document.getElementById("recordCount");
 
-// Charts
-const barCtx = document.getElementById("barChart").getContext("2d");
-const pieCtx = document.getElementById("pieChart").getContext("2d");
+  const tOrderEl = document.getElementById("tOrder");
+  const tProdEl = document.getElementById("tProd");
+  const tBalEl = document.getElementById("tBal");
 
-let barChart = new Chart(barCtx, {
-  type: "bar",
-  data: { labels: [], datasets: [{ label: "Produced Qty", data: [], backgroundColor: "#14b8a6" }] },
-  options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-});
+  function ensureCustomerCardsContainer() {
+    let el = document.getElementById("customerMobileCards");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "customerMobileCards";
+      el.className = "mobile-cards";
 
-let pieChart = new Chart(pieCtx, {
-  type: "doughnut",
-  data: { labels: ["Completed", "Balance"], datasets: [{ data: [], backgroundColor: ["#0d9488", "#f97316"] }] },
-  options: { maintainAspectRatio: false }
-});
+      const tableWrap = document.querySelector(".customerTableWrap");
+      if (tableWrap) tableWrap.insertAdjacentElement("afterend", el);
+    }
+    return el;
+  }
 
-// Render table and charts
-function renderCustomer(data) {
-  tableBody.innerHTML = "";
-  let labels = [];
-  let dataValues = [];
-  let totalProduced = 0;
-  let totalOrder = 0;
+  function renderCustomerCards(data) {
+    const mobileCards = ensureCustomerCardsContainer();
+    if (!mobileCards) return;
 
-  data.forEach(row => {
-    const balance = row.order - row.produced;
-    tableBody.innerHTML += `
-      <tr class="border-t hover:bg-slate-50">
-        <td class="p-2 sm:p-3">${row.date}</td>
-        <td class="p-2 sm:p-3">${row.jobcard}</td>
-        <td class="p-2 sm:p-3">${row.customer}</td>
-        <td class="p-2 sm:p-3">${row.shift}</td>
-        <td class="p-2 sm:p-3">${row.machine}</td>
-        <td class="p-2 sm:p-3">${row.operator}</td>
-        <td class="p-2 sm:p-3">${row.particular}</td>
-        <td class="p-2 sm:p-3 text-right">${row.order}</td>
-        <td class="p-2 sm:p-3 text-right">${row.produced}</td>
-        <td class="p-2 sm:p-3 text-right">${balance}</td>
-      </tr>`;
+    mobileCards.innerHTML = "";
 
-    labels.push(row.customer);
-    dataValues.push(row.produced);
-    totalProduced += row.produced;
-    totalOrder += row.order;
+    data.forEach(row => {
+      const balance = (Number(row.order) || 0) - (Number(row.produced) || 0);
+
+      mobileCards.innerHTML += `
+        <div class="mcard">
+          <div class="top">
+            <div>
+              <div class="jc">${row.jobcard}</div>
+              <div class="date">${row.date}</div>
+            </div>
+            <div class="badge">${row.shift}</div>
+          </div>
+
+          <div class="mgrid">
+            <div class="mitem">
+              <div class="k">Customer</div>
+              <div class="v">${row.customer}</div>
+            </div>
+
+            <div class="mitem">
+              <div class="k">Machine</div>
+              <div class="v">${row.machine}</div>
+            </div>
+
+            <div class="mitem">
+              <div class="k">Operator</div>
+              <div class="v">${row.operator}</div>
+            </div>
+
+            <div class="mitem" style="grid-column: 1 / -1;">
+              <div class="k">Particular</div>
+              <div class="v">${row.particular}</div>
+            </div>
+          </div>
+
+          <div class="mqty">
+            <div class="box">
+              <div class="k">Order Qty</div>
+              <div class="v">${row.order}</div>
+            </div>
+            <div class="box">
+              <div class="k">Produced Qty</div>
+              <div class="v">${row.produced}</div>
+            </div>
+            <div class="box" style="grid-column: 1 / -1;">
+              <div class="k">Balance</div>
+              <div class="v">${balance}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function showEmptyMessage(msg) {
+    tableBody.innerHTML = `
+      <tr class="border-t">
+        <td class="p-3 text-center text-slate-500" colspan="11">${msg}</td>
+      </tr>
+    `;
+    recordCount.innerText = "0";
+    tOrderEl.textContent = "0.00";
+    tProdEl.textContent = "0.00";
+    tBalEl.textContent = "0.00";
+    // mobile cards clear
+    const mobileCards = document.getElementById("customerMobileCards");
+    if (mobileCards) mobileCards.innerHTML = "";
+  }
+
+  function renderCustomer(data) {
+    tableBody.innerHTML = "";
+    let totalOrder = 0;
+    let totalProduced = 0;
+
+    if (data.length === 0) {
+      showEmptyMessage("No Records");
+      return;
+    }
+
+    data.forEach((row, idx) => {
+      const order = Number(row.order) || 0;
+      const prod = Number(row.produced) || 0;
+      const balance = order - prod;
+
+      totalOrder += order;
+      totalProduced += prod;
+
+      tableBody.innerHTML += `
+        <tr class="border-t hover:bg-slate-50">
+          <td class="p-2 sm:p-3">${idx + 1}</td>
+          <td class="p-2 sm:p-3">${row.date}</td>
+          <td class="p-2 sm:p-3">${row.jobcard}</td>
+          <td class="p-2 sm:p-3">${row.customer}</td>
+          <td class="p-2 sm:p-3">${row.shift}</td>
+          <td class="p-2 sm:p-3">${row.machine}</td>
+          <td class="p-2 sm:p-3">${row.operator}</td>
+          <td class="p-2 sm:p-3">${row.particular}</td>
+          <td class="p-2 sm:p-3 text-right">${order}</td>
+          <td class="p-2 sm:p-3 text-right">${prod}</td>
+          <td class="p-2 sm:p-3 text-right">${balance}</td>
+        </tr>
+      `;
+    });
+
+    recordCount.innerText = data.length;
+
+    const totalBalance = totalOrder - totalProduced;
+    tOrderEl.textContent = totalOrder.toFixed(2);
+    tProdEl.textContent = totalProduced.toFixed(2);
+    tBalEl.textContent = totalBalance.toFixed(2);
+
+    renderCustomerCards(data);
+  }
+
+  function applyFilters() {
+    const from = fromDate.value;
+    const to = toDate.value;
+    const customer = customerName.value.trim().toLowerCase();
+
+    // ✅ Customer name empty -> table show pannakoodadhu
+    if (!customer) {
+      showEmptyMessage("Enter Customer Name to view records");
+      return;
+    }
+
+    const filtered = customerData.filter(row => {
+      let valid = true;
+      if (from) valid = valid && row.date >= from;
+      if (to) valid = valid && row.date <= to;
+      valid = valid && row.customer.toLowerCase().includes(customer);
+      return valid;
+    });
+
+    renderCustomer(filtered);
+  }
+
+  // ✅ Initial: table empty message (no auto data)
+  showEmptyMessage("Enter Customer Name to view records");
+
+  // Search click
+  searchBtn.addEventListener("click", applyFilters);
+
+  // ✅ Customer type panna udane show
+  customerName.addEventListener("input", applyFilters);
+
+  // Optional: date change => if customer typed, auto filter
+  fromDate.addEventListener("change", applyFilters);
+  toDate.addEventListener("change", applyFilters);
+
+  // Reset
+  resetBtn.addEventListener("click", () => {
+    fromDate.value = "";
+    toDate.value = "";
+    customerName.value = "";
+    showEmptyMessage("Enter Customer Name to view records");
   });
-
-  recordCount.innerText = data.length;
-
-  barChart.data.labels = labels;
-  barChart.data.datasets[0].data = dataValues;
-  barChart.update();
-
-  pieChart.data.datasets[0].data = [totalProduced, totalOrder - totalProduced];
-  pieChart.update();
-}
-
-// Initial render
-renderCustomer(customerData);
-
-// Filter function
-searchBtn.addEventListener("click", () => {
-  const from = fromDate.value;
-  const to = toDate.value;
-  const customer = customerName.value.trim().toLowerCase();
-
-  const filtered = customerData.filter(row => {
-    let valid = true;
-    if (from) valid = valid && row.date >= from;
-    if (to) valid = valid && row.date <= to;
-    if (customer) valid = valid && row.customer.toLowerCase().includes(customer);
-    return valid;
-  });
-
-  renderCustomer(filtered);
-});
-
-// Reset filters
-resetBtn.addEventListener("click", () => {
-  fromDate.value = "";
-  toDate.value = "";
-  customerName.value = "";
-  renderCustomer(customerData);
-});
 </script>
 {% endblock %}

@@ -1,383 +1,482 @@
-{%extends "nav.html"%}
-{%block title%}quotation form{%endblock%}
-{%block extra_head%}
+{% extends "nav.html" %}
+{% block content %}
+
 <style>
-:root{
-  --primary:#14b8a6;
-  --secondary:#06b6d4;
-  --border:#e5e7eb;
-  --bg:#f9fafb;
-  --text:#111827;
-  --muted:#6b7280;
-  --danger:#ef4444;
+  body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+  }
+
+  .form-header {
+    background: #14b8a6;
+    color: white;
+    padding: 12px 20px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .jobcard-no {
+    text-align: center;
+    margin: 15px 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .jobcard-no span {
+    color: red;
+  }
+
+  .form-grid {
+    width: 80%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+  }
+
+  .field-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+
+  .field-row label {
+    width: 140px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .field-row label span {
+    color: red;
+  }
+
+  .field-row input,
+  .field-row select {
+    border: none;
+    border-bottom: 1px solid gray;
+    outline: none;
+    width: 220px;
+    padding: 5px;
+    font-size: 14px;
+    background: transparent;
+  }
+
+  .upload-icon {
+    font-size: 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    color: #14b8a6;
+  }
+
+  .table-section {
+    width: 90%;
+    margin: 40px auto;
+    border: 1px solid #ccc;
+    background: white;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th {
+    background: #f2f2f2;
+    border: 1px solid #ddd;
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: center;
+  }
+
+  td input {
+    width: 90%;
+    border: none;
+    outline: none;
+    background: transparent;
+  }
+
+  .add-btn {
+    background: #eee;
+    border: 1px solid gray;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .total-row {
+    text-align: center;
+    font-weight: bold;
+    padding: 15px;
+  }
+
+  .submit-btn {
+    display: block;
+    margin: 30px auto;
+    background: #14b8a6;
+    border: none;
+    padding: 10px 40px;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+  }
+
+  .submit-btn:hover {
+    background: #14b8a6;
+  }
+
+  .action-btns {
+  display: flex;
+  justify-content: center;
+  gap: 6px;   /* space between buttons */
 }
 
-*{box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
-
-body{
-  margin:0;
-  background:#f3f4f6;
-  padding:16px;
-}
-
-.container{
-  max-width:1400px;
-  margin:auto;
-  display:flex;
-  flex-direction:column;
-  gap:24px;
-}
-
-/* HEADER */
-.header{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:white;
-  padding:24px;
-  border-radius:16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.header h1{margin:0;font-size:22px}
-.header p{margin:4px 0 0;font-size:14px;opacity:.85}
-
-.badge{
-  padding:10px 16px;
-  background:rgba(255,255,255,.2);
-  border-radius:999px;
-  font-weight:700;
-}
-
-/* CARD */
-.card{
-  background:white;
-  border-radius:16px;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
-  overflow:hidden;
-}
-
-.card-header{
-  padding:20px 24px;
-  background:linear-gradient(135deg,#ecfeff,#f0fdfa);
-  font-weight:700;
-  font-size:18px;
-}
-
-.card-body{
-  padding:24px;
-}
-
-/* FORM */
-.form-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:20px;
-}
-
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.field label{
-  font-size:13px;
-  font-weight:600;
-  color:var(--muted);
-}
-
-.field input, .field select{
-  height:44px;
-  padding:10px 12px;
-  border-radius:10px;
-  border:2px solid var(--border);
-  font-size:14px;
-}
-
-.field input:focus, .field select:focus{
-  outline:none;
-  border-color:var(--primary);
-}
-
-/* TABLE */
-.table-wrap{
-  overflow-x:auto;
-  border:2px solid #ccfbf1;
-  border-radius:12px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-thead{
-  background:#ecfeff;
-}
-
-th,td{
-  padding:12px;
-  border-bottom:1px solid var(--border);
-  font-size:14px;
-  white-space:nowrap;
-}
-
-th{
-  text-align:left;
-  color:#065f46;
-}
-
-td input{
-  width:100%;
-  height:36px;
-  border-radius:8px;
-  border:2px solid var(--border);
-  padding:4px 8px;
-}
-
-td input[readonly]{
-  background:#f9fafb;
-}
-
-/* BUTTONS */
-.btn{
-  border:none;
-  padding:10px 16px;
-  border-radius:10px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-.btn-primary{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:white;
-}
-
-.btn-outline{
-  background:white;
-  border:2px solid var(--border);
-}
-
-.btn-danger{
-  background:#fee2e2;
-  color:#b91c1c;
-}
-
-.actions{
-  display:flex;
-  gap:12px;
-  justify-content:flex-end;
-  flex-wrap:wrap;
-}
-
-.total-row{
-  background:#ccfbf1;
-  font-weight:700;
-}
-
-/* RESPONSIVE */
-@media(max-width:768px){
-  .actions{justify-content:center}
+.action-btns button {
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
 }
 </style>
-{%endblock%}
 
-{%block content%}
-<!-- <body> -->
-<div class="container">
-
-  <!-- HEADER -->
-  <div class="header">
-    <div>
-      <h1>Jobcard Quotation Form</h1>
-      <p>Create a new quotation</p>
-    </div>
-    <div class="badge">JQ-2601-0003</div>
-  </div>
-
-  <!-- FORM -->
-  <div class="card">
-    <div class="card-header">Quotation Details</div>
-    <div class="card-body">
-      <div class="form-grid">
-        <div class="field">
-          <label>Date & Time</label>
-          <input type="datetime-local" value="2026-01-08T13:07">
-        </div>
-
-        <div class="field">
-          <label>Order By</label>
-          <input>
-        </div>
-
-        <div class="field">
-          <label>Customer Name *</label>
-          <input>
-        </div>
-
-        <div class="field">
-          <label>Style No *</label>
-          <input>
-        </div>
-
-        <div class="field">
-          <label>Job Created By</label>
-          <input value="admin" disabled>
-        </div>
-
-        <div class="field">
-          <label>Style Name *</label>
-          <input>
-        </div>
-
-        <div class="field">
-          <label>Customer PO No</label>
-          <input>
-        </div>
-
-        <div class="field">
-          <label>Combo *</label>
-          <input>
-        </div>
-
-        <div class="field">
-          <label>Job Type *</label>
-          <select>
-            <option value="">Select</option>
-            <option>Domestic</option>
-            <option>Export Large</option>
-            <option>Export Small</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Payment Terms *</label>
-          <select>
-            <option value="">Select</option>
-            <option>Advance</option>
-            <option>COD</option>
-            <option>Net 15</option>
-            <option>Net 30</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Image Upload</label>
-          <input type="file">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- PARTICULARS -->
-  <div class="card">
-    <div class="card-header">
-      Particulars
-      <button class="btn btn-primary" style="float:right" onclick="addRow()">+ Add Row</button>
-    </div>
-    <div class="card-body">
-      <div class="table-wrap">
-        <table id="particularsTable">
-          <thead>
-            <tr>
-              <th>S.No</th>
-              <th>Particulars</th>
-              <th>Width</th>
-              <th>Height</th>
-              <th>Rate</th>
-              <th>Amt</th>
-              <th>Confirmed Amt</th>
-              <th>Qty</th>
-              <th>Value</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="6" align="right">Total</td>
-              <td id="totalConfirmed">0.00</td>
-              <td></td>
-              <td id="totalValue">0.00</td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- ACTIONS -->
-  <div class="card">
-    <div class="card-body actions">
-      <button class="btn btn-outline">Cancel</button>
-      <button class="btn btn-primary">Submit</button>
-    </div>
-  </div>
-
+<!-- ✅ HEADER -->
+<div class="form-header">
+  Jobcard Quotation Form
 </div>
-{%endblock%}
-{%block extra_js%}
+
+<!-- ✅ Jobcard Number -->
+<div class="jobcard-no">
+  Jobcard No <span>{{ quotation_no }}</span>
+</div>
+
+<!-- ✅ FORM START -->
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <!-- ✅ TOP FORM GRID -->
+  <div class="form-grid">
+
+    <!-- LEFT SIDE -->
+    <div>
+
+      <div class="field-row">
+         <label>Date</label>
+         {{ form.date }}
+      </div>
+
+
+      <div class="field-row">
+        <label>Customer Name<span>*</span></label>
+        {{ form.customer_name }}
+
+      </div>
+
+      <!-- created_by user name show only (view la save panrom) -->
+      <div class="field-row">
+        <label>Job Created By<span>*</span></label>
+        <input type="text" value="{{ request.user.username }}" readonly>
+      </div>
+
+      <div class="field-row">
+        <label>Customer PO No</label>
+        {{ form.customer_po_no }}
+
+      </div>
+
+      <div class="field-row">
+        <label>Job Type</label>
+        {{ form.job_type }}
+      </div>
+
+      <!-- ✅ IMPORTANT: name must be fabric_type -->
+      <div class="field-row">
+        <label>Fabric</label>
+        {{ form.fabric_type }}
+      </div>
+
+      <div class="field-row">
+        <label>Payment Terms<span>*</span></label>
+        <select name="payment_terms" required>
+          <option value="Cash">Cash</option>
+          <option value="Credit">Credit</option>
+        </select>
+      </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div>
+
+      <div class="field-row">
+        <label>Order By</label>
+        {{ form.order_by }}
+      </div>
+
+      <div class="field-row">
+        <label>Style No<span>*</span></label>
+        {{ form.style_no }}
+      </div>
+
+      <div class="field-row">
+        <label>Style Name<span>*</span></label>
+        {{ form.style_name }}
+      </div>
+
+      <div class="field-row">
+        <label>Combo<span>*</span></label>
+        {{ form.combo }}
+      </div>
+
+      <div class="field-row">
+        <label>Image Upload</label>
+        <input type="file" name="image">
+        <span class="upload-icon">⬆</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ✅ PARTICULARS TABLE (currently only 1 row UI) -->
+  <div class="table-section">
+    <table>
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Particulars<span style="color:red">*</span></th>
+          <th>Width<span style="color:red">*</span></th>
+          <th>Height<span style="color:red">*</span></th>
+          <th>Rate<span style="color:red">*</span></th>
+          <th>Amt</th>
+          <th>Confirmed Amt<span style="color:red">*</span></th>
+          <th>Qty</th>
+          <th>Value</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <!-- <tbody> -->
+      <tbody id="quotationBody">
+        <tr>
+          <td>1</td>
+          <td><input type="text" name="particulars[]" ></td>
+  <td><input type="number" step="0.01" name="width[]" class="width"></td>
+  <td><input type="number" step="0.01" name="height[]" class="height"></td>
+  <td><input type="number" step="0.01" name="rate[]" class="rate"></td>
+  <td><input type="number" step="0.01" name="amt[]" class="amt" readonly></td>
+  <td><input type="number" step="0.01" name="confirmed_amt[]" class="confirmed-amt"></td>
+  <td><input type="number" name="qty[]" class="qty"></td>
+  <td><input type="number" step="0.01" name="value[]" class="value" readonly></td>
+  <td>
+    <div class="action-btns">
+      <button type="button" onclick="addRow()">ADD</button>
+      <button type="button" onclick="deleteRow(this)">DEL</button>
+    </div>
+          <!-- <td><input type="text" name="particulars"></td>
+          <td><input type="number" step="0.01" name="width"></td>
+          <td><input type="number" step="0.01" name="height"></td>
+          <td><input type="number" step="0.01" name="rate"></td>
+          <td><input type="number" step="0.01" name="amt"></td>
+          <td><input type="number" step="0.01" name="confirmed_amt"></td>
+          <td><input type="number" name="qty"></td>
+          <td><input type="number" step="0.01" name="value"></td>
+          <td>
+  <div class="action-btns">
+    <button type="button" onclick="addRow()">ADD</button>
+    <button type="button" onclick="deleteRow(this)">DEL</button>
+  </div> -->
+</td>
+          <!-- <td><button type="button" class="add-btn">ADD</button></td> -->
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="total-row">
+      Total &nbsp;&nbsp;&nbsp; 0.00 &nbsp;&nbsp;&nbsp; 0.00
+    </div>
+  </div>
+
+  <!-- Hidden total fields -->
+  <input type="hidden" name="total_qty" value="0">
+  <input type="hidden" name="total_value" value="0">
+
+  <!-- ✅ SUBMIT BUTTON -->
+  <button type="submit" class="submit-btn">
+    SUBMIT
+  </button>
+
+</form>
+{% include 'jobcard/party_modal.html' %}
+
+
 
 <script>
-let tableBody = document.querySelector("#particularsTable tbody");
+function addRow() {
+    let table = document.getElementById("quotationBody");
+    let rowCount = table.rows.length;
 
-function addRow(){
-  let row = document.createElement("tr");
-  row.innerHTML = `
-    <td></td>
-    <td><input></td>
-    <td><input type="number" oninput="calc(this)"></td>
-    <td><input type="number" oninput="calc(this)"></td>
-    <td><input type="number" oninput="calc(this)"></td>
-    <td><input readonly></td>
-    <td><input type="number" oninput="calc(this)"></td>
-    <td><input type="number" oninput="calc(this)"></td>
-    <td><input readonly></td>
-    <td><button class="btn btn-danger" onclick="removeRow(this)">🗑</button></td>
-  `;
-  tableBody.appendChild(row);
-  updateIndex();
-}
+    let row = table.insertRow();
 
-function removeRow(btn){
-  if(tableBody.children.length>1){
+    row.innerHTML = `
+        <td>${rowCount + 1}</td>
+        <td><input type="text" name="particulars[]"></td>
+        <td><input type="number" step="0.01" name="width[]" class="width"></td>
+        <td><input type="number" step="0.01" name="height[]" class="height"></td>
+        <td><input type="number" step="0.01" name="rate[]" class="rate"></td>
+        <td><input type="number" step="0.01" name="amt[]" class="amt" readonly></td>
+        <td><input type="number" step="0.01" name="confirmed_amt[]" class="confirmed-amt"></td>
+        <td><input type="number" name="qty[]" class="qty"></td>
+        <td><input type="number" step="0.01" name="value[]" class="value" readonly></td>
+        <td>
+          <div class="action-btns">
+            <button type="button" onclick="addRow()">ADD</button>
+            <button type="button" onclick="deleteRow(this)">DEL</button>
+          </div>
+        </td>
+    `;
+}  
+
+// function addRow() {
+//     let table = document.getElementById("quotationBody");
+//     let rowCount = table.rows.length;
+
+//     let row = table.insertRow();
+
+//     row.innerHTML = `
+//         <td>${rowCount + 1}</td>
+//         <td><input type="text" name="particulars[]"></td>
+//         <td><input type="number" step="0.01" name="width[]"></td>
+//         <td><input type="number" step="0.01" name="height[]"></td>
+//         <td><input type="number" step="0.01" name="rate[]"></td>
+//         <td><input type="number" step="0.01" name="amt[]" readonly></td>
+//         <td><input type="number" step="0.01" name="confirmed_amt[]"></td>
+//         <td><input type="number" name="qty[]"></td>
+//         <td><input type="number" step="0.01" name="value[]" readonly></td>
+//         <td>
+//           <div class="action-btns">
+           
+//           <button type="button" class="add-btn" onclick="addRow()">ADD</button>
+//           <button type="button" class="add-btn" onclick="deleteRow(this)">DEL</button>
+//           </div>  
+//         </td>
+   
+//     `;
+// }
+
+function deleteRow(btn) {
     btn.closest("tr").remove();
-    updateIndex();
-    updateTotals();
-  }
 }
 
-function updateIndex(){
-  [...tableBody.children].forEach((r,i)=>r.children[0].innerText=i+1);
+
+// function attachCalculationEvents() {
+//     document.querySelectorAll('#tableBody tr').forEach(row => {
+//         row.querySelectorAll('.width, .height, .rate, .confirmed-amt, .qty')
+//             .forEach(input => {
+//                 input.removeEventListener('input', calculateRow);
+//                 input.addEventListener('input', calculateRow);
+//             });
+//     });
+// }
+
+// function calculateRow(e) {
+//     const row = e.target.closest('tr');
+
+//     const width = parseFloat(row.querySelector('.width').value) || 0;
+//     const height = parseFloat(row.querySelector('.height').value) || 0;
+//     const rate = parseFloat(row.querySelector('.rate').value) || 0;
+//     const confirmedAmt = parseFloat(row.querySelector('.confirmed-amt').value) || 0;
+//     const qty = parseFloat(row.querySelector('.qty').value) || 0;
+
+//     const sq = width * height;
+//     const amt = sq * rate;
+//     const confirmedRate = sq !== 0 ? confirmedAmt / sq : 0;
+//     const value = confirmedAmt * qty;
+
+//     row.querySelector('.amt').value = amt.toFixed(2);
+//     row.querySelector('.confirmed-rate').value = confirmedRate.toFixed(4);
+//     row.querySelector('.value').value = value.toFixed(2);
+
+//     calculateTotals();
+// }
+
+// function calculateTotals() {
+//     let totalAmt = 0;
+//     let totalConfirmedAmt = 0;
+//     let totalValue = 0;
+
+//     document.querySelectorAll('#tableBody tr').forEach(row => {
+//         totalAmt += parseFloat(row.querySelector('.amt').value) || 0;
+//         totalConfirmedAmt += parseFloat(row.querySelector('.confirmed-amt').value) || 0;
+//         totalValue += parseFloat(row.querySelector('.value').value) || 0;
+//     });
+
+//     document.getElementById('totalAmt').value = totalAmt.toFixed(2);
+//     document.getElementById('totalConfirmedAmt').value = totalConfirmedAmt.toFixed(2);
+//     document.getElementById('totalValue').value = totalValue.toFixed(2);
+// }
+
+document.addEventListener("input", function(e) {
+
+    let row = e.target.closest("tr");
+    if (!row) return;
+
+    let width = parseFloat(row.querySelector(".width")?.value) || 0;
+    let height = parseFloat(row.querySelector(".height")?.value) || 0;
+    let rate = parseFloat(row.querySelector(".rate")?.value) || 0;
+    let confirmed = parseFloat(row.querySelector(".confirmed-amt")?.value) || 0;
+    let qty = parseFloat(row.querySelector(".qty")?.value) || 0;
+
+    let sq = width * height;
+    let amt = sq * rate;
+    let value = confirmed * qty;
+
+    if (row.querySelector(".amt"))
+        row.querySelector(".amt").value = amt.toFixed(2);
+
+    if (row.querySelector(".value"))
+        row.querySelector(".value").value = value.toFixed(2);
+
+    calculateTotal();
+});
+
+function calculateTotal() {
+    let totalQty = 0;
+    let totalValue = 0;
+
+    document.querySelectorAll(".qty").forEach(q => {
+        totalQty += parseFloat(q.value) || 0;
+    });
+
+    document.querySelectorAll(".value").forEach(v => {
+        totalValue += parseFloat(v.value) || 0;
+    });
+
+    document.querySelector("input[name='total_qty']").value = totalQty;
+    document.querySelector("input[name='total_value']").value = totalValue.toFixed(2);
 }
 
-function calc(input){
-  let row = input.closest("tr");
-  let w = row.children[2].querySelector("input").value||0;
-  let h = row.children[3].querySelector("input").value||0;
-  let r = row.children[4].querySelector("input").value||0;
-  row.children[5].querySelector("input").value = (w*h*r).toFixed(2);
+function deleteRow(button) {
+    const row = button.closest('tr');
+    const tableBody = document.getElementById('tableBody');
 
-  let ca = row.children[6].querySelector("input").value||0;
-  let q = row.children[7].querySelector("input").value||0;
-  row.children[8].querySelector("input").value = (ca*q).toFixed(2);
-
-  updateTotals();
+    if (tableBody.rows.length > 1) {
+        row.remove();
+        updateSerialNumbers();
+        calculateTotals();
+    }
 }
 
-function updateTotals(){
-  let totalC=0,totalV=0;
-  [...tableBody.children].forEach(r=>{
-    totalC+=Number(r.children[6].querySelector("input").value)||0;
-    totalV+=Number(r.children[8].querySelector("input").value)||0;
-  });
-  document.getElementById("totalConfirmed").innerText=totalC.toFixed(2);
-  document.getElementById("totalValue").innerText=totalV.toFixed(2);
+function updateSerialNumbers() {
+    document.querySelectorAll('#tableBody tr').forEach((row, index) => {
+        row.cells[0].textContent = index + 1;
+    });
 }
 
-addRow();
+
 </script>
-{%endblock%}
 
+{% endblock %} 

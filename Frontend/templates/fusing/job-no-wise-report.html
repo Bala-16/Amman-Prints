@@ -5,21 +5,267 @@
 {% block extra_head %}
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
   @media print {
     body * {
       visibility: hidden;
     }
-    #printArea, #printArea * {
+
+    #printArea,
+    #printArea * {
       visibility: visible;
     }
+
     #printArea {
       position: absolute;
       left: 0;
       top: 0;
       width: 100%;
+    }
+  }
+
+  /* center row like screenshot */
+  .btn-row-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    margin-top: 14px;
+  }
+
+  /* Search button */
+  .btnSearch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 48px;
+    min-width: 170px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 12px;
+    background: #0f8f6c;
+    color: #fff;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .btnSearch svg {
+    width: 20px !important;
+    height: 20px !important;
+    color: #fff !important;
+    stroke: #fff !important;
+  }
+
+  /* Reset button (grey) */
+  .btnReset {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    height: 48px;
+    min-width: 170px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 12px;
+    background: #e5e7eb;
+    color: #111827;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .btnReset svg {
+    width: 20px !important;
+    height: 20px !important;
+    color: #111827 !important;
+    stroke: #111827 !important;
+  }
+
+  /* mobile-la full width venumna */
+  @media (max-width:480px) {
+    .btn-row-center {
+      gap: 12px;
+    }
+
+    .btnSearch,
+    .btnReset {
+      min-width: 0;
+      flex: 1 1 0;
+    }
+  }
+
+  /* ✅ MOBILE CARD VIEW (table -> cards) */
+  .mobile-cards {
+    display: none;
+  }
+
+  @media (max-width:768px) {
+    .tableWrap {
+      display: none !important;
+    }
+
+    .mobile-cards {
+      display: block !important;
+    }
+
+    .mcard {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 16px;
+      box-shadow: 0 10px 24px rgba(2, 6, 23, 0.10);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .mcard .top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .mcard .jc {
+      font-weight: 900;
+      font-size: 18px;
+      color: #0f172a;
+    }
+
+    .mcard .date {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .mcard .badge {
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e6fffa;
+      color: #0f766e;
+      white-space: nowrap;
+    }
+
+    .mgrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 14px;
+      margin-top: 10px;
+    }
+
+    .mitem .k {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .mitem .v {
+      font-size: 14px;
+      color: #0f172a;
+      font-weight: 800;
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    .mqty {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .mqty .box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+
+    .mqty .box .k {
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 800;
+    }
+
+    .mqty .box .v {
+      font-size: 18px;
+      font-weight: 900;
+      margin-top: 4px;
+      color: #0f172a;
+      text-align: right;
+    }
+  }
+
+  /* ✅ FIX: Align Search & Reset exactly like second image */
+  @media (min-width:640px) {
+    .btn-row-center {
+      margin-top: 22px;
+      justify-content: flex-end;
+    }
+  }
+
+  @media (max-width:639px) {
+    .btn-row-center {
+      margin-top: 0;
+    }
+  }
+
+  @media (min-width:640px) {
+    .btn-row-center {
+      align-self: flex-end;
+      margin-top: 0;
+    }
+  }
+
+  /* ✅ Mobile cards: heading bold, value normal */
+  @media (max-width:768px) {
+    .mitem .k {
+      font-weight: 900 !important;
+      color: #0f172a !important;
+    }
+
+    .mitem .v {
+      font-weight: 500 !important;
+      color: #0f172a !important;
+    }
+  }
+
+  /* ✅ Mobile Qty boxes: vertical line + smaller size */
+  @media (max-width:768px) {
+    .mqty .box {
+      position: relative;
+      padding: 8px 10px 8px 14px !important;
+      border-radius: 12px !important;
+    }
+
+    .mqty .box::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 12px;
+      bottom: 12px;
+      width: 4px;
+      border-radius: 6px;
+      background: #0d9488;
+    }
+
+    .mqty .box .k {
+      font-size: 11px !important;
+      font-weight: 800;
+    }
+
+    .mqty .box .v {
+      font-size: 16px !important;
+      font-weight: 900;
+    }
+  }
+
+  /* ❌ Remove vertical line from Order / Produced Qty boxes */
+  @media (max-width:768px) {
+    .mqty .box::before {
+      display: none !important;
+      content: none !important;
     }
   }
 </style>
@@ -28,17 +274,17 @@
 {% block content %}
 
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-4 sm:p-6">
-
   <div class="max-w-[1600px] mx-auto space-y-6">
 
     <!-- HEADER -->
-    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-4 sm:p-6 shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-4 sm:p-6 shadow-xl
+                flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div class="flex items-center gap-3">
         <div class="h-12 w-12 flex items-center justify-center rounded-xl bg-white/20">
           <i data-lucide="file-text" class="text-white w-6 h-6"></i>
         </div>
         <div>
-          <h1 class="text-xl sm:text-2xl font-bold text-white"> Jobcard Wise Report</h1>
+          <h1 class="text-xl sm:text-2xl font-bold text-white">Jobcard Wise Report</h1>
           <p class="text-teal-100 text-sm sm:text-base">Production details per jobcard</p>
         </div>
       </div>
@@ -46,36 +292,30 @@
       <button onclick="window.print()"
         class="bg-white text-teal-600 px-4 py-2 rounded-lg shadow flex items-center gap-2 hover:scale-105 transition">
         <i data-lucide="printer" class="w-4 h-4"></i>
-        Print
+        Print Report
       </button>
     </div>
 
-    <!-- FILTERS -->
-    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-5 gap-4">
-      <div>
-        <label class="text-sm">From Date</label>
-        <input type="date" id="fromDate" class="w-full border rounded px-3 py-2 text-sm sm:text-base">
-      </div>
-      <div>
-        <label class="text-sm">To Date</label>
-        <input type="date" id="toDate" class="w-full border rounded px-3 py-2 text-sm sm:text-base">
-      </div>
+    <!-- FILTERS (✅ ONLY Jobcard No + Search + Reset) -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6
+                grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+      <!-- Jobcard No -->
       <div>
         <label class="text-sm">Jobcard No</label>
-        <input type="text" id="jobcardFilter" class="w-full border rounded px-3 py-2 text-sm sm:text-base" placeholder="JC-2404-0004">
+        <input type="text" id="jobcardFilter" class="w-full border rounded px-3 py-2 text-sm sm:text-base"
+          placeholder="JC-2404-0004">
       </div>
-      <div>
-        <label class="text-sm">Machine</label>
-        <select id="machineFilter" class="w-full border rounded px-3 py-2 text-sm sm:text-base">
-          <option value="">All</option>
-          <option>FLAT BED NO 1</option>
-          <option>FLAT BED NO 2</option>
-        </select>
-      </div>
-      <div class="flex items-end">
-        <button id="searchBtn" class="bg-teal-600 text-white px-4 sm:px-6 py-2 rounded-lg flex items-center gap-2 hover:bg-teal-700 transition">
-          <i data-lucide="search" class="w-4 h-4"></i>
+
+      <!-- Search + Reset -->
+      <div class="btn-row-center sm:col-span-2">
+        <button type="button" class="btnSearch" id="searchBtn">
+          <i data-lucide="search"></i>
           Search
+        </button>
+
+        <button type="button" class="btnReset" onclick="resetFilters()">
+          <i data-lucide="rotate-ccw"></i>
+          Reset
         </button>
       </div>
     </div>
@@ -83,37 +323,10 @@
     <!-- PRINT AREA -->
     <div id="printArea" class="space-y-6">
 
-      <!-- CHARTS -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 sm:p-10 h-[280px]">
-          <h3 class="font-semibold mb-4 text-sm sm:text-base">Jobcard vs Production Qty</h3>
-          <canvas id="jobcardBarChart"></canvas>
-        </div>
+      <!-- ✅✅ REMOVED: CHARTS + SUMMARY (as you asked) -->
 
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 sm:p-10 h-[280px]">
-          <h3 class="font-semibold mb-4 text-sm sm:text-base">Jobcard Distribution</h3>
-          <canvas id="jobcardPieChart"></canvas>
-        </div>
-      </div>
-
-      <!-- SUMMARY -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-        <div class="bg-white rounded-xl shadow p-4 text-center sm:text-left">
-          <p class="text-sm text-slate-500">Total Order Qty</p>
-          <h2 id="totalOrder" class="text-xl sm:text-2xl font-bold">0</h2>
-        </div>
-        <div class="bg-white rounded-xl shadow p-4 text-center sm:text-left">
-          <p class="text-sm text-slate-500">Total Produced</p>
-          <h2 id="totalProduced" class="text-xl sm:text-2xl font-bold">0</h2>
-        </div>
-        <div class="bg-white rounded-xl shadow p-4 text-center sm:text-left">
-          <p class="text-sm text-slate-500">Balance</p>
-          <h2 id="balanceQty" class="text-xl sm:text-2xl font-bold">0</h2>
-        </div>
-      </div>
-
-      <!-- TABLE -->
-      <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg overflow-x-auto">
+      <!-- TABLE (Desktop Only) -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg overflow-x-auto tableWrap">
         <table class="w-full text-sm sm:text-base min-w-[700px]">
           <thead class="bg-slate-100">
             <tr>
@@ -131,8 +344,10 @@
         </table>
       </div>
 
-    </div>
+      <!-- ✅ MOBILE CARDS (Mobile Only) -->
+      <div id="mobileCards" class="mobile-cards"></div>
 
+    </div>
   </div>
 </div>
 
@@ -140,84 +355,130 @@
 
 {% block extra_js %}
 <script>
-lucide.createIcons()
+  lucide.createIcons()
 
-const rows = [
-  {date:"03-04-2024", jc:"JC-2404-0004", shift:"DAY", op:"GOLU KUMAR", mach:"FLAT BED NO 1", part:"XL-5 DESIGN", order:1500, produced:600},
-  {date:"04-04-2024", jc:"JC-2404-0005", shift:"NIGHT", op:"RAHUL", mach:"FLAT BED NO 2", part:"AOP TOP", order:1200, produced:800},
-  {date:"05-04-2024", jc:"JC-2404-0006", shift:"DAY", op:"SURESH", mach:"FLAT BED NO 1", part:"L TOP", order:1000, produced:700},
-]
+  // ✅ Mobile cards renderer
+  function renderCards(data) {
+    const mobileCards = document.getElementById("mobileCards")
+    if (!mobileCards) return
+    mobileCards.innerHTML = ""
 
-// Get table and summary elements
-const tbody = document.getElementById("tableBody")
-const totalOrder = document.getElementById("totalOrder")
-const totalProduced = document.getElementById("totalProduced")
-const balanceQty = document.getElementById("balanceQty")
+    data.forEach(r => {
+      mobileCards.innerHTML += `
+        <div class="mcard">
+          <div class="top">
+            <div>
+              <div class="jc">${r.jc}</div>
+              <div class="date">${r.date}</div>
+            </div>
+            <div class="badge">${r.shift || ""}</div>
+          </div>
 
-// Initialize charts
-let barChart, pieChart
+          <div class="mgrid">
+            <div class="mitem">
+              <div class="k">Operator</div>
+              <div class="v">${r.op || ""}</div>
+            </div>
+            <div class="mitem">
+              <div class="k">Machine</div>
+              <div class="v">${r.mach || ""}</div>
+            </div>
+            <div class="mitem" style="grid-column: 1 / -1;">
+              <div class="k">Particular</div>
+              <div class="v">${r.part || ""}</div>
+            </div>
+          </div>
 
-function renderTable(data){
-  tbody.innerHTML = ""
-  let orderSum = 0, producedSum = 0
-  data.forEach(r=>{
-    tbody.innerHTML += `
-      <tr class="border-t hover:bg-slate-50">
-        <td class="p-2 sm:p-3">${r.date}</td>
-        <td class="p-2 sm:p-3">${r.jc}</td>
-        <td class="p-2 sm:p-3">${r.shift}</td>
-        <td class="p-2 sm:p-3">${r.op}</td>
-        <td class="p-2 sm:p-3">${r.mach}</td>
-        <td class="p-2 sm:p-3">${r.part}</td>
-        <td class="p-2 sm:p-3 text-right">${r.order}</td>
-        <td class="p-2 sm:p-3 text-right">${r.produced}</td>
-      </tr>
-    `
-    orderSum += r.order
-    producedSum += r.produced
-  })
-  totalOrder.textContent = orderSum
-  totalProduced.textContent = producedSum
-  balanceQty.textContent = orderSum - producedSum
+          <div class="mqty">
+            <div class="box">
+              <div class="k">Order Qty</div>
+              <div class="v">${r.order ?? 0}</div>
+            </div>
+            <div class="box">
+              <div class="k">Produced Qty</div>
+              <div class="v">${r.produced ?? 0}</div>
+            </div>
+          </div>
+        </div>
+      `
+    })
+  }
 
-  // Update charts
-  const labels = data.map(r=>r.jc)
-  const quantities = data.map(r=>r.produced)
-  if(barChart) barChart.destroy()
-  if(pieChart) pieChart.destroy()
+  const tbody = document.getElementById("tableBody")
 
-  barChart = new Chart(document.getElementById("jobcardBarChart"), {
-    type:"bar",
-    data:{labels, datasets:[{label:"Produced Qty", data:quantities, backgroundColor:"#0d9488", borderRadius:6}]},
-    options:{maintainAspectRatio:false, responsive:true, scales:{y:{beginAtZero:true}}}
-  })
+  function renderTable(data) {
+    tbody.innerHTML = ""
 
-  pieChart = new Chart(document.getElementById("jobcardPieChart"), {
-    type:"doughnut",
-    data:{labels, datasets:[{data:quantities, backgroundColor:["#0d9488","#14b8a6","#5eead4"]}]},
-    options:{maintainAspectRatio:false, responsive:true}
-  })
-}
+    if (!data.length) {
+      tbody.innerHTML = `
+        <tr class="border-t">
+          <td class="p-3 text-center text-slate-500" colspan="8">No records found</td>
+        </tr>
+      `
+      renderCards([])
+      return
+    }
 
-// Initial render
-renderTable(rows)
+    data.forEach(r => {
+      tbody.innerHTML += `
+        <tr class="border-t hover:bg-slate-50">
+          <td class="p-2 sm:p-3">${r.date || ""}</td>
+          <td class="p-2 sm:p-3">${r.jc || ""}</td>
+          <td class="p-2 sm:p-3">${r.shift || ""}</td>
+          <td class="p-2 sm:p-3">${r.op || ""}</td>
+          <td class="p-2 sm:p-3">${r.mach || ""}</td>
+          <td class="p-2 sm:p-3">${r.part || ""}</td>
+          <td class="p-2 sm:p-3 text-right">${r.order ?? 0}</td>
+          <td class="p-2 sm:p-3 text-right">${r.produced ?? 0}</td>
+        </tr>
+      `
+    })
 
-// Filter/search
-document.getElementById("searchBtn").addEventListener("click",()=>{
-  const from = document.getElementById("fromDate").value
-  const to = document.getElementById("toDate").value
-  const jobcard = document.getElementById("jobcardFilter").value.toLowerCase()
-  const machine = document.getElementById("machineFilter").value
+    renderCards(data)
+  }
 
-  const filtered = rows.filter(r=>{
-    const matchFrom = !from || r.date >= from
-    const matchTo = !to || r.date <= to
-    const matchJC = !jobcard || r.jc.toLowerCase().includes(jobcard)
-    const matchMachine = !machine || r.mach === machine
-    return matchFrom && matchTo && matchJC && matchMachine
-  })
+  async function fetchJobcardData(jobcardNo) {
+    const url = `/api/jobcard-report/?jobcard_no=${encodeURIComponent(jobcardNo)}`
+    const res = await fetch(url, { headers: { "X-Requested-With": "XMLHttpRequest" } })
+    if (!res.ok) throw new Error("Fetch failed")
+    return await res.json()
+  }
 
-  renderTable(filtered)
-})
+  // Initial empty
+  renderTable([])
+
+  // ✅ Search (DB fetch)
+  const searchBtn = document.getElementById("searchBtn")
+  if (searchBtn) {
+    searchBtn.addEventListener("click", async () => {
+      const jobcard = document.getElementById("jobcardFilter").value.trim()
+      if (!jobcard) {
+        renderTable([])
+        return
+      }
+
+      searchBtn.disabled = true
+      searchBtn.style.opacity = "0.75"
+
+      try {
+        const data = await fetchJobcardData(jobcard)
+        renderTable((data && data.rows) ? data.rows : [])
+      } catch (e) {
+        console.error(e)
+        alert("Database data fetch error")
+        renderTable([])
+      } finally {
+        searchBtn.disabled = false
+        searchBtn.style.opacity = "1"
+        if (window.lucide) lucide.createIcons()
+      }
+    })
+  }
+
+  function resetFilters() {
+    document.getElementById("jobcardFilter").value = ""
+    renderTable([])
+    if (window.lucide) lucide.createIcons()
+  }
 </script>
 {% endblock %}

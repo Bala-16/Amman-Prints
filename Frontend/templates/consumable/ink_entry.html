@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ink Management</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+.step-enter {
+  animation: fadeSlide .35s ease-out;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-teal-50/30 p-6">
+
+<div class="max-w-[1800px] mx-auto space-y-6">
+ 
+<!-- HEADER -->
+<div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl">
+<h1 class="text-2xl font-bold text-white">Ink Management</h1>
+</div>
+<!-- STEPPER -->
+<div class="bg-white p-6 rounded-xl shadow-lg">
+  <div id="steps" class="flex w-full"></div>
+</div>
+
+
+<!-- TABS -->
+<!-- <div class="bg-white rounded-xl shadow p-2 flex gap-2">
+<button class="tab-btn active" onclick="showTab('purchaseForm')">Ink Purchase Form</button>
+<button class="tab-btn" onclick="showTab('purchaseList')">Purchase List</button>
+<button class="tab-btn" onclick="showTab('entryForm')">Ink Entry Form</button>
+<button class="tab-btn" onclick="showTab('entryList')">Ink Entry List</button>
+<button class="tab-btn" onclick="showTab('report')">Ink Report</button>
+<button class="tab-btn" onclick="showTab('consolidated')">Consolidated</button>
+</div> -->
+
+<!-- ================= PURCHASE FORM ================= -->
+<div id="purchaseForm" class="tab-content bg-white rounded-xl shadow p-6">
+<!-- HEADER -->
+ <div class="space-y-4">
+<div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+  <h1 class="text-2xl font-bold text-white">Ink Purchase Form</h1>
+</div>
+
+<!-- INFO BAR -->
+<div class="bg-white/90 rounded-xl shadow-lg p-6 flex justify-between items-center">
+  <div class="flex gap-6 items-center">
+    <span class="font-semibold text-red-600">Purchase No</span>
+    <span class="font-bold">IPR-2601-0001</span>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <span class="font-semibold">Date & Time</span>
+    <input type="datetime-local" id="mainDate"
+      class="border rounded px-3 py-2"
+      value="2026-01-27T11:22">
+  </div>
+</div>
+
+<!-- ENTRY TABLE -->
+<div class="bg-white/90 rounded-xl shadow-lg  overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+<th class="p-3">S.No</th>
+<th class="p-3">Date</th>
+<th class="p-3">Invoice No</th>
+<th class="p-3">Supplier Name</th>
+<th class="p-3">Particulars</th>
+<th class="p-3">Batch No</th>
+<th class="p-3">UOM</th>
+<th class="p-3">NOS</th>
+<th class="p-3">Qty</th>
+<th class="p-3">Action</th>
+</tr>
+</thead>
+
+<tbody id="itemTable">
+<tr>
+<td class="p-6 text-center">1</td>
+<td class="p-2">
+<input type="datetime-local" class="border rounded px-2 py-1 w-full">
+</td>
+<td class="p-2"><input class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>ABC Ink Supplier</option>
+<option>XYZ Traders</option>
+</select>
+</td>
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>Cyan Ink</option>
+<option>Magenta Ink</option>
+<option>Yellow Ink</option>
+</select>
+</td>
+<td class="p-2"><input class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2"><input class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2">
+<input type="number" class="border rounded px-2 py-1 w-full nos">
+</td>
+<td class="p-2">
+<input type="number" class="border rounded px-2 py-1 w-full qty" oninput="calcTotal()">
+</td>
+<td class="p-2 text-center">
+<button onclick="addRow()" class="bg-green-600 text-white px-3 py-1 rounded">ADD</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- TOTAL -->
+<div class="flex justify-end items-center gap-6 mt-6">
+  <span class="text-lg font-semibold">Total</span>
+  <span class="text-lg font-bold" id="totalQty">0.00</span>
+</div>
+
+<!-- SUBMIT -->
+<div class="flex justify-center mt-10">
+<button class="bg-gradient-to-r from-lime-600 to-green-600 text-white px-14 py-3 rounded-lg shadow hover:scale-105 transition">
+SUBMIT
+</button>
+</div>
+
+</div>
+
+<script>
+lucide.createIcons()
+
+function addRow(){
+  const table = document.getElementById("itemTable")
+  const rowCount = table.rows.length + 1
+
+  table.insertAdjacentHTML("beforeend", `
+<tr>
+<td class="p-2 text-center">${rowCount}</td>
+<td class="p-2"><input type="datetime-local" class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2"><input class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>ABC Ink Supplier</option>
+<option>XYZ Traders</option>
+</select>
+</td>
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>Cyan Ink</option>
+<option>Magenta Ink</option>
+<option>Yellow Ink</option>
+</select>
+</td>
+<td class="p-2"><input class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2"><input class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2"><input type="number" class="border rounded px-2 py-1 w-full nos"></td>
+<td class="p-2"><input type="number" class="border rounded px-2 py-1 w-full qty" oninput="calcTotal()"></td>
+<td class="p-2 text-center">
+<button onclick="this.closest('tr').remove();calcTotal()" class="bg-red-500 text-white px-3 py-1 rounded">DEL</button>
+</td>
+</tr>
+`)
+}
+
+function calcTotal(){
+  let total = 0
+  document.querySelectorAll(".qty").forEach(q=>{
+    total += Number(q.value || 0)
+  })
+  document.getElementById("totalQty").innerText = total.toFixed(2)
+}
+</script>
+
+
+<!-- ================= PURCHASE LIST ================= -->
+<div id="purchaseList" class="tab-content hidden bg-white rounded-xl shadow p-6">
+<!-- HEADER -->
+ <div class="space-y-4">
+<div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+  <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+    <i data-lucide="droplets"></i> Ink Purchase List
+  </h1>
+
+  <button onclick="goStep(1)"
+    class="bg-white text-teal-600 px-4 py-2 rounded-lg shadow flex items-center gap-2 hover:scale-105 transition">
+    <i data-lucide="plus"></i> Add Purchase
+  </button>
+</div>
+
+<!-- TABLE -->
+<div class="bg-white/90 backdrop-blur rounded-xl shadow-lg overflow-x-auto">
+
+<div class="p-4 border-b text-sm text-gray-600">
+Found <span id="recordCount" class="font-semibold"></span> Records
+</div>
+
+
+<table class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+<th class="p-3 text-center">S.No</th>
+<th class="p-3">Date</th>
+<th class="p-3">Media Pur.No</th>
+<th class="p-3 text-right">Total Mtr</th>
+<th class="p-3 text-center">Edit</th>
+<th class="p-3 text-center">Delete</th>
+</tr>
+</thead>
+
+<tbody id="purchaseTable"></tbody>
+
+<tfoot class="bg-slate-100 font-semibold">
+<tr>
+<td colspan="3" class="p-3 text-right">Total</td>
+<td class="p-3 text-right" id="grandTotal">0.00</td>
+<td colspan="2"></td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center">
+<div class="bg-white rounded-xl w-full max-w-xl p-6 shadow-xl">
+<h2 class="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
+<i data-lucide="file-plus"></i> Ink Purchase
+</h2>
+
+<input type="hidden" id="editIndex">
+
+<div class="grid grid-cols-3 gap-4">
+
+<div>
+<label class="text-sm">Date *</label>
+<input type="date" id="date" class="w-full border rounded px-3 py-2">
+</div>
+
+<div class="col-span-2">
+<label class="text-sm">Media Purchase No *</label>
+<input id="mediaNo" class="w-full border rounded px-3 py-2">
+</div>
+
+<div class="col-span-3">
+<label class="text-sm">Total Mtr *</label>
+<input type="number" id="totalMtr" class="w-full border rounded px-3 py-2">
+</div>
+
+</div>
+
+<div class="mt-6 flex justify-center gap-6">
+<button onclick="closeModal()"
+  class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">
+  Cancel
+</button>
+
+<button onclick="savePurchase()"
+  class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-4 shadow-xl text-white">
+  Save
+</button>
+</div>
+
+</div>
+</div>
+
+<script>
+lucide.createIcons()
+
+let purchases = [
+  {date:"2024-04-15", media:"IPR-2404-0002", total:48},
+  {date:"2024-04-08", media:"IPR-2404-0001", total:1791}
+]
+
+function renderTable(){
+  const tbody = document.getElementById("purchaseTable")
+  tbody.innerHTML = ""
+  let sum = 0
+
+  purchases.forEach((p,i)=>{
+    sum += Number(p.total)
+    tbody.innerHTML += `
+    <tr class="border-t hover:bg-slate-50">
+      <td class="p-3 text-center">${i+1}</td>
+      <td class="p-3">${formatDate(p.date)}</td>
+      <td class="p-3">${p.media}</td>
+      <td class="p-3 text-right">${p.total.toFixed(2)}</td>
+      <td class="p-3 text-center text-emerald-600 cursor-pointer" onclick="editPurchase(${i})">
+        <i data-lucide="edit"></i>
+      </td>
+      <td class="p-3 text-center text-red-500 cursor-pointer" onclick="deletePurchase(${i})">
+        <i data-lucide="trash-2"></i>
+      </td>
+    </tr>`
+  })
+
+  document.getElementById("recordCount").innerText = purchases.length
+  document.getElementById("grandTotal").innerText = sum.toFixed(2)
+  lucide.createIcons()
+}
+
+function openModal(){
+  modal.classList.remove("hidden")
+  modal.classList.add("flex")
+}
+
+function closeModal(){
+  modal.classList.add("hidden")
+  editIndex.value = ""
+  date.value = mediaNo.value = totalMtr.value = ""
+}
+
+function savePurchase(){
+  const data = {
+    date: date.value,
+    media: mediaNo.value,
+    total: Number(totalMtr.value)
+  }
+
+  if(editIndex.value === ""){
+    purchases.push(data)
+  }else{
+    purchases[editIndex.value] = data
+  }
+
+  closeModal()
+  renderTable()
+}
+
+function editPurchase(i){
+  openModal()
+  editIndex.value = i
+  date.value = purchases[i].date
+  mediaNo.value = purchases[i].media
+  totalMtr.value = purchases[i].total
+}
+
+function deletePurchase(i){
+  if(confirm("Delete this purchase?")){
+    purchases.splice(i,1)
+    renderTable()
+  }
+}
+
+function formatDate(d){
+  return d.split("-").reverse().join("-")
+}
+
+renderTable()
+</script>
+
+<!-- ================= INK ENTRY FORM ================= -->
+<div id="entryForm" class="tab-content hidden bg-white rounded-xl shadow p-6">
+<!-- HEADER -->
+ <div class="space-y-4">
+<div class="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-4 shadow-xl flex justify-between items-center">
+  <h1 class="text-xl font-bold text-white">Ink Entry Form</h1>
+  
+</div>
+
+<!-- TOP INFO -->
+<!-- <div class="bg-white rounded-xl shadow p-4 flex justify-between items-center">
+  <div class="flex gap-6 items-center">
+    <span class="text-red-600 font-semibold">Invoice No *</span>
+    <span class="font-bold">INK-2601-0001</span>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <span class="font-semibold">Date & Time</span>
+    <input type="datetime-local"
+      class="border rounded px-3 py-2"
+      value="2026-01-27T11:22">
+  </div>
+</div>
+
+<!-- ENTRY TABLE -->
+<!-- <div class="bg-white rounded-xl shadow overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+<th class="p-3">S.No</th>
+<th class="p-3">Date</th>
+<th class="p-3">Shift </th>
+<th class="p-3">Machine No </th>
+<th class="p-3">Operator </th>
+<th class="p-3">Particulars </th>
+<th class="p-3">Batch No</th>
+<th class="p-3">Total Req</th>
+<th class="p-3 text-center">Action</th>
+</tr>
+</thead>
+
+<tbody id="entryTable">
+<tr>
+<td class="p-6 text-center">1</td>
+<td class="p-2">
+<input type="datetime-local" class="border rounded px-2 py-1 w-full">
+</td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>Shift A</option>
+<option>Shift B</option>
+</select>
+</td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>GT-1</option>
+<option>GT-2</option>
+</select>
+</td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>Operator 1</option>
+<option>Operator 2</option>
+</select>
+</td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>Cyan</option>
+<option>Magenta</option>
+<option>Yellow</option>
+</select>
+</td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>B-01</option>
+<option>B-02</option>
+</select>
+</td>
+
+<td class="p-2">
+<input type="number" class="border rounded px-2 py-1 w-full qty" oninput="calcTotal()">
+</td>
+
+<td class="p-2 text-center">
+<button onclick="addRow()"
+  class="border px-4 py-1 rounded bg-green-600 hover:bg-green-700 text-white">
+ADD
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div> -->
+
+<!-- TOTAL -->
+<!-- <div class="flex justify-center gap-10 items-center mt-12">
+  <span class="font-semibold text-lg">Total</span>
+  <span id="totalQty" class="font-bold text-lg">0.00</span>
+</div> -->
+
+<!-- SUBMIT -->
+<!-- <div class="flex justify-center mt-6">
+<button class="bg-teal-600 text-white px-12 py-2 rounded shadow hover:bg-teal-700">
+SUBMIT
+</button>
+</div>
+
+</div>
+
+<script>
+lucide.createIcons()
+
+function addRow(){
+  const table = document.getElementById("entryTable")
+   const rowCount = table.rows.length + 1
+  table.insertAdjacentHTML("beforeend", `
+<tr>
+<td class="p-2 text-center">${rowCount}</td>
+<td class="p-2"><input type="datetime-local" class="border rounded px-2 py-1 w-full"></td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>Shift A</option>
+<option>Shift B</option>
+</select>
+</td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>GT-1</option>
+<option>GT-2</option>
+</select>
+</td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>Operator 1</option>
+<option>Operator 2</option>
+</select>
+</td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>Cyan</option>
+<option>Magenta</option>
+<option>Yellow</option>
+</select>
+</td>
+
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>B-01</option>
+<option>B-02</option>
+</select>
+</td>
+
+<td class="p-2">
+<input type="number" class="border rounded px-2 py-1 w-full qty" oninput="calcTotal()">
+</td>
+
+<td class="p-2 text-center">
+<button onclick="this.closest('tr').remove();calcTotal()"
+  class="border px-4 py-1 rounded bg-red-100 hover:bg-red-200">
+DEL
+</button>
+</td>
+</tr>
+`)
+}
+
+function calcTotal(){
+  let total = 0
+  document.querySelectorAll(".qty").forEach(q=>{
+    total += Number(q.value || 0)
+  })
+  document.getElementById("totalQty").innerText = total.toFixed(2)
+}
+</script> --> 
+<div class="bg-white/90 rounded-xl shadow-lg p-6  flex justify-between items-center">
+  <div class="flex gap-6 items-center">
+    <span class="font-semibold text-red-600">Invoice No</span>
+    <span class="font-bold">IPR-2601-0001</span>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <span class="font-semibold">Date & Time</span>
+    <input type="datetime-local" id="mainDate"
+      class="border rounded px-3 py-2"
+      value="2026-01-27T11:22">
+  </div>
+</div>
+
+<!-- ENTRY TABLE -->
+<div class="bg-white/90 rounded-xl shadow-lg  overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+<th class="p-3">S.No</th>
+<th class="p-3">Date</th>
+<th class="p-3">Shift</th>
+<th class="p-3">Machine No</th>
+<th class="p-3">Operator</th>
+<th class="p-3">Particulars</th>
+<th class="p-3">Batch No</th>
+<th class="p-3">Total Req</th>
+<th class="p-3">Action</th>
+</tr>
+</thead>
+
+<tbody id="itemTable">
+<tr>
+<td class="p-6 text-center">1</td>
+<td class="p-2">
+<input type="datetime-local" class="border rounded px-2 py-1 w-full">
+</td>
+<td class="p-2"><select class="border rounded px-2 py-1 w-full">
+  <option>Select</option>
+   <option>Day Shift</option>
+   <option>Night Shift</option>
+</td>
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>GT-1</option>
+<option>GT-2</option>
+</select>
+</td>
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>ANBALAGAN</option>
+<option>HARI</option>
+<option>SENTHIL</option>
+</select>
+</td>
+<td class="p-2"><select class="border rounded px-2 py-1 w-full">
+  <option>Select</option>
+<option>CYAN</option>
+<option>MAGENTA</option>
+<option>YELLOW</option>
+</td>
+<td class="p-2"><select class="border rounded px-2 py-1 w-full">
+  <option>Select</option>
+</td>
+<td class="p-2">
+<input type="number" class="border rounded px-2 py-1 w-full nos">
+</td>
+<td class="p-2">
+<input type="number" class="border rounded px-2 py-1 w-full qty" oninput="calcTotal()">
+</td>
+<td class="p-2 text-center">
+<button onclick="addRow()" class="bg-green-600 text-white px-3 py-1 rounded">ADD</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- TOTAL -->
+<div class="flex justify-end items-center gap-6 mt-6">
+  <span class="text-lg font-semibold">Total</span>
+  <span class="text-lg font-bold" id="totalQty">0.00</span>
+</div>
+
+<!-- SUBMIT -->
+<div class="flex justify-center mt-10">
+<button class="bg-gradient-to-r from-lime-600 to-green-600 text-white px-14 py-3 rounded-lg shadow hover:scale-105 transition">
+SUBMIT
+</button>
+</div>
+
+</div>
+
+<script>
+lucide.createIcons()
+
+function addRow(){
+  const table = document.getElementById("itemTable")
+  const rowCount = table.rows.length + 1
+
+  table.insertAdjacentHTML("beforeend", `
+<tr>
+<td class="p-2 text-center">${rowCount}</td>
+<td class="p-2"><input type="datetime-local" class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2"><input class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>ABC Ink Supplier</option>
+<option>XYZ Traders</option>
+</select>
+</td>
+<td class="p-2">
+<select class="border rounded px-2 py-1 w-full">
+<option>Select</option>
+<option>Cyan Ink</option>
+<option>Magenta Ink</option>
+<option>Yellow Ink</option>
+</select>
+</td>
+<td class="p-2"><input class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2"><input class="border rounded px-2 py-1 w-full"></td>
+<td class="p-2"><input type="number" class="border rounded px-2 py-1 w-full nos"></td>
+<td class="p-2"><input type="number" class="border rounded px-2 py-1 w-full qty" oninput="calcTotal()"></td>
+<td class="p-2 text-center">
+<button onclick="this.closest('tr').remove();calcTotal()" class="bg-red-500 text-white px-3 py-1 rounded">DEL</button>
+</td>
+</tr>
+`)
+}
+
+function calcTotal(){
+  let total = 0
+  document.querySelectorAll(".qty").forEach(q=>{
+    total += Number(q.value || 0)
+  })
+  document.getElementById("totalQty").innerText = total.toFixed(2)
+}
+</script>
+
+
+<!-- ================= PURCHASE LIST ================= -->
+<div id="purchaseList" class="tab-content hidden bg-white rounded-xl shadow p-6">
+<!-- HEADER -->
+<div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+  <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+    <i data-lucide="droplets"></i> Ink Purchase List
+  </h1>
+
+  <button onclick="goStep(1)"
+    class="bg-white text-teal-600 px-4 py-2 rounded-lg shadow flex items-center gap-2 hover:scale-105 transition">
+    <i data-lucide="plus"></i> Add Purchase
+  </button>
+</div>
+
+<!-- TABLE -->
+<div class="bg-white/90 backdrop-blur rounded-xl shadow-lg overflow-x-auto">
+
+<div class="p-4 border-b text-sm text-gray-600">
+Found <span id="recordCount" class="font-semibold"></span> Records
+</div>
+
+
+<table class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+<th class="p-3 text-center">S.No</th>
+<th class="p-3">Date</th>
+<th class="p-3">Media Pur.No</th>
+<th class="p-3 text-right">Total Mtr</th>
+<th class="p-3 text-center">Edit</th>
+<th class="p-3 text-center">Delete</th>
+</tr>
+</thead>
+
+<tbody id="purchaseTable"></tbody>
+
+<tfoot class="bg-slate-100 font-semibold">
+<tr>
+<td colspan="3" class="p-3 text-right">Total</td>
+<td class="p-3 text-right" id="grandTotal">0.00</td>
+<td colspan="2"></td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+<!-- ================= INK ENTRY LIST================= -->
+<div id="entryList" class="tab-content hidden bg-white rounded-xl shadow p-6">
+<div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex justify-between items-center">
+  <div class="flex items-center gap-3">
+    <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
+      <i data-lucide="droplet" class="text-white w-6 h-6"></i>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold text-white">Ink Entry List</h1>
+      <p class="text-lime-100 text-sm">Ink entry details</p>
+    </div>
+  </div>
+
+  <button onclick="goStep(3)"
+    class="bg-white text-green-700 px-4 py-2 rounded-lg shadow hover:scale-105 transition flex items-center gap-2">
+    <i data-lucide="plus"></i> Add Entry
+  </button>
+</div>
+
+<!-- TABLE -->
+<div class="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg overflow-x-auto">
+<div class="p-4 border-b text-sm text-slate-600">
+Found <span id="recordCount"></span> Records
+</div>
+
+<table class="w-full text-sm">
+<thead class="bg-slate-100">
+<tr>
+<th class="p-3">S.No</th>
+<th class="p-3 text-left">Date</th>
+<th class="p-3 text-left">Ink Entry No</th>
+<th class="p-3 text-right">Total</th>
+<th class="p-3 text-center">Edit</th>
+<th class="p-3 text-center">Delete</th>
+</tr>
+</thead>
+
+<tbody id="entryTable"></tbody>
+
+<tfoot class="bg-slate-100 font-semibold">
+<tr>
+<td colspan="3" class="p-3 text-right">Total</td>
+<td class="p-3 text-right" id="grandTotal">0.00</td>
+<td colspan="2"></td>
+</tr>
+</tfoot>
+</table>
+</div>
+
+</div>
+
+<!-- MODAL (SAME UI STYLE) -->
+<div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center">
+<div class="bg-white rounded-xl w-full max-w-xl p-6 shadow-xl">
+
+<h2 class="text-xl font-bold text-green-700 mb-4 flex items-center gap-2">
+<i data-lucide="file-plus"></i> Ink Entry
+</h2>
+
+<input type="hidden" id="editIndex">
+
+<div class="grid grid-cols-3 gap-4">
+
+<div>
+<label>Date *</label>
+<input type="date" id="date" class="w-full border rounded px-3 py-2">
+</div>
+
+<div class="col-span-2">
+<label>Ink Entry No *</label>
+<input id="entryNo" class="w-full border rounded px-3 py-2">
+</div>
+
+<div class="col-span-3">
+<label>Total *</label>
+<input type="number" id="total" class="w-full border rounded px-3 py-2">
+</div>
+
+</div>
+
+<div class="mt-6 flex justify-center gap-6">
+<button onclick="closeModal()"
+  class="bg-gray-200 text-gray-700 px-10 py-2 rounded hover:bg-gray-300">
+CANCEL
+</button>
+
+<button onclick="saveEntry()"
+  class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 text-white px-10 py-2 rounded">
+SAVE
+</button>
+</div>
+
+</div>
+</div>
+
+<script>
+lucide.createIcons()
+
+let entries = [
+ {date:"2024-04-15", no:"INK-2404-0012", total:77},
+ {date:"2024-04-13", no:"INK-2404-0011", total:49},
+]
+
+function renderTable(){
+ const tbody = document.getElementById("entryTable")
+ tbody.innerHTML = ""
+ let sum = 0
+
+ entries.forEach((e,i)=>{
+   sum += Number(e.total)
+   tbody.innerHTML += `
+   <tr class="border-t hover:bg-slate-50">
+     <td class="p-3 text-center">${i+1}</td>
+     <td class="p-3">${e.date}</td>
+     <td class="p-3">${e.no}</td>
+     <td class="p-3 text-right">${e.total.toFixed(2)}</td>
+     <td class="p-3 text-center text-emerald-600 cursor-pointer" onclick="editEntry(${i})">
+       <i data-lucide="edit"></i>
+     </td>
+     <td class="p-3 text-center text-red-500 cursor-pointer" onclick="deleteEntry(${i})">
+       <i data-lucide="trash-2"></i>
+     </td>
+   </tr>`
+ })
+
+ recordCount.innerText = entries.length
+ grandTotal.innerText = sum.toFixed(2)
+ lucide.createIcons()
+}
+
+function openModal(){
+ modal.classList.remove("hidden")
+ modal.classList.add("flex")
+}
+
+function closeModal(){
+ modal.classList.add("hidden")
+ editIndex.value=""
+ date.value=entryNo.value=total.value=""
+}
+
+function saveEntry(){
+ const data={
+   date:date.value,
+   no:entryNo.value,
+   total:Number(total.value)
+ }
+
+ if(editIndex.value===""){
+   entries.push(data)
+ }else{
+   entries[editIndex.value]=data
+ }
+
+ closeModal()
+ renderTable()
+}
+
+function editEntry(i){
+ openModal()
+ editIndex.value=i
+ date.value=entries[i].date
+ entryNo.value=entries[i].no
+ total.value=entries[i].total
+}
+
+function deleteEntry(i){
+ if(confirm("Delete this entry?")){
+   entries.splice(i,1)
+   renderTable()
+ }
+}
+
+renderTable()
+</script>
+
+
+<!-- ================= INK REPORT ================= -->
+<div id="report" class="tab-content hidden bg-white rounded-xl shadow p-6">
+    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-12 w-12 flex items-center justify-center rounded-xl bg-white/20">
+          <i data-lucide="droplet" class="text-white w-6 h-6"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-white">Ink Report</h1>
+          <p class="text-lime-100 text-sm">Purchase & Opening Stock Details</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER SECTION -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div>
+        <label class="text-sm text-slate-600">From Date</label>
+        <input type="date" class="w-full border rounded px-3 py-2">
+      </div>
+
+      <div>
+        <label class="text-sm text-slate-600">To Date</label>
+        <input type="date" class="w-full border rounded px-3 py-2">
+      </div>
+
+      <div>
+        <label class="text-sm text-slate-600">Item Name</label>
+        <input type="text" placeholder="BLACK / CYAN" class="w-full border rounded px-3 py-2">
+      </div>
+
+      <div>
+        <label class="text-sm text-slate-600">Type</label>
+        <select class="w-full border rounded px-3 py-2">
+          <option>Purchases</option>
+          <option>Consumption</option>
+        </select>
+      </div>
+
+      <div class="flex items-end gap-2">
+        <button class="bg-teal-600 text-white px-6 py-2 rounded-lg shadow hover:scale-105 transition flex items-center gap-2">
+          <i data-lucide="search" class="w-4 h-4"></i>
+          Search
+        </button>
+
+        <button class="bg-slate-600 text-white px-4 py-2 rounded-lg shadow hover:scale-105 transition">
+          <i data-lucide="printer" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- TABLE SECTION -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden">
+      <div class="p-4 border-b text-sm font-medium text-slate-600">
+        Purchases
+      </div>
+
+      <table class="w-full text-sm">
+        <thead class="bg-slate-100 text-slate-700">
+          <tr>
+            <th class="p-3 text-left">S.No</th>
+            <th class="p-3 text-left">Date</th>
+            <th class="p-3 text-left">Invoice No</th>
+            <th class="p-3 text-left">Supplier</th>
+            <th class="p-3 text-left">Particulars</th>
+            <th class="p-3 text-left">Batch No</th>
+            <th class="p-3 text-right">UOM</th>
+            <th class="p-3 text-right">NOS</th>
+            <th class="p-3 text-right">Qty</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr class="border-t hover:bg-slate-50">
+            <td class="p-3">1</td>
+            <td class="p-3">08-04-2024</td>
+            <td class="p-3">Opening</td>
+            <td class="p-3">SRI ANNAMALAIYAR AGENCIES</td>
+            <td class="p-3">BLACK</td>
+            <td class="p-3">23920</td>
+            <td class="p-3 text-right">4</td>
+            <td class="p-3 text-right">72</td>
+            <td class="p-3 text-right">288.00</td>
+          </tr>
+
+          <tr class="border-t hover:bg-slate-50">
+            <td class="p-3">2</td>
+            <td class="p-3">08-04-2024</td>
+            <td class="p-3">Opening</td>
+            <td class="p-3">SRI ANNAMALAIYAR AGENCIES</td>
+            <td class="p-3">CYAN</td>
+            <td class="p-3">LOT C</td>
+            <td class="p-3 text-right">1</td>
+            <td class="p-3 text-right">148</td>
+            <td class="p-3 text-right">196.00</td>
+          </tr>
+
+          <tr class="border-t hover:bg-slate-50">
+            <td class="p-3">3</td>
+            <td class="p-3">15-04-2024</td>
+            <td class="p-3">114</td>
+            <td class="p-3">ORANGE O TEC PRIVATE LIMITED</td>
+            <td class="p-3">CYAN</td>
+            <td class="p-3">243500</td>
+            <td class="p-3 text-right">4</td>
+            <td class="p-3 text-right">12</td>
+            <td class="p-3 text-right">48.00</td>
+          </tr>
+
+          <tr class="border-t hover:bg-slate-50">
+            <td class="p-3">4</td>
+            <td class="p-3">08-04-2024</td>
+            <td class="p-3">Opening</td>
+            <td class="p-3">SRI ANNAMALAIYAR AGENCIES</td>
+            <td class="p-3">MAGENTA</td>
+            <td class="p-3">LOT M</td>
+            <td class="p-3 text-right">1</td>
+            <td class="p-3 text-right">114</td>
+            <td class="p-3 text-right">734.00</td>
+          </tr>
+
+          <tr class="border-t hover:bg-slate-50">
+            <td class="p-3">5</td>
+            <td class="p-3">08-04-2024</td>
+            <td class="p-3">Opening</td>
+            <td class="p-3">SRI ANNAMALAIYAR AGENCIES</td>
+            <td class="p-3">YELLOW</td>
+            <td class="p-3">LOT Y</td>
+            <td class="p-3 text-right">1</td>
+            <td class="p-3 text-right">185</td>
+            <td class="p-3 text-right">573.00</td>
+          </tr>
+        </tbody>
+
+        <tfoot class="bg-slate-100 font-semibold">
+          <tr>
+            <td colspan="8" class="p-3 text-right">Total</td>
+            <td class="p-3 text-right">1,839.00</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- ICON INIT -->
+  <script>
+    lucide.createIcons();
+  </script>
+</div>
+
+<!-- ================= CONSOLIDATED ================= -->
+<div id="consolidated" class="tab-content hidden bg-white rounded-xl shadow p-6">
+  <div class="space-y-4">
+ <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-xl p-6 shadow-xl flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="h-12 w-12 flex items-center justify-center rounded-xl bg-white/20">
+        <i data-lucide="activity" class="text-white w-6 h-6"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-white">
+          Ink Usage Consolidated Report
+        </h1>
+        <p class="text-lime-100 text-sm">
+          Machine-wise ink consumption summary
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div>
+      <label class="text-sm text-slate-600">From Date</label>
+      <input type="date" value="2024-04-03" class="w-full border rounded px-3 py-2">
+    </div>
+
+    <div>
+      <label class="text-sm text-slate-600">To Date</label>
+      <input type="date" value="2024-04-15" class="w-full border rounded px-3 py-2">
+    </div>
+
+    <div>
+      <label class="text-sm text-slate-600">Item Name</label>
+      <input type="text" placeholder="BLACK" class="w-full border rounded px-3 py-2">
+    </div>
+
+    <div class="flex items-end gap-2">
+      <button class="bg-teal-600 text-white px-6 py-2 rounded-lg shadow hover:scale-105 transition flex items-center gap-2">
+        <i data-lucide="search" class="w-4 h-4"></i>
+        Search
+      </button>
+
+      <button class="bg-slate-600 text-white px-4 py-2 rounded-lg shadow hover:scale-105 transition">
+        <i data-lucide="printer" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg overflow-x-auto">
+    <table class="w-full text-sm min-w-[1400px]">
+      <thead class="bg-slate-100 text-slate-700">
+        <tr>
+          <th class="p-3 text-left">S.No</th>
+          <th class="p-3 text-left">Date</th>
+          <th class="p-3 text-left">Particulars</th>
+          <th class="p-3 text-right">GT-1</th>
+          <th class="p-3 text-right">GT-2</th>
+          <th class="p-3 text-right">GT-3</th>
+          <th class="p-3 text-right">MIMAKI</th>
+          <th class="p-3 text-right">ORIC-1</th>
+          <th class="p-3 text-right">ORIC-2</th>
+          <th class="p-3 text-right">ORIC-3</th>
+          <th class="p-3 text-right">Qty</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <!-- SAMPLE ROWS -->
+        <tr class="border-t hover:bg-slate-50">
+          <td class="p-3">1</td>
+          <td class="p-3">09-04-2024</td>
+          <td class="p-3 font-medium">BLACK</td>
+          <td class="p-3 text-right">0</td>
+          <td class="p-3 text-right">0</td>
+          <td class="p-3 text-right">0</td>
+          <td class="p-3 text-right">0</td>
+          <td class="p-3 text-right">0</td>
+          <td class="p-3 text-right">0</td>
+          <td class="p-3 text-right">0</td>
+          <td class="p-3 text-right">0</td>
+        </tr>
+
+        <!-- REPEATED ROWS LIKE SCREENSHOT -->
+        <tr class="border-t hover:bg-slate-50">
+          <td class="p-3">2</td>
+          <td class="p-3">10-04-2024</td>
+          <td class="p-3">BLACK</td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+        </tr>
+
+        <tr class="border-t hover:bg-slate-50">
+          <td class="p-3">3</td>
+          <td class="p-3">10-04-2024</td>
+          <td class="p-3">BLACK</td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+        </tr>
+
+        <tr class="border-t hover:bg-slate-50">
+          <td class="p-3">4</td>
+          <td class="p-3">10-04-2024</td>
+          <td class="p-3">BLACK</td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+          <td class="p-3 text-right"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+
+</div>
+</div>
+
+<script>
+lucide.createIcons()
+function showTab(id){
+document.querySelectorAll('.tab-content').forEach(t=>t.classList.add('hidden'))
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'))
+document.getElementById(id).classList.remove('hidden')
+event.target.classList.add('active')
+}
+
+new Chart(document.getElementById('usageChart'),{
+type:'pie',
+data:{
+labels:['GT-1','GT-2','ORIC-1'],
+datasets:[{data:[40,25,15]}]
+}
+})
+</script>
+<script>
+/* ---------------- STEPPER STATE ---------------- */
+let currentStep = 1
+
+const stepMap = {
+  1: "purchaseForm",
+  2: "purchaseList",
+  3: "entryForm",
+  4: "entryList",
+  5: "report",
+  6: "consolidated"
+}
+
+const steps = [
+  { id: 1, name: "Purchase", icon: "shopping-cart", color: "from-teal-500 to-cyan-500" },
+  { id: 2, name: "Purchase List", icon: "list", color: "from-sky-500 to-blue-500" },
+  { id: 3, name: "Ink Entry", icon: "edit-3", color: "from-purple-500 to-pink-500" },
+  { id: 4, name: "Entry List", icon: "layers", color: "from-orange-500 to-red-500" },
+  { id: 5, name: "Report", icon: "bar-chart-3", color: "from-lime-500 to-green-500" },
+  { id: 6, name: "Consolidated", icon: "activity", color: "from-emerald-500 to-teal-600" },
+]
+
+/* ---------------- RENDER STEPPER ---------------- */
+function renderStepper() {
+  const el = document.getElementById("steps")
+  el.innerHTML = ""
+
+  steps.forEach((s, i) => {
+    const active = currentStep === s.id
+    const done = currentStep > s.id
+
+    el.innerHTML += `
+      <div class="flex flex-1 items-center">
+        <div class="flex flex-col items-center gap-2">
+          <button onclick="goStep(${s.id})"
+            class="flex h-14 w-14 items-center justify-center rounded-2xl shadow-lg transition-all
+            ${active ? `bg-gradient-to-br ${s.color} scale-110` :
+              done ? "bg-gradient-to-br from-green-400 to-emerald-500" :
+              "bg-white"}">
+            <i data-lucide="${s.icon}" class="${active || done ? "text-white" : "text-gray-400"}"></i>
+          </button>
+          <span class="text-xs font-semibold ${active ? "text-gray-900" : "text-gray-500"}">
+            ${s.name}
+          </span>
+        </div>
+        ${i < steps.length - 1
+          ? `<div class="mx-4 flex-1 h-1 rounded-full ${done ? "bg-green-400" : "bg-gray-200"}"></div>`
+          : ""}
+      </div>
+    `
+  })
+
+  lucide.createIcons()
+}
+
+/* ---------------- NAV ---------------- */
+function goStep(step) {
+  currentStep = step
+
+  document.querySelectorAll(".tab-content").forEach(t =>
+    t.classList.add("hidden")
+  )
+
+  document.getElementById(stepMap[step]).classList.remove("hidden")
+
+  renderStepper()
+}
+
+/* INIT */
+goStep(1)
+</script>
+
+
+</body>
+</html>

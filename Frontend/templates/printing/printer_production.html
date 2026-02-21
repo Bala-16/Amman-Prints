@@ -1,339 +1,521 @@
 {%extends "nav.html"%}
 {%block title%}Printer Customer{%endblock%}
+
 {%block extra_head%}
-
-  <script src="https://cdn.tailwindcss.com"></script>
-<!-- </head> -->
-
+<script src="https://cdn.tailwindcss.com"></script>
 {%endblock%}
+
 {%block content%}
 <div class="bg-slate-100 min-h-screen p-4">
+  <div class="max-w-7xl mx-auto space-y-6">
 
-<div class="max-w-7xl mx-auto space-y-6">
+    <!-- ✅ BEAUTIFUL HEADER -->
+    <div class="w-full bg-gradient-to-r from-teal-600 to-cyan-500
+                rounded-2xl shadow-lg px-8 py-6
+                flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
-  <!-- ✅ BEAUTIFUL HEADER -->
-  <div class="w-full bg-gradient-to-r from-teal-600 to-cyan-500
-              rounded-2xl shadow-lg px-8 py-6
-              flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-
-    <div class="flex items-center gap-5">
-      <div class="bg-white/20 p-4 rounded-xl">
-        🖨️
+      <div class="flex items-center gap-5">
+        <div class="bg-white/20 p-4 rounded-xl">🖨️</div>
+        <div>
+          <h1 class="text-3xl font-bold text-white">Printer Production Entry</h1>
+          <p class="text-white/80 text-sm">Manage daily printer production details</p>
+        </div>
       </div>
 
-      <div>
-        <h1 class="text-3xl font-bold text-white">
-          Printer Production Entry
-        </h1>
-        <p class="text-white/80 text-sm">
-          Manage daily printer production details
-        </p>
+      <button onclick="window.print()" class="bg-white/20 hover:bg-white/30 text-white
+               px-6 py-3 rounded-xl font-semibold shadow transition">
+        Print
+      </button>
+    </div>
+
+    <!-- ✅ JOB DETAILS -->
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+
+      <div class="p-6 border-b flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <h2 class="text-lg font-bold text-slate-800">Job Details</h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full sm:w-auto">
+          <div class="sm:min-w-[320px]">
+            <label class="text-sm text-slate-600 font-medium">Jobcard No *</label>
+            <input id="jobcardNo" type="text" value="" placeholder="Enter Jobcard No" class="w-full mt-1 border rounded-lg px-3 py-2
+                          focus:ring-2 focus:ring-teal-400 outline-none">
+          </div>
+
+          <div class="sm:min-w-[260px]">
+            <label class="text-sm text-slate-600 font-medium">Date</label>
+            <input id="jobDate" type="date" value="" class="w-full mt-1 border rounded-lg px-3 py-2
+                          focus:ring-2 focus:ring-teal-400 outline-none">
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ fields area -->
+      <div class="p-6">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+          <div>
+            <label class="text-sm text-slate-600 font-medium">Customer *</label>
+            <input id="customer" type="text" value="-" readonly class="w-full mt-1 border rounded-lg px-3 py-2 bg-slate-50
+                          focus:ring-2 focus:ring-teal-400 outline-none">
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600 font-medium">Style No *</label>
+            <input id="styleNo" type="text" value="-" readonly class="w-full mt-1 border rounded-lg px-3 py-2 bg-slate-50
+                          focus:ring-2 focus:ring-teal-400 outline-none">
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600 font-medium">Job Type *</label>
+            <select id="jobType" disabled class="w-full mt-1 border rounded-lg px-3 py-2 bg-slate-50
+                           focus:ring-2 focus:ring-teal-400 outline-none">
+              <option selected>-</option>
+              <option>Production</option>
+              <option>Sample</option>
+              <option>Rework</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600 font-medium">Fabric Type *</label>
+            <select id="fabricType" disabled class="w-full mt-1 border rounded-lg px-3 py-2 bg-slate-50
+                           focus:ring-2 focus:ring-teal-400 outline-none">
+              <option selected>-</option>
+              <option>DOMESTIC</option>
+              <option>EXPORT</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600 font-medium">Style Name *</label>
+            <input id="styleName" type="text" value="-" readonly class="w-full mt-1 border rounded-lg px-3 py-2 bg-slate-50
+                          focus:ring-2 focus:ring-teal-400 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mt-5">
+          <div class="lg:col-span-1">
+            <label class="text-sm text-slate-600 font-medium">Combo Colors *</label>
+            <input id="combo" type="text" value="-" readonly class="w-full mt-1 border rounded-lg px-3 py-2.5 text-sm bg-slate-50
+                          focus:ring-2 focus:ring-teal-400 outline-none">
+          </div>
+
+          <div>
+            <label class="text-sm text-slate-600 font-medium">Printed Qty</label>
+            <input id="printedQty" type="text" value="-" readonly class="w-full mt-1 border rounded-lg px-3 py-2 bg-slate-50
+                          focus:ring-2 focus:ring-teal-400 outline-none">
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <button onclick="window.print()"
-      class="bg-white/20 hover:bg-white/30 text-white
-             px-6 py-3 rounded-xl font-semibold shadow transition">
-      Print
-    </button>
-  </div>
+    <!-- ✅ TABLE SECTION -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
 
- <!-- ✅ JOB DETAILS (Editable Inputs Like Form) -->
-<div class="bg-white rounded-xl shadow-lg p-6">
+      <div class="p-4 border-b flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div>
+          <p class="font-semibold text-slate-800">Production Records</p>
+          <p class="text-sm text-slate-500">Found <b id="recordCount">0</b> Records</p>
+        </div>
 
-  <h2 class="text-lg font-bold text-teal-700 mb-4">
-    Job Details
-  </h2>
+        <button type="button" onclick="toggleInlineEntry(true)"
+          class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">
+          + Add Entry
+        </button>
+      </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left">
+          <thead class="bg-slate-100">
+            <tr>
+              <th class="p-3">Date</th>
+              <th class="p-3">Shift</th>
+              <th class="p-3">Machine</th>
+              <th class="p-3">Operator</th>
+              <th class="p-3">Size</th>
+              <th class="p-3 text-right">T.Qty</th>
+              <th class="p-3 text-right">P.Qty</th>
+              <th class="p-3 text-right">Balance</th>
+              <th class="p-3 text-center">Action</th>
+            </tr>
+          </thead>
 
-    <!-- Jobcard No -->
-    <div>
-      <label class="text-sm text-slate-600 font-medium">
-        Jobcard No *
-      </label>
-      <input type="text" value="JC-2404-0003"
-        class="w-full mt-1 border rounded-lg px-3 py-2 
-               focus:ring-2 focus:ring-teal-400 outline-none">
-    </div>
+          <!-- ✅ Add Entry row should come HERE (below heading) -->
+          <tbody id="inlineTbody">
+            <tr id="inlineRow" class="hidden bg-white border-b">
+              <td class="p-3">
+                <input id="date" type="date" class="w-full border px-3 py-2 rounded-lg" />
+              </td>
 
-    <!-- Customer -->
-    <div>
-      <label class="text-sm text-slate-600 font-medium">
-        Customer *
-      </label>
-      <input type="text" value="M.B GARMENTS"
-        class="w-full mt-1 border rounded-lg px-3 py-2 
-               focus:ring-2 focus:ring-teal-400 outline-none">
-    </div>
+              <td class="p-3">
+                <select id="shift" class="w-full border px-3 py-2 rounded-lg">
+                  <option>DAY</option>
+                  <option>NIGHT</option>
+                </select>
+              </td>
 
-    <!-- Style -->
-    <div>
-      <label class="text-sm text-slate-600 font-medium">
-        Style No *
-      </label>
-      <input type="text" value="JR Recharge 3D"
-        class="w-full mt-1 border rounded-lg px-3 py-2 
-               focus:ring-2 focus:ring-teal-400 outline-none">
-    </div>
+              <td class="p-3">
+                <input id="machine" placeholder="Machine No" class="w-full border px-3 py-2 rounded-lg" />
+              </td>
 
-    <!-- Job Type -->
-    <div>
-      <label class="text-sm text-slate-600 font-medium">
-        Job Type *
-      </label>
-      <select
-        class="w-full mt-1 border rounded-lg px-3 py-2 
-               focus:ring-2 focus:ring-teal-400 outline-none">
-        <option selected>Production</option>
-        <option>Sample</option>
-        <option>Rework</option>
-      </select>
-    </div>
+              <td class="p-3">
+                <input id="operator" placeholder="Operator" class="w-full border px-3 py-2 rounded-lg" />
+              </td>
 
-    <!-- Fabric Type -->
-    <div>
-      <label class="text-sm text-slate-600 font-medium">
-        Fabric Type *
-      </label>
-      <select
-        class="w-full mt-1 border rounded-lg px-3 py-2 
-               focus:ring-2 focus:ring-teal-400 outline-none">
-        <option selected>DOMESTIC</option>
-        <option>EXPORT</option>
-      </select>
-    </div>
+              <td class="p-3">
+                <input id="size" placeholder="Size" class="w-full border px-3 py-2 rounded-lg" />
+              </td>
 
-    <!-- Style Name -->
-    <div>
-      <label class="text-sm text-slate-600 font-medium">
-        Style Name *
-      </label>
-      <input type="text" value="Front - 6 Color"
-        class="w-full mt-1 border rounded-lg px-3 py-2 
-               focus:ring-2 focus:ring-teal-400 outline-none">
-    </div>
+              <td class="p-3">
+                <input id="tqty" type="number" placeholder="Total Qty"
+                  class="w-full border px-3 py-2 rounded-lg text-right" />
+              </td>
 
-    <!-- Combo -->
-    <div class="lg:col-span-2">
-      <label class="text-sm text-slate-600 font-medium">
-        Combo Colors *
-      </label>
-      <input type="text"
-        value="Red, Black, Navy, Yellow"
-        class="w-full mt-1 border rounded-lg px-3 py-2 
-               focus:ring-2 focus:ring-teal-400 outline-none">
-    </div>
+              <td class="p-3">
+                <input id="pqty" type="number" placeholder="Produced Qty"
+                  class="w-full border px-3 py-2 rounded-lg text-right" />
+              </td>
 
-    <!-- Printed Qty -->
-    <div>
-      <label class="text-sm text-slate-600 font-medium">
-        Printed Qty
-      </label>
-      <input type="number" value="5200"
-        class="w-full mt-1 border rounded-lg px-3 py-2 
-               focus:ring-2 focus:ring-teal-400 outline-none">
-    </div>
+              <td class="p-3 text-right">
+                <input id="balPreview" type="text" value="0.000" readonly
+                  class="w-full border px-3 py-2 rounded-lg bg-slate-50 text-right" />
+              </td>
 
-  </div>
-</div>
+              <td class="p-3">
+                <div class="flex gap-2 justify-center">
+                  <!-- ✅ Save -->
+                  <button type="button" onclick="addOrUpdateRow()"
+                    class="w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
+                      stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 20h9" />
+                      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                    </svg>
+                  </button>
 
-  <!-- ✅ TABLE SECTION -->
-  <div class="bg-white rounded-xl shadow overflow-hidden">
+                  <!-- ✅ Cancel -->
+                  <button type="button" onclick="cancelInline()"
+                    class="w-12 h-12 rounded-2xl border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none"
+                      stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 6h18" />
+                      <path d="M8 6V4h8v2" />
+                      <path d="M19 6l-1 14H6L5 6" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
 
-    <div class="p-4 border-b flex justify-between items-center">
-      <p class="font-semibold text-slate-600">
-        Production Records
-      </p>
+          <!-- ✅ Actual data rows only -->
+          <tbody id="tableBody"></tbody>
 
-      <button onclick="openModal()"
-        class="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">
-        + Add Entry
-      </button>
-    </div>
+          <tfoot class="bg-slate-50 font-bold">
+            <tr class="border-t">
+              <td class="p-3">Total</td>
+              <td class="p-3"></td>
+              <td class="p-3"></td>
+              <td class="p-3"></td>
+              <td class="p-3"></td>
+              <td class="p-3 text-right" id="totTqty">0.000</td>
+              <td class="p-3 text-right" id="totPqty">0.000</td>
+              <td class="p-3 text-right" id="totBal">0.000</td>
+              <td class="p-3"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
 
-    <!-- Responsive Scroll -->
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm text-left">
-        <thead class="bg-slate-100">
-          <tr>
-            <th class="p-3">Date</th>
-            <th class="p-3">Shift</th>
-            <th class="p-3">Machine</th>
-            <th class="p-3">Operator</th>
-            <th class="p-3">Size</th>
-            <th class="p-3 text-right">T.Qty</th>
-            <th class="p-3 text-right">P.Qty</th>
-            <th class="p-3 text-right">Balance</th>
-            <th class="p-3 text-center">Action</th>
-          </tr>
-        </thead>
+      <div class="p-6 border-t bg-white">
+        <label class="font-bold text-slate-800 block mb-2">Production Status</label>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <select class="w-full sm:max-w-md border rounded-xl px-4 py-3">
+            <option selected>Pending</option>
+            <option>Completed</option>
+          </select>
 
-        <tbody id="tableBody"></tbody>
-      </table>
-    </div>
-  </div>
+          <button onclick="submitData()" class="bg-green-600 hover:bg-green-700 text-white
+                         px-14 py-4 rounded-2xl font-bold shadow-lg">
+            SUBMIT
+          </button>
+        </div>
+      </div>
 
-  <!-- ✅ SUBMIT BUTTON -->
-  <div class="text-center">
-    <button onclick="submitData()"
-      class="bg-green-600 hover:bg-green-700 text-white
-             px-10 py-3 rounded-xl font-bold shadow-lg">
-      SUBMIT
-    </button>
-  </div>
-
-</div>
-
-<!-- ✅ MODAL -->
-<div id="modal"
-  class="fixed inset-0 hidden bg-black/50 flex items-center justify-center">
-
-  <div class="bg-white rounded-xl shadow-xl w-full max-w-lg p-6">
-
-    <h2 class="text-xl font-bold text-teal-700 mb-4">
-      Add Production Entry
-    </h2>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-      <input id="date" type="date"
-        class="border p-2 rounded" />
-
-      <select id="shift" class="border p-2 rounded">
-        <option>DAY</option>
-        <option>NIGHT</option>
-      </select>
-
-      <input id="machine" placeholder="Machine No"
-        class="border p-2 rounded" />
-
-      <input id="operator" placeholder="Operator"
-        class="border p-2 rounded" />
-
-      <input id="size" placeholder="Size"
-        class="border p-2 rounded" />
-
-      <input id="tqty" type="number" placeholder="Total Qty"
-        class="border p-2 rounded" />
-
-      <input id="pqty" type="number" placeholder="Produced Qty"
-        class="border p-2 rounded" />
-
-    </div>
-
-    <div class="flex justify-between mt-6">
-      <button onclick="closeModal()"
-        class="px-6 py-2 rounded bg-slate-300">
-        Cancel
-      </button>
-
-      <button onclick="addRow()"
-        class="px-6 py-2 rounded bg-teal-600 text-white">
-        Save
-      </button>
     </div>
 
   </div>
-</div>
 </div>
 {%endblock%}
+
 {%block extra_js%}
 <script>
-let rows = [];
-let editIndex = -1;
-
-function renderTable() {
-  let body = document.getElementById("tableBody");
-  body.innerHTML = "";
-
-  rows.forEach((r, i) => {
-    body.innerHTML += `
-      <tr class="border-t hover:bg-slate-50">
-        <td class="p-3">${r.date}</td>
-        <td class="p-3">${r.shift}</td>
-        <td class="p-3">${r.machine}</td>
-        <td class="p-3">${r.operator}</td>
-        <td class="p-3">${r.size}</td>
-        <td class="p-3 text-right">${r.tqty}</td>
-        <td class="p-3 text-right">${r.pqty}</td>
-        <td class="p-3 text-right">${r.tqty - r.pqty}</td>
-
-        <td class="p-3 text-center space-x-2">
-          <button onclick="editRow(${i})"
-            class="text-blue-600 font-bold">Edit</button>
-
-          <button onclick="deleteRow(${i})"
-            class="text-red-600 font-bold">Delete</button>
-        </td>
-      </tr>
-    `;
-  });
-}
-
-function openModal() {
-  document.getElementById("modal").classList.remove("hidden");
-}
-
-function closeModal() {
-  document.getElementById("modal").classList.add("hidden");
-}
-
-function addRow() {
-  let entry = {
-    date: date.value,
-    shift: shift.value,
-    machine: machine.value,
-    operator: operator.value,
-    size: size.value,
-    tqty: Number(tqty.value),
-    pqty: Number(pqty.value),
+  const jobcardMaster = {
+    "JC-2404-0003": {
+      customer: "M.B GARMENTS",
+      styleNo: "JR Recharge 3D",
+      jobType: "Production",
+      fabricType: "DOMESTIC",
+      styleName: "Front - 6 Color",
+      combo: "Red, Black, Navy, Yellow",
+      printedQty: 5200
+    },
+    "JC-2404-0004": {
+      customer: "TANGIBLES",
+      styleNo: "XL-5 DESIGN",
+      jobType: "Production",
+      fabricType: "EXPORT",
+      styleName: "Back - 5 Color",
+      combo: "Black, White",
+      printedQty: 1500
+    }
   };
 
-  rows.push(entry);
-  closeModal();
+  const jobcardNoEl = document.getElementById("jobcardNo");
+  const customerEl = document.getElementById("customer");
+  const styleNoEl = document.getElementById("styleNo");
+  const jobTypeEl = document.getElementById("jobType");
+  const fabricTypeEl = document.getElementById("fabricType");
+  const styleNameEl = document.getElementById("styleName");
+  const comboEl = document.getElementById("combo");
+  const printedQtyEl = document.getElementById("printedQty");
+
+  function setSelectValue(selectEl, value) {
+    const wasDisabled = selectEl.disabled;
+    selectEl.disabled = false;
+
+    const hasOpt = Array.from(selectEl.options).some(o => o.value === value || o.text === value);
+    if (!hasOpt) {
+      const opt = document.createElement("option");
+      opt.value = value;
+      opt.text = value;
+      selectEl.add(opt);
+    }
+    selectEl.value = value;
+    selectEl.disabled = wasDisabled;
+  }
+
+  function clearJobDetails() {
+    customerEl.value = "-";
+    styleNoEl.value = "-";
+    styleNameEl.value = "-";
+    comboEl.value = "-";
+    printedQtyEl.value = "-";
+    setSelectValue(jobTypeEl, "-");
+    setSelectValue(fabricTypeEl, "-");
+  }
+
+  function fillJobDetails(jobNo) {
+    const key = (jobNo || "").trim().toUpperCase();
+    const data = jobcardMaster[key];
+    if (!data) { clearJobDetails(); return; }
+
+    customerEl.value = data.customer ?? "-";
+    styleNoEl.value = data.styleNo ?? "-";
+    styleNameEl.value = data.styleName ?? "-";
+    comboEl.value = data.combo ?? "-";
+    printedQtyEl.value = (data.printedQty ?? "-");
+    setSelectValue(jobTypeEl, data.jobType ?? "-");
+    setSelectValue(fabricTypeEl, data.fabricType ?? "-");
+  }
+
+  clearJobDetails();
+  jobcardNoEl.addEventListener("input", () => fillJobDetails(jobcardNoEl.value));
+
+  // ---------------- Production Records ----------------
+  let rows = [];
+  let editIndex = -1;
+
+  const inlineRow = document.getElementById("inlineRow");
+  const recordCount = document.getElementById("recordCount");
+
+  const totTqty = document.getElementById("totTqty");
+  const totPqty = document.getElementById("totPqty");
+  const totBal = document.getElementById("totBal");
+
+  const balPreview = document.getElementById("balPreview");
+
+  function toggleInlineEntry(show) {
+    if (show) inlineRow.classList.remove("hidden");
+    else inlineRow.classList.add("hidden");
+  }
+
+  function clearEntryFields() {
+    date.value = "";
+    shift.value = "DAY";
+    machine.value = "";
+    operator.value = "";
+    size.value = "";
+    tqty.value = "";
+    pqty.value = "";
+    balPreview.value = "0.000";
+  }
+
+  function cancelInline() {
+    editIndex = -1;
+    clearEntryFields();
+    toggleInlineEntry(false);
+  }
+
+  function renderTotals() {
+    let tSum = 0, pSum = 0, bSum = 0;
+    rows.forEach(r => {
+      const t = Number(r.tqty) || 0;
+      const p = Number(r.pqty) || 0;
+      tSum += t;
+      pSum += p;
+      bSum += (t - p);
+    });
+
+    totTqty.textContent = tSum.toFixed(3);
+    totPqty.textContent = pSum.toFixed(3);
+    totBal.textContent = bSum.toFixed(3);
+  }
+
+  function actionBtn(svg, onClick) {
+    return `
+      <button type="button" onclick="${onClick}"
+        class="w-11 h-11 rounded-2xl border border-slate-200 bg-white inline-flex items-center justify-center hover:bg-slate-50">
+        ${svg}
+      </button>
+    `;
+  }
+
+  const editSvg = `
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#10b981"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+    </svg>
+  `;
+  const trashSvg = `
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#ef4444"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18" />
+      <path d="M8 6V4h8v2" />
+      <path d="M19 6l-1 14H6L5 6" />
+      <path d="M10 11v6" />
+      <path d="M14 11v6" />
+    </svg>
+  `;
+
+  function renderTable() {
+    const body = document.getElementById("tableBody");
+    body.innerHTML = "";
+
+    if (rows.length === 0) {
+      body.innerHTML = `
+        <tr class="border-t">
+          <td class="p-4 text-center text-slate-500" colspan="9">No Records</td>
+        </tr>
+      `;
+    } else {
+      rows.forEach((r, i) => {
+        body.innerHTML += `
+          <tr class="border-t hover:bg-slate-50">
+            <td class="p-3">${r.date}</td>
+            <td class="p-3">${r.shift}</td>
+            <td class="p-3">${r.machine}</td>
+            <td class="p-3">${r.operator}</td>
+            <td class="p-3">${r.size}</td>
+            <td class="p-3 text-right">${Number(r.tqty).toFixed(3)}</td>
+            <td class="p-3 text-right">${Number(r.pqty).toFixed(3)}</td>
+            <td class="p-3 text-right">${(Number(r.tqty) - Number(r.pqty)).toFixed(3)}</td>
+            <td class="p-3">
+              <div class="flex gap-2 justify-center">
+                ${actionBtn(editSvg, `editRow(${i})`)}
+                ${actionBtn(trashSvg, `deleteRow(${i})`)}
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    recordCount.textContent = rows.length;
+    renderTotals();
+  }
+
+  function validateEntry(entry) {
+    if (!entry.date) return "Select Date";
+    if (!entry.machine) return "Enter Machine";
+    if (!entry.operator) return "Enter Operator";
+    if (!entry.size) return "Enter Size";
+    if (isNaN(entry.tqty) || entry.tqty <= 0) return "Enter valid T.Qty";
+    if (isNaN(entry.pqty) || entry.pqty < 0) return "Enter valid P.Qty";
+    if (entry.pqty > entry.tqty) return "P.Qty cannot be greater than T.Qty";
+    return "";
+  }
+
+  function addOrUpdateRow() {
+    const entry = {
+      date: date.value,
+      shift: shift.value,
+      machine: machine.value.trim(),
+      operator: operator.value.trim(),
+      size: size.value.trim(),
+      tqty: Number(tqty.value),
+      pqty: Number(pqty.value),
+    };
+
+    const err = validateEntry(entry);
+    if (err) { alert(err); return; }
+
+    if (editIndex >= 0) {
+      rows[editIndex] = entry;
+      editIndex = -1;
+    } else {
+      rows.push(entry);
+    }
+
+    clearEntryFields();
+    toggleInlineEntry(false);
+    renderTable();
+  }
+
+  function deleteRow(i) {
+    rows.splice(i, 1);
+    renderTable();
+  }
+
+  function editRow(i) {
+    const r = rows[i];
+    editIndex = i;
+
+    date.value = r.date;
+    shift.value = r.shift;
+    machine.value = r.machine;
+    operator.value = r.operator;
+    size.value = r.size;
+    tqty.value = r.tqty;
+    pqty.value = r.pqty;
+
+    balPreview.value = (Number(r.tqty) - Number(r.pqty)).toFixed(3);
+    toggleInlineEntry(true);
+  }
+
+  function submitData() {
+    if (rows.length === 0) {
+      alert("No records added!");
+      return;
+    }
+    if (confirm("Are you sure you want to Submit?")) {
+      alert("✅ Submitted Successfully!");
+    }
+  }
+
+  // balance live preview
+  function updateBalancePreview() {
+    const t = Number(tqty.value) || 0;
+    const p = Number(pqty.value) || 0;
+    balPreview.value = (t - p).toFixed(3);
+  }
+  tqty.addEventListener("input", updateBalancePreview);
+  pqty.addEventListener("input", updateBalancePreview);
+
   renderTable();
-}
-
-function deleteRow(i) {
-  rows.splice(i, 1);
-  renderTable();
-}
-
-function editRow(i) {
-  let r = rows[i];
-
-  date.value = r.date;
-  shift.value = r.shift;
-  machine.value = r.machine;
-  operator.value = r.operator;
-  size.value = r.size;
-  tqty.value = r.tqty;
-  pqty.value = r.pqty;
-
-  rows.splice(i, 1);
-  openModal();
-}
-
-function submitData() {
-  if (rows.length === 0) {
-    alert("No records added!");
-    return;
-  }
-
-  if (confirm("Are you sure you want to Submit?")) {
-    alert("✅ Submitted Successfully!");
-  }
-}
-
-function editField(id) {
-  let current = document.getElementById(id).innerText;
-  let value = prompt("Enter new value:", current);
-
-  if (value) {
-    document.getElementById(id).innerText = value;
-  }
-}
 </script>
-
 {%endblock%}

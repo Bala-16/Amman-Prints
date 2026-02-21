@@ -1,0 +1,266 @@
+{% extends "nav.html" %}
+{% block content %}
+
+<style>
+  /* ===== HEADER BAR ===== */
+  .top-header {
+    background: #14b8a6;
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .top-header h2 {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  /* PLUS BUTTON */
+  .plus-btn {
+    width: 32px;
+    height: 32px;
+    background: lightgray;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 32px;
+    font-size: 22px;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+  }
+
+  .plus-btn:hover {
+    background: white;
+  }
+
+  /* ===== FILTER SECTION ===== */
+  .filter-row {
+    display: flex;
+    gap: 25px;
+    padding: 15px 20px;
+    background: white;
+    align-items: center;
+  }
+
+  .filter-box label {
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .filter-box input,
+  .filter-box select {
+    border: none;
+    border-bottom: 1px solid gray;
+    outline: none;
+    width: 140px;
+    padding: 3px;
+    font-size: 14px;
+  }
+
+  /* SEARCH BUTTON */
+  .search-btn {
+    background: #14b8a6;
+    border: none;
+    padding: 8px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    color: white;
+  }
+
+  /* PRINT BUTTON */
+  .print-btn {
+    border: none;
+    background: none;
+    font-size: 22px;
+    cursor: pointer;
+    margin-left: auto;
+  }
+
+  /* ===== TABLE SECTION ===== */
+  .table-box {
+    margin: 20px;
+    border: 1px solid #ccc;
+    background: white;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    background: #f2f2f2;
+  }
+
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .qno {
+    font-weight: bold;
+    color: #14b8a6;
+  }
+
+  .no-record {
+    text-align: left;
+    padding: 15px;
+    font-weight: bold;
+  }
+
+  tr:hover {
+    background: #fafafa;
+  }
+</style>
+
+<!-- ✅ HEADER BAR -->
+<div class="top-header">
+  <h2>Jobcard Quotation List</h2>
+
+  <!-- PLUS BUTTON -->
+  <a href="{% url 'quotation_form' %}" class="plus-btn">+</a>
+</div>
+
+<!-- ✅ FILTER SECTION -->
+
+<form method="GET">
+  <div class="filter-row">
+
+    <div class="filter-box">
+      <label>Name</label><br>
+      <input type="text" name="customer_name" value="{{ request.GET.customer_name }}">
+    </div>
+
+    <div class="filter-box">
+      <label>From Date</label><br>
+      <input type="date" name="from_date" value="{{ request.GET.from_date }}">
+    </div>
+
+    <div class="filter-box">
+      <label>To Date</label><br>
+      <input type="date" name="to_date" value="{{ request.GET.to_date }}">
+    </div>
+
+    <div class="filter-box">
+      <label>Jobtype</label><br>
+      <select name="job_type">
+        <option value="All">All</option>
+        <option value="Production">Production</option>
+        <option value="Reproduction">Reproduction</option>
+      </select>
+    </div>
+
+    <div class="filter-box">
+      <label>Quotation No</label><br>
+      <input type="text" name="quotation_no" value="{{ request.GET.quotation_no }}">
+    </div>
+
+    <button type="submit" class="search-btn">Search </button>
+
+  </div>
+</form>
+
+<!-- <div class="filter-row">
+
+  <div class="filter-box">
+    <label>Name</label><br>
+    <input type="text">
+  </div>
+
+  <div class="filter-box">
+    <label>From Date</label><br>
+    <input type="date">
+  </div>
+
+  <div class="filter-box">
+    <label>To Date</label><br>
+    <input type="date">
+  </div>
+
+  <div class="filter-box">
+    <label>Jobtype</label><br>
+    <select>
+      <option>All</option>
+      <option>Production</option>
+      <option>Reproduction</option>
+    </select>
+  </div>
+
+  <div class="filter-box">
+    <label>Quotation No</label><br>
+    <input type="text">
+  </div>
+
+  < SEARCH ICON -->
+  <!-- <button class="search-btn">🔍</button> -->
+
+  <!-- PRINT ICON -->
+  <!-- <button class="print-btn">🖨️</button> - </div> -->
+
+<!-- ✅ TABLE SECTION -->
+<div class="table-box">
+  <table>
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Date</th>
+        <th>Quotation No</th>
+        <th>Created By</th>
+        <th>Customer Name</th>
+        <th>Job Type</th>
+        <th>Fabric Type</th>
+        <th>Total Qty</th>
+        <th>Total Value</th>
+        <th>View</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for q in quotations %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ q.date }}</td>
+        <td class="qno">{{ q.quotation_no }}</td>
+        <td>{{ q.created_by }}</td>
+        <td>{{ q.customer_name }}</td>
+        <td>{{ q.job_type }}</td>
+        <td>{{ q.fabric_type }}</td>
+        <td>{{ q.total_qty }}</td>
+        <td>{{ q.total_value }}</td>
+        <td><a href="{% url 'quotation_view' q.id %}" title="View">👁️</a></td>
+<td><a href="{% url 'quotation_edit' q.id %}" title="Edit">✏️</a></td>
+<td>
+  <a href="{% url 'quotation_delete' q.id %}" onclick="return confirm('Delete this quotation?')" title="Delete">🗑️</a>
+</td>
+
+
+      <!-- <td><a href="{% url 'quotation_view' q.id %}">View</a></td>
+      <td><a href="{% url 'quotation_edit' q.id %}">Edit</a></td>
+      <td>
+  <a href="{% url 'quotation_delete' q.id %}"
+     onclick="return confirm('Delete this quotation?')">
+     Delete
+  </a> -->
+<!-- </td> -->
+
+      </tr>
+
+      {% empty %}
+      <tr>
+        <td colspan="12" class="no-record">No Records!</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

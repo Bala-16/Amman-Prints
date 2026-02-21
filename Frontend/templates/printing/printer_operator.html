@@ -1,22 +1,18 @@
-{%extends "nav.html"%}
-{%block title%}Printer Customer{%endblock%}
+{% extends "nav.html" %}
+{% block title %}Printer Operator{% endblock %}
 
-{%block extra_head%}
+{% block extra_head %}
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
-{%endblock%}
+{% endblock %}
 
-{%block content%}
+{% block content %}
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-cyan-50/30 p-4 sm:p-6">
-
   <div class="max-w-[1700px] mx-auto space-y-6">
 
     <!-- ✅ HEADER -->
-    <div
-      class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 
-             rounded-2xl p-6 shadow-xl 
-             flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-
+    <div class="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-600 rounded-2xl p-6 shadow-xl
+                flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
       <div class="flex items-center gap-3">
         <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
           <i data-lucide="users" class="text-white w-6 h-6"></i>
@@ -29,76 +25,82 @@
       </div>
 
       <button onclick="window.print()"
-        class="bg-white/20 text-white px-5 py-2 rounded-xl 
-               flex items-center gap-2 hover:bg-white/30 transition">
+        class="bg-white/20 text-white px-5 py-2 rounded-xl flex items-center gap-2 hover:bg-white/30 transition">
         <i data-lucide="printer" class="w-4 h-4"></i>
         Print
       </button>
     </div>
 
-    <!-- ✅ FILTERS (Responsive + Reset Added) -->
-    <div
-      class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6">
-
+    <!-- ✅ FILTERS (2nd image design) -->
+    <form method="get" class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
 
         <!-- From Date -->
         <div>
-          <label class="text-sm text-slate-600 font-medium">From Date</label>
-          <input id="fromDate" type="date"
-            class="w-full border rounded-lg px-3 py-2 mt-1">
+          <label class="text-sm text-slate-700 font-semibold">From Date</label>
+          <input name="from" type="date" value="{{ request.GET.from }}"
+                 class="w-full border border-slate-200 rounded-lg px-3 py-2 mt-1 bg-white
+                        focus:outline-none focus:ring-2 focus:ring-teal-200">
         </div>
 
         <!-- To Date -->
         <div>
-          <label class="text-sm text-slate-600 font-medium">To Date</label>
-          <input id="toDate" type="date"
-            class="w-full border rounded-lg px-3 py-2 mt-1">
+          <label class="text-sm text-slate-700 font-semibold">To Date</label>
+          <input name="to" type="date" value="{{ request.GET.to }}"
+                 class="w-full border border-slate-200 rounded-lg px-3 py-2 mt-1 bg-white
+                        focus:outline-none focus:ring-2 focus:ring-teal-200">
         </div>
 
-        <!-- Operator -->
+        <!-- Operator Dropdown -->
         <div>
-          <label class="text-sm text-slate-600 font-medium">Operator Name</label>
-          <input id="operatorName" placeholder="Enter Operator"
-            class="w-full border rounded-lg px-3 py-2 mt-1">
+          <label class="text-sm text-slate-700 font-semibold">Operator</label>
+          <select name="operator"
+                  class="w-full border border-slate-200 rounded-lg px-3 py-2 mt-1 bg-white
+                         focus:outline-none focus:ring-2 focus:ring-teal-200">
+            <option value="">--Select--</option>
+            {% for op in operators %}
+              <option value="{{ op.id }}" {% if request.GET.operator == op.id|stringformat:"s" %}selected{% endif %}>
+                {{ op.name }}
+              </option>
+            {% endfor %}
+          </select>
         </div>
 
         <!-- Search Button -->
         <div class="flex items-end">
-          <button onclick="searchTable()"
-            class="w-full bg-teal-600 text-white px-6 py-2 rounded-xl 
-                   shadow hover:scale-105 transition flex items-center justify-center gap-2">
+          <button type="submit"
+            class="w-full bg-teal-600 text-white px-6 py-2 rounded-xl shadow
+                   hover:scale-[1.02] transition flex items-center justify-center gap-2">
             <i data-lucide="search" class="w-4 h-4"></i>
             Search
           </button>
         </div>
 
-        <!-- Reset Button -->
+        <!-- Reset Button (light grey like 2nd image) -->
         <div class="flex items-end">
-          <button onclick="resetFilters()"
-            class="w-full bg-slate-500 text-white px-6 py-2 rounded-xl 
-                   shadow hover:bg-slate-600 transition flex items-center justify-center gap-2">
+          <button type="button" onclick="window.location.href='{{ request.path }}'"
+            class="w-full bg-slate-200 text-slate-900 px-6 py-2 rounded-xl shadow
+                   hover:bg-slate-300 transition flex items-center justify-center gap-2">
             <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
             Reset
           </button>
         </div>
 
       </div>
-    </div>
+    </form>
 
-    <!-- ✅ TABLE (Responsive Scroll) -->
+    <!-- ✅ TABLE (1st image content) -->
     <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-x-auto">
-      <table id="reportTable" class="w-full text-sm min-w-[900px]">
-
-        <thead class="bg-slate-100 text-slate-700">
+      <table class="w-full text-sm min-w-[1000px]">
+        <thead class="bg-slate-100 text-slate-800">
           <tr>
-            <th class="p-3">S.No</th>
-            <th class="p-3">Date</th>
-            <th class="p-3">Jobcard No</th>
-            <th class="p-3">Operator</th>
-            <th class="p-3">Shift</th>
-            <th class="p-3">Machine</th>
-            <th class="p-3">Particulars</th>
+            <th class="p-3 text-left">S.No</th>
+            <th class="p-3 text-left">Date</th>
+            <th class="p-3 text-left">Jobcard No</th>
+            <th class="p-3 text-left">Operator</th>
+            <th class="p-3 text-left">Shift</th>
+            <th class="p-3 text-left">Machine</th>
+            <th class="p-3 text-left">Particulars</th>
             <th class="p-3 text-right">Order Qty</th>
             <th class="p-3 text-right">Product Qty</th>
             <th class="p-3 text-right">Balance</th>
@@ -106,91 +108,45 @@
         </thead>
 
         <tbody>
-          <tr class="border-t hover:bg-slate-50">
-            <td class="p-3">1</td>
-            <td class="p-3">10-04-2024</td>
-            <td class="p-3">JC-2404-0085</td>
-            <td class="p-3 operator-col">SENTHIL</td>
-            <td class="p-3">DAY (09:00–21:00)</td>
-            <td class="p-3">GT-1</td>
-            <td class="p-3">2XL TOP</td>
-            <td class="p-3 text-right">225</td>
-            <td class="p-3 text-right">225</td>
-            <td class="p-3 text-right">0</td>
-          </tr>
-
-          <tr class="border-t hover:bg-slate-50">
-            <td class="p-3">2</td>
-            <td class="p-3">10-04-2024</td>
-            <td class="p-3">JC-2404-0085</td>
-            <td class="p-3 operator-col">SENTHIL</td>
-            <td class="p-3">DAY (09:00–21:00)</td>
-            <td class="p-3">GT-1</td>
-            <td class="p-3">AOP BOTTOM</td>
-            <td class="p-3 text-right">3500</td>
-            <td class="p-3 text-right">3500</td>
-            <td class="p-3 text-right">0</td>
-          </tr>
-
-          <tr class="border-t hover:bg-slate-50">
-            <td class="p-3">3</td>
-            <td class="p-3">12-04-2024</td>
-            <td class="p-3">JC-2404-0089</td>
-            <td class="p-3 operator-col">HARI</td>
-            <td class="p-3">DAY (09:00–21:00)</td>
-            <td class="p-3">ORIC-1</td>
-            <td class="p-3">16 SLEEVE (R/L)</td>
-            <td class="p-3 text-right">684</td>
-            <td class="p-3 text-right">684</td>
-            <td class="p-3 text-right">0</td>
-          </tr>
+          {% if rows %}
+            {% for r in rows %}
+              <tr class="border-t hover:bg-slate-50">
+                <td class="p-3">{{ forloop.counter }}</td>
+                <td class="p-3">{{ r.date|date:"d-m-Y" }}</td>
+                <td class="p-3">{{ r.jobcard_no }}</td>
+                <td class="p-3">{{ r.operator_name }}</td>
+                <td class="p-3">{{ r.shift }}</td>
+                <td class="p-3">{{ r.machine_name }}</td>
+                <td class="p-3">{{ r.particulars }}</td>
+                <td class="p-3 text-right">{{ r.order_qty }}</td>
+                <td class="p-3 text-right">{{ r.product_qty }}</td>
+                <td class="p-3 text-right">{{ r.balance_qty }}</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr class="border-t">
+              <td colspan="10" class="p-6 text-center text-slate-500">No Records</td>
+            </tr>
+          {% endif %}
         </tbody>
 
         <tfoot class="bg-slate-100 font-semibold">
           <tr>
             <td colspan="7" class="p-3 text-right">Total</td>
-            <td class="p-3 text-right">4,409</td>
-            <td class="p-3 text-right">4,409</td>
-            <td class="p-3 text-right">0</td>
+            <td class="p-3 text-right">{{ totals.order_qty|default:"0" }}</td>
+            <td class="p-3 text-right">{{ totals.product_qty|default:"0" }}</td>
+            <td class="p-3 text-right">{{ totals.balance_qty|default:"0" }}</td>
           </tr>
         </tfoot>
-
       </table>
     </div>
 
   </div>
 </div>
-{%endblock%}
+{% endblock %}
 
-{%block extra_js%}
+{% block extra_js %}
 <script>
-  lucide.createIcons()
-
-  // ✅ SEARCH FUNCTION
-  function searchTable() {
-    let operatorInput = document.getElementById("operatorName").value.toUpperCase()
-    let rows = document.querySelectorAll("#reportTable tbody tr")
-
-    rows.forEach(row => {
-      let operatorText = row.querySelector(".operator-col").innerText.toUpperCase()
-
-      if (operatorText.includes(operatorInput) || operatorInput === "") {
-        row.style.display = ""
-      } else {
-        row.style.display = "none"
-      }
-    })
-  }
-
-  // ✅ RESET FUNCTION
-  function resetFilters() {
-    document.getElementById("fromDate").value = ""
-    document.getElementById("toDate").value = ""
-    document.getElementById("operatorName").value = ""
-
-    // Show all rows again
-    let rows = document.querySelectorAll("#reportTable tbody tr")
-    rows.forEach(row => row.style.display = "")
-  }
+  lucide.createIcons();
 </script>
-{%endblock%}
+{% endblock %}

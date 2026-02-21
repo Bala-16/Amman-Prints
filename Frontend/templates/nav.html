@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <title>{% block title %}Print Management System{% endblock %}</title>
-    <!-- <title>Header</title> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
@@ -34,7 +33,7 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         position: sticky;
         top: 0;
-        z-index: 100;
+        z-index: 9999 !important; /* 🔥 HIGH Z-INDEX */
       }
 
       .header-container {
@@ -77,7 +76,8 @@
       }
 
       .nav-item {
-        position: relative;
+        position: relative; /* 🔥 Required for dropdown positioning */
+        z-index: 10000; /* 🔥 Ensure parent is above content */
       }
 
       .nav-button {
@@ -105,8 +105,9 @@
         background: rgba(255, 255, 255, 0.2);
       }
 
+      /* 🔥 DROPDOWN MENU - FIXED POSITION & Z-INDEX */
       .dropdown-menu {
-        position: absolute;
+        position: absolute !important;
         top: 100%;
         left: 0;
         margin-top: 6px;
@@ -115,23 +116,23 @@
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         min-width: 220px;
         padding: 8px;
-        z-index: 1000;
-        /* display: none; */
+        z-index: 10000 !important; /* 🔥 HIGHEST Z-INDEX */
         
-          /* 🔥 Animation Setup */
-  opacity: 0;
-  transform: translateY(10px);
-  visibility: hidden;
-  transition: all 0.3s ease;
+        /* Animation */
+        opacity: 0;
+        transform: translateY(10px);
+        visibility: hidden;
+        transition: all 0.25s ease;
+        pointer-events: none; /* Prevent click when hidden */
       }
+
+      /* Show dropdown on hover */
       .nav-item:hover .dropdown-menu {
-  opacity: 1;
-  transform: translateY(0px);
-  visibility: visible;
-
-    /* transition: opacity 0.25s ease, transform 0.25s ease; */
-}
-
+        opacity: 1;
+        transform: translateY(0px);
+        visibility: visible;
+        pointer-events: auto; /* Enable click when visible */
+      }
 
       .dropdown-item {
         display: block;
@@ -184,6 +185,12 @@
         background: rgba(255, 255, 255, 0.3);
       }
 
+      /* ================= MAIN CONTENT - BEHIND NAV ================= */
+      main {
+        position: relative;
+        z-index: 1; /* 🔥 Content stays behind dropdowns */
+      }
+
       /* ================= MOBILE ================= */
       .hamburger {
         display: none;
@@ -199,16 +206,11 @@
         background: white;
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
         padding: 12px;
-
         position: fixed;
-        top: 100px;
-        left: 0px;
+        top: 70px;
+        left: 0;
         width: 100%;
-
-        z-index: 9999;
-        /* animation*/
-        /* transition: max-height 0.3s ease, opacity 0.3s ease;
-  opacity: 0; */
+        z-index: 10000 !important; /* 🔥 HIGH Z-INDEX */
       }
 
       .mobile-menu .nav-button {
@@ -216,32 +218,27 @@
         width: 100%;
         justify-content: space-between;
       }
-      /*     
-      .mobile-menu .dropdown-menu {
-        position: static;
-        box-shadow: none;
-        padding-left: 12px;
-      }
 
-      .mobile-menu .dropdown-item {
-        padding: 8px 12px;
-      } */
-
-      /* ===== MOBILE SUBMENU AS LEFT CARD (REUSE dropdown-menu) ===== */
+      /* Mobile submenu positioning */
       @media (max-width: 1024px) {
         .mobile-menu .dropdown-menu {
-          position: fixed;
-          top: 100px;
-          left: 140px; /* main menu left side */
-          width: 200px;
-          height: auto;
-
+          position: fixed !important;
+          top: 70px;
+          left: 0;
+          width: 100%;
           background: #fff;
-          box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
-          padding: 16px;
-
-          display: none; /* default hide */
-          z-index: 9998;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          padding: 12px;
+          z-index: 10001 !important; /* 🔥 Even higher for mobile */
+          display: none;
+          opacity: 1;
+          transform: none;
+          visibility: visible;
+          pointer-events: auto;
+        }
+        
+        .mobile-menu .dropdown-menu.show {
+          display: block;
         }
       }
 
@@ -258,6 +255,7 @@
           display: block;
         }
       }
+      
       @media (min-width: 1025px) {
         .mobile-menu {
           display: none !important;
@@ -265,10 +263,8 @@
       }
     </style>
     {% block extra_head %}{% endblock %}
-    <!-- </head> -->
-
-    <!-- <body> -->
-
+  </head>
+  <body>
     <header class="header">
       <div class="header-container">
         <div class="logo-section">
@@ -281,15 +277,14 @@
         <nav class="nav-menu">
           <div class="nav-item">
             <a href="{% url 'dashboard' %}" class="nav-button active">Dashboard</a>
-            
           </div>
 
           <div class="nav-item">
-            <button class="nav-button" onclick="toggleMasterMenu()">
+            <button class="nav-button" onclick="toggleMasterMenu(event)">
               Master Creation ▾
             </button>
             <div id="masterMenu" class="dropdown-menu">
-              <a href="/mastercreation/user_type_creation/"class="dropdown-item">User Type Creation</a>
+              <a href="/mastercreation/user_type_creation/" class="dropdown-item">User Type Creation</a>
               <a href="/mastercreation/party_creation/" class="dropdown-item">Party Creation</a>
               <a href="/mastercreation/company_creation/" class="dropdown-item">Company Creation</a>
               <a href="/mastercreation/operator/" class="dropdown-item">Operator Creation</a>
@@ -299,89 +294,57 @@
               <a href="/mastercreation/machinecreation/" class="dropdown-item">Machine Creation</a>
               <a href="/mastercreation/shift/" class="dropdown-item">Shift Creation</a>
               <a href="/mastercreation/paymentterms/" class="dropdown-item">Payment Terms</a>
-              <a href="/mastercreation/consumablecreation/"class="dropdown-item">Consumable Creation</a>
+              <a href="/mastercreation/consumablecreation/" class="dropdown-item">Consumable Creation</a>
               <a href="/mastercreation/fabrictype/" class="dropdown-item">Fabric Type</a>
               <a href="/mastercreation/rollsize/" class="dropdown-item">Roll Size</a>
               <a href="/mastercreation/gapcreation/" class="dropdown-item">Gap Creation</a>
               <a href="/mastercreation/jobtypecreation/" class="dropdown-item">Job typ Creation</a>
               <a href="/mastercreation/customerstatus/" class="dropdown-item">Customer status</a>
+              <a href="/mastercreation/user_name/" class="dropdown-item">User Name Creation</a>
             </div>
           </div>
 
           <div class="nav-item">
-            <button class="nav-button" onclick="toggleJobCardMenu()">
+            <button class="nav-button" onclick="toggleJobCardMenu(event)">
               Job Card ▾
             </button>
             <div id="jobCardMenu" class="dropdown-menu">
-              <a href="/jobcard/job_creation/" class="dropdown-item">New Job Card</a>
-              <a href="/jobcard/job_list/" class="dropdown-item">Job Card List</a>
-              <a href="/jobcard/quotation/" class="dropdown-item" >Quotation List</a>
+              <a href="{% url 'jobcard_form' %}" class="dropdown-item">New Job Card</a>
+              <a href="{% url 'quotation_list' %}" class="dropdown-item">Quotation New</a>
               <a href="/jobcard/designer_report/" class="dropdown-item">Designer Report</a>
               <a href="/customer_report/" class="dropdown-item">Customer Report</a>
-              <a href="/quotation_customer/" class="dropdown-item">Quotation Customer Report</a>
-              <a href="/process_report/" class="dropdown-item">Process Report</a >
-              <a href="/jobcard/process_quotationform/" class="dropdown-item">Quotation Form</a>
+              <a href="/process_report/" class="dropdown-item">Process Report</a>
+              <a href="{% url 'quotation_customer_report' %}" class="dropdown-item">Quotation Customer Report</a>
             </div>
           </div>
 
-
-          <!--Consumable  -->
-          <!-- <div class="nav-item">
-            <a href="/consumable/" class="nav-button">Consumable</a>
-          </div> -->
-
-
-<div class="nav-item">
-       <button class="nav-button" onclick="toggleConMenu()">
-        Consumable ▾
-      </button>
-      <div id="conMenu" class="dropdown-menu">
-        <a href="/consumable/job_creation/" class="dropdown-item">Ink Entry</a>
-        <!-- <a href="/jobcard/job_list/" class="dropdown-item">Job Card List</a>
-        <a href="/jobcard/quotation/" class="dropdown-item">Quotation List</a>
-        <a href="/jobcard/designer_report/" class="dropdown-item">Designer Report</a>
-        <a href="/customer_report/" class="dropdown-item">Customer Report</a>
-        <a href="/quotation_customer/" class="dropdown-item">Quotation Customer Report</a>
-        <a href="/jobcard/process_report/" class="dropdown-item">Process Report</a>
-        <a href="/jobcard/process_quotationform/" class="dropdown-item">Quotation Form</a> -->
-      </div>
-      </div>
-
-
-
-
-
-
-
-          <!-- Delivery -->
-            <!-- </div>
           <div class="nav-item">
-            <a href="/delivery/" class="nav-button">Delivery</a>
-          </div> -->
-          
-  <div class="nav-item">
-            <button class="nav-button" onclick="toggleDeliveryMenu()">
-    Delivery ▾
-  </button>
-
-  <div id="mdelivery" class="dropdown-menu">
-    <a href="/delivery/inward/" class="dropdown-item">Inward Entry</a>
-    <a href="/delivery/fabric/" class="dropdown-item">Fabric Delivery Challan</a>
-    <a href="/delivery/sticker/" class="dropdown-item">Sticker Delivery Challan</a>
-    <a href="/delivery/return/" class="dropdown-item">Return Form</a>
-    <a href="/delivery/deli/" class="dropdown-item">Delivery Report</a>
-  </div>
-  </div>
-      
-     
-
-          <!-- <div class="nav-item">
-            <a href="/printing/" class="nav-button">Printer</a>
-          </div> -->
+            <button class="nav-button" onclick="toggleConMenu(event)">
+              Consumable ▾
+            </button>
+            <div id="conMenu" class="dropdown-menu">
+              <a href="/consumable/ink_entry/" class="dropdown-item">Ink Entry</a>
+              <a href="/consumable/return_form/" class="dropdown-item">Return Form</a>
+              <a href="/consumable/stock_report/" class="dropdown-item">Stock Report</a>
+            </div>
+          </div>
 
           <div class="nav-item">
-            <button class="nav-button" onclick="togglePrintingMenu()">
-              printing ▾
+            <button class="nav-button" onclick="toggleDeliveryMenu(event)">
+              Delivery ▾
+            </button>
+            <div id="mdelivery" class="dropdown-menu">
+              <a href="/delivery/inward/" class="dropdown-item">Inward Entry</a>
+              <a href="/delivery/fabric/" class="dropdown-item">Fabric Delivery Challan</a>
+              <a href="/delivery/sticker/" class="dropdown-item">Sticker Delivery Challan</a>
+              <a href="/delivery/return/" class="dropdown-item">Return Form</a>
+              <a href="/delivery/deli/" class="dropdown-item">Delivery Report</a>
+            </div>
+          </div>
+
+          <div class="nav-item">
+            <button class="nav-button" onclick="togglePrintingMenu(event)">
+              Printing ▾
             </button>
             <div id="printingMenu" class="dropdown-menu">
               <a href="/printing/printer_production" class="dropdown-item">Production Entry</a>
@@ -394,15 +357,15 @@
           </div>
 
           <div class="nav-item">
-            <button class="nav-button" onclick="toggleFusingMenu()">
+            <button class="nav-button" onclick="toggleFusingMenu(event)">
               Fusing ▾
             </button>
             <div id="fusingMenu" class="dropdown-menu">
               <a href="/fusing/fusing-production-entry/" class="dropdown-item">Fusing Production Entry</a>
               <a href="/fusing/job-no-wise-report/" class="dropdown-item">Job No Wise Report</a>
-              <a href="/fusing/fusing-operator-wise-report/"class="dropdown-item">Fusing Operator Wise Report</a>
-              <a href="/fusing/fusing-machine-wise-report/z "class="dropdown-item">Fusing Machine Wise Report</a>
-              <a href="/fusing/fusing-customer-wise-report/ "class="dropdown-item">Fusing Customer Wise Report</a>
+              <a href="/fusing/fusing-operator-wise-report/" class="dropdown-item">Fusing Operator Wise Report</a>
+              <a href="/fusing/fusing-machine-wise-report/" class="dropdown-item">Fusing Machine Wise Report</a>
+              <a href="/fusing/fusing-customer-wise-report/" class="dropdown-item">Fusing Customer Wise Report</a>
               <a href="/fusing/date-wise-report/" class="dropdown-item">Date Wise Report</a>
             </div>
           </div>
@@ -413,7 +376,8 @@
         </nav>
       </div>
     </header>
-    <main>{% block content %}{% endblock%}</main>
+    
+    <main>{% block content %}{% endblock %}</main>
 
     <!-- MOBILE MENU -->
     <div id="mobileMenu" class="mobile-menu">
@@ -423,54 +387,23 @@
         Master Creation ▾
       </button>
       <div id="mMaster" class="dropdown-menu">
-        <a href="/mastercreation/user_type_creation/" class="dropdown-item"
-          >User Type Creation</a
-        >
-        <a href="/mastercreation/party_creation/" class="dropdown-item"
-          >Party Creation</a
-        >
-        <a href="/mastercreation/company_creation/" class="dropdown-item"
-          >Company Creation</a
-        >
-        <a href="/mastercreation/operator/" class="dropdown-item"
-          >Operator Creation</a
-        >
-        <a href="/mastercreation/measurement/" class="dropdown-item"
-          >Unit Measurement</a
-        >
-        <a href="/mastercreation/userpermission/" class="dropdown-item"
-          >User Rights Creation</a
-        >
-        <a href="/mastercreation/userscreen/" class="dropdown-item"
-          >User Screen</a
-        >
-        <a href="/mastercreation/machinecreation/" class="dropdown-item"
-          >Machine Creation</a
-        >
-        <a href="/mastercreation/shift/" class="dropdown-item"
-          >Shift Creation</a
-        >
-        <a href="/mastercreation/paymentterms/" class="dropdown-item"
-          >Payment Terms</a
-        >
-        <a href="/mastercreation/consumablecreation/" class="dropdown-item"
-          >Consumable Creation</a
-        >
-        <a href="/mastercreation/fabrictype/" class="dropdown-item"
-          >Fabric Type</a
-        >
-        <a href="/mastercreation/rollsize/" class="dropdown-item"
-          >Roll Size Creation</a
-        >
-        <a href="/mastercreation/gapcreation/" class="dropdown-item"
-          >Gap Creation</a
-        >
-        <a href="/mastercreation/jobtypecreation/" class="dropdown-item"
-          >Job typ Creation</a
-        >
-        <a href="/mastercreation/customerstatus/" class="dropdown-item"
-          >Customer status</a
-        >
+        <a href="/mastercreation/user_name/" class="dropdown-item">User Name Creation</a>
+        <a href="/mastercreation/user_type_creation/" class="dropdown-item">User Type Creation</a>
+        <a href="/mastercreation/party_creation/" class="dropdown-item">Party Creation</a>
+        <a href="/mastercreation/company_creation/" class="dropdown-item">Company Creation</a>
+        <a href="/mastercreation/operator/" class="dropdown-item">Operator Creation</a>
+        <a href="/mastercreation/measurement/" class="dropdown-item">Unit Measurement</a>
+        <a href="/mastercreation/userpermission/" class="dropdown-item">User Rights Creation</a>
+        <a href="/mastercreation/userscreen/" class="dropdown-item">User Screen</a>
+        <a href="/mastercreation/machinecreation/" class="dropdown-item">Machine Creation</a>
+        <a href="/mastercreation/shift/" class="dropdown-item">Shift Creation</a>
+        <a href="/mastercreation/paymentterms/" class="dropdown-item">Payment Terms</a>
+        <a href="/mastercreation/consumablecreation/" class="dropdown-item">Consumable Creation</a>
+        <a href="/mastercreation/fabrictype/" class="dropdown-item">Fabric Type</a>
+        <a href="/mastercreation/rollsize/" class="dropdown-item">Roll Size Creation</a>
+        <a href="/mastercreation/gapcreation/" class="dropdown-item">Gap Creation</a>
+        <a href="/mastercreation/jobtypecreation/" class="dropdown-item">Job typ Creation</a>
+        <a href="/mastercreation/customerstatus/" class="dropdown-item">Customer status</a>
       </div>
 
       <button class="nav-button" onclick="toggleMobileSub('mJob')">
@@ -487,237 +420,169 @@
         <a href="/jobcard/process_quotationform/" class="dropdown-item">Quotation Form</a>
       </div>
 
-
-      <!-- Consumable -->
-<div class="nav-item">
-       <button class="nav-button" onclick="toggleMobileSub('mCon')">
+      <button class="nav-button" onclick="toggleMobileSub('mCon')">
         Consumable ▾
       </button>
       <div id="mCon" class="dropdown-menu">
-        <a href="/consumable/job_creation/" class="dropdown-item">Ink Entry</a>
-        <!-- <a href="/jobcard/job_list/" class="dropdown-item">Job Card List</a>
-        <a href="/jobcard/quotation/" class="dropdown-item">Quotation List</a>
-        <a href="/jobcard/designer_report/" class="dropdown-item">Designer Report</a>
-        <a href="/customer_report/" class="dropdown-item">Customer Report</a>
-        <a href="/quotation_customer/" class="dropdown-item">Quotation Customer Report</a>
-        <a href="/jobcard/process_report/" class="dropdown-item">Process Report</a>
-        <a href="/jobcard/process_quotationform/" class="dropdown-item">Quotation Form</a> -->
-      </div>
+        <a href="/consumable/ink_entry/" class="dropdown-item">Ink Entry</a>
+        <a href="/consumable/return_form/" class="dropdown-item">Return Form</a>
+        <a href="/consumable/stock_report/" class="dropdown-item">Stock Report</a>
       </div>
 
-      <!-- <div class="nav-item">
-        <a href="/consumable/" class="nav-button">Consumable</a>
-      </div> -->
-
-      <!-- Delivery -->
-
-
-       <button class="nav-button" onclick="toggleMobileSub('mDel')">
+      <button class="nav-button" onclick="toggleMobileSub('mDel')">
         Delivery ▾
       </button>
       <div id="mDel" class="dropdown-menu">
         <a href="/delivery/inward/" class="dropdown-item">Inward Entry</a>
-          <a href="/delivery/fabric/" class="dropdown-item">Fabric Delivery Challan</a>
-            <a href="/delivery/sticker/" class="dropdown-item">Sticker Delivery Challan</a>
-              <a href="/delivery/return/" class="dropdown-item">Return Form</a>
-                <a href="/delivery/deli/" class="dropdown-item">Delivery Report</a>
-      
+        <a href="/delivery/fabric/" class="dropdown-item">Fabric Delivery Challan</a>
+        <a href="/delivery/sticker/" class="dropdown-item">Sticker Delivery Challan</a>
+        <a href="/delivery/return/" class="dropdown-item">Return Form</a>
+        <a href="/delivery/deli/" class="dropdown-item">Delivery Report</a>
       </div>
-
-      <!-- <div class="nav-item">
-        <a href="/delivery/" class="nav-button">Delivery</a>
-      </div> -->
-
-
-      <!-- printing -->
-      <!-- <div class="nav-item">
-            <a href="/printing/" class="nav-button">Printer</a>
-          </div> -->
 
       <button class="nav-button" onclick="toggleMobileSub('mprinting')">
-        printing ▾
+        Printing ▾
       </button>
       <div id="mprinting" class="dropdown-menu">
-        <a href="/printing/printer_production" class="dropdown-item"
-          >Production Entry</a
-        >
-        <a href="/printing/printer_jobwise/" class="dropdown-item">
-          Job No Wise Report</a
-        >
-        <a href="/printing/printer_operator/" class="dropdown-item">
-          Operator Wise Report</a
-        >
-        <a href="/printing/printer_machine/" class="dropdown-item">
-          Machine Wise Report</a
-        >
-        <a href="/printing/printer_customer/" class="dropdown-item">
-          Customer Wise Report</a
-        >
-        <a href="/printing/printer_data/" class="dropdown-item">
-          Data Wise Report</a
-        >
+        <a href="/printing/printer_production" class="dropdown-item">Production Entry</a>
+        <a href="/printing/printer_jobwise/" class="dropdown-item">Job No Wise Report</a>
+        <a href="/printing/printer_operator/" class="dropdown-item">Operator Wise Report</a>
+        <a href="/printing/printer_machine/" class="dropdown-item">Machine Wise Report</a>
+        <a href="/printing/printer_customer/" class="dropdown-item">Customer Wise Report</a>
+        <a href="/printing/printer_data/" class="dropdown-item">Data Wise Report</a>
       </div>
 
-      <div class="nav-item">
-        <!-- <button class="nav-button" onclick="toggleMobileSub('fusingMenu')"> -->
-        <button class="nav-button" onclick="toggleMobileSub('mFusing')">
-          Fusing ▾
-        </button>
-        <div id="mFusing" class="dropdown-menu">
-          <a href="/fusing/fusing-production-entry/" class="dropdown-item"
-            >Fusing Production Entry</a
-          >
-          <a href="/fusing/job-no-wise-report/" class="dropdown-item"
-            >Job No Wise Report</a
-          >
-          <a href="/fusing/fusing-operator-wise-report/" class="dropdown-item"
-            >Fusing Operator Wise Report</a
-          >
-          <a href="/fusing/fusing-machine-wise-report/" class="dropdown-item"
-            >Fusing Machine Wise Report</a
-          >
-          <a href="/fusing/fusing-customer-wise-report/" class="dropdown-item"
-            >Fusing Customer Wise Report</a
-          >
-          <a href="/fusing/date-wise-report/" class="dropdown-item"
-            >Date Wise Report</a
-          >
-        </div>
+      <button class="nav-button" onclick="toggleMobileSub('mFusing')">
+        Fusing ▾
+      </button>
+      <div id="mFusing" class="dropdown-menu">
+        <a href="/fusing/fusing-production-entry/" class="dropdown-item">Fusing Production Entry</a>
+        <a href="/fusing/job-no-wise-report/" class="dropdown-item">Job No Wise Report</a>
+        <a href="/fusing/fusing-operator-wise-report/" class="dropdown-item">Fusing Operator Wise Report</a>
+        <a href="/fusing/fusing-machine-wise-report/" class="dropdown-item">Fusing Machine Wise Report</a>
+        <a href="/fusing/fusing-customer-wise-report/" class="dropdown-item">Fusing Customer Wise Report</a>
+        <a href="/fusing/date-wise-report/" class="dropdown-item">Date Wise Report</a>
       </div>
 
-      <div class="nav-item">
-        <a href="/accounts/" class="nav-button">Accounts</a>
-      </div>
-      <div class="nav-item">
-        <a href="/dasboard/" class="nav-button">Dashboard</a>
-      </div>
-
-      <script>
-        const jobCardMenu = document.getElementById("jobCardMenu");
-        const masterMenu = document.getElementById("masterMenu");
-        const mobileMenu = document.getElementById("mobileMenu");
-        const fusingMenu = document.getElementById("fusingMenu");
-        const printingMenu = document.getElementById("printingMenu");
-        const deliveryMenu = document.getElementById("mdelivery");
-        const consumableMenu = document.getElementById("conMenu");
-
-
-        function toggleJobCardMenu() {
-          jobCardMenu.style.display =
-            jobCardMenu.style.display === "block" ? "none" : "block";
-          masterMenu.style.display = "none";
-          fusingMenu.style.display = "none";
-          printingMenu.style.display = "none";
-          deliveryMenu.style.display ="none";
-          consumableMenu.style.display ="none"
-        }
-
-        function toggleMasterMenu() {
-          masterMenu.style.display =
-            masterMenu.style.display === "block" ? "none" : "block";
-          jobCardMenu.style.display = "none";
-          fusingMenu.style.display = "none";
-          printingMenu.style.display = "none";
-          deliveryMenu.style.display ="none";
-           consumableMenu.style.display ="none"
-        }
-
-        function toggleFusingMenu() {
-          fusingMenu.style.display =
-            fusingMenu.style.display === "block" ? "none" : "block";
-          jobCardMenu.style.display = "none";
-          masterMenu.style.display = "none";
-          printingMenu.style.display = "none";
-          deliveryMenu.style.display ="none";
-           consumableMenu.style.display ="none"
-        }
-        function togglePrintingMenu() {
-          printingMenu.style.display =
-            printingMenu.style.display === "block" ? "none" : "block";
-          jobCardMenu.style.display = "none";
-          masterMenu.style.display = "none";
-          fusingMenu.style.display = "none";
-          deliveryMenu.style.display ="none";
-           consumableMenu.style.display ="none"
-        }
-
-         function toggleDeliveryMenu() {
-  deliveryMenu.style.display =
-    deliveryMenu.style.display === "block" ? "none" : "block";
-
-  jobCardMenu.style.display = "none";
-  masterMenu.style.display = "none";
-  fusingMenu.style.display = "none";
-  printingMenu.style.display = "none";
-   consumableMenu.style.display ="none"
-}
-  function toggleConMenu() {
-  consumableMenu.style.display =
-    consumableMenu.style.display === "block" ? "none" : "block";
-
-  jobCardMenu.style.display = "none";
-  masterMenu.style.display = "none";
-  fusingMenu.style.display = "none";
-  printingMenu.style.display = "none";
-  //  consumableMenu.style.display ="none"
-}
-
-        function toggleMobileMenu() {
-          mobileMenu.style.display =
-            mobileMenu.style.display === "block" ? "none" : "block";
-         
-          jobCardMenu.style.display = "none";
-          masterMenu.style.display = "none";
-          fusingMenu.style.display = "none";
-          printingMenu.style.display = "none";
-          deliveryMenu.style.display ="none";
-           consumableMenu.style.display ="none"
-        }
-
-
-
-        function toggleMobileSub(id) {
-          /new one/;
-          document
-            .querySelectorAll(".mobile-menu .dropdown-menu")
-            .forEach((menu) => {
-              if (menu.id !== id) {
-                menu.style.display = "none";
-              }
-            });
-          /end/;
-          const el = document.getElementById(id);
-          el.style.display = el.style.display === "block" ? "none" : "block";
-        }
-
-        document.addEventListener("click", (e) => {
-          if (!e.target.closest(".nav-item")) {
-            jobCardMenu.style.display = "none";
-            masterMenu.style.display = "none";
-            fusingMenu.style.display = "none";
-            printingMenu.style.display = "none";
-            deliveryMenu.style.display ="none"
-            consumableMenu.style.display ="none"
-          }
-        });
-
-        window.addEventListener("resize", () => {
-          if (window.innerWidth > 1024) {
-            // close mobile menu
-            mobileMenu.style.display = "none";
-
-            // close mobile sub menus
-            document
-              .querySelectorAll(".mobile-menu .dropdown-menu")
-              .forEach((el) => {
-                el.style.display = "none";
-              });
-          }
-        });
-      </script>
-      {% block extra_js %}{% endblock%}
-      <!-- </body>
-</html> -->
+      <a href="/accounts/" class="nav-button">Accounts</a>
     </div>
-  </head>
+
+    <script>
+      // Get all dropdown menus
+      const dropdowns = {
+        jobCard: document.getElementById("jobCardMenu"),
+        master: document.getElementById("masterMenu"),
+        fusing: document.getElementById("fusingMenu"),
+        printing: document.getElementById("printingMenu"),
+        delivery: document.getElementById("mdelivery"),
+        consumable: document.getElementById("conMenu"),
+        mobile: document.getElementById("mobileMenu")
+      };
+
+      // Close all desktop dropdowns
+      function closeAllDesktopDropdowns() {
+        Object.values(dropdowns).forEach(menu => {
+          if (menu && !menu.classList.contains('mobile-menu')) {
+            menu.style.display = "none";
+          }
+        });
+      }
+
+      // Toggle functions with event parameter
+      function toggleJobCardMenu(e) {
+        e?.stopPropagation();
+        const menu = dropdowns.jobCard;
+        const isShowing = menu.style.display === "block";
+        closeAllDesktopDropdowns();
+        menu.style.display = isShowing ? "none" : "block";
+      }
+
+      function toggleMasterMenu(e) {
+        e?.stopPropagation();
+        const menu = dropdowns.master;
+        const isShowing = menu.style.display === "block";
+        closeAllDesktopDropdowns();
+        menu.style.display = isShowing ? "none" : "block";
+      }
+
+      function toggleFusingMenu(e) {
+        e?.stopPropagation();
+        const menu = dropdowns.fusing;
+        const isShowing = menu.style.display === "block";
+        closeAllDesktopDropdowns();
+        menu.style.display = isShowing ? "none" : "block";
+      }
+
+      function togglePrintingMenu(e) {
+        e?.stopPropagation();
+        const menu = dropdowns.printing;
+        const isShowing = menu.style.display === "block";
+        closeAllDesktopDropdowns();
+        menu.style.display = isShowing ? "none" : "block";
+      }
+
+      function toggleDeliveryMenu(e) {
+        e?.stopPropagation();
+        const menu = dropdowns.delivery;
+        const isShowing = menu.style.display === "block";
+        closeAllDesktopDropdowns();
+        menu.style.display = isShowing ? "none" : "block";
+      }
+
+      function toggleConMenu(e) {
+        e?.stopPropagation();
+        const menu = dropdowns.consumable;
+        const isShowing = menu.style.display === "block";
+        closeAllDesktopDropdowns();
+        menu.style.display = isShowing ? "none" : "block";
+      }
+
+      function toggleMobileMenu() {
+        const menu = dropdowns.mobile;
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+        closeAllDesktopDropdowns();
+      }
+
+      function toggleMobileSub(id) {
+        // Close all other mobile submenus
+        document.querySelectorAll(".mobile-menu .dropdown-menu").forEach((menu) => {
+          if (menu.id !== id) {
+            menu.classList.remove("show");
+            menu.style.display = "none";
+          }
+        });
+        // Toggle clicked submenu
+        const el = document.getElementById(id);
+        const isShowing = el.classList.contains("show");
+        el.classList.toggle("show");
+        el.style.display = isShowing ? "none" : "block";
+      }
+
+      // Close dropdowns when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".nav-item")) {
+          closeAllDesktopDropdowns();
+        }
+      });
+
+      // Close mobile menu on resize to desktop
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 1024) {
+          if (dropdowns.mobile) dropdowns.mobile.style.display = "none";
+          document.querySelectorAll(".mobile-menu .dropdown-menu").forEach((el) => {
+            el.classList.remove("show");
+            el.style.display = "none";
+          });
+        }
+      });
+
+      // Prevent dropdown close when clicking inside it
+      document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        menu.addEventListener('click', (e) => {
+          e.stopPropagation();
+        });
+      });
+    </script>
+    {% block extra_js %}{% endblock %}
+  </body>
 </html>

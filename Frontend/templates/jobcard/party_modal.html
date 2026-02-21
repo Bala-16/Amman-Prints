@@ -1,0 +1,240 @@
+<!-- Party Creation Modal Component -->
+<style>
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+.modal-overlay.active {
+    display: flex;
+}
+.modal-content {
+    background: #fff;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+.modal-header {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: #fff;
+    padding: 20px;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal-header h2 {
+    font-size: 20px;
+    margin: 0;
+}
+.modal-close {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 28px;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    transition: background-color .3s;
+}
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+.modal-body {
+    padding: 30px;
+}
+.modal-footer {
+    padding: 20px 30px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+.form-row-modal {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+.form-group-modal {
+    display: flex;
+    flex-direction: column;
+}
+.form-group-modal.full-width {
+    grid-column: 1/-1;
+}
+.form-group-modal label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+.form-group-modal input,
+.form-group-modal select,
+.form-group-modal textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.form-group-modal input:focus,
+.form-group-modal select:focus,
+.form-group-modal textarea:focus {
+    outline: none;
+    border-color: #1abc9c;
+    box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.1);
+}
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .3s;
+}
+.btn-primary {
+    background: #1abc9c;
+    color: #fff;
+}
+.btn-primary:hover {
+    background: #16a085;
+}
+.btn-secondary {
+    background: #95a5a6;
+    color: #fff;
+}
+.btn-secondary:hover {
+    background: #7f8c8d;
+}
+.required {
+    color: #e74c3c;
+    margin-left: 3px;
+}
+</style>
+
+<div class="modal-overlay" id="partyModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>🏢 Party Creation</h2>
+            <button class="modal-close" onclick="closePartyModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-row-modal">
+                <div class="form-group-modal full-width">
+                    <label>Party Name <span class="required">*</span></label>
+                    <input type="text" id="partyName" placeholder="Enter party name" />
+                </div>
+                <div class="form-group-modal">
+                    <label>Contact Person</label>
+                    <input type="text" id="contactPerson" placeholder="Enter contact person" />
+                </div>
+                <div class="form-group-modal">
+                    <label>Mobile Number <span class="required">*</span></label>
+                    <input type="tel" id="mobileNumber" placeholder="Enter mobile number" />
+                </div>
+                <div class="form-group-modal">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="Enter email address" />
+                </div>
+                <div class="form-group-modal">
+                    <label>Phone</label>
+                    <input type="tel" id="phone" placeholder="Enter phone number" />
+                </div>
+                <div class="form-group-modal full-width">
+                    <label>Address</label>
+                    <textarea id="address" rows="3" placeholder="Enter address"></textarea>
+                </div>
+                <div class="form-group-modal">
+                    <label>City</label>
+                    <input type="text" id="city" placeholder="Enter city" />
+                </div>
+                <div class="form-group-modal">
+                    <label>State</label>
+                    <input type="text" id="state" placeholder="Enter state" />
+                </div>
+                <div class="form-group-modal">
+                    <label>PIN Code</label>
+                    <input type="text" id="pinCode" placeholder="Enter PIN code" />
+                </div>
+                <div class="form-group-modal">
+                    <label>GST Number</label>
+                    <input type="text" id="gstNumber" placeholder="Enter GST number" />
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closePartyModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="saveParty()">Save Party</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Party Modal Functions
+function openPartyModal() {
+    document.getElementById('partyModal').classList.add('active');
+    document.getElementById('partyName').focus();
+}
+
+function closePartyModal() {
+    document.getElementById('partyModal').classList.remove('active');
+    // Clear all fields
+    document.querySelectorAll('#partyModal .modal-body input, #partyModal .modal-body textarea').forEach(input => {
+        input.value = '';
+    });
+}
+
+function saveParty() {
+    const partyName = document.getElementById('partyName').value;
+    const contactPerson = document.getElementById('contactPerson').value;
+    const mobileNumber = document.getElementById('mobileNumber').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('address').value;
+    const city = document.getElementById('city').value;
+    const state = document.getElementById('state').value;
+    const pinCode = document.getElementById('pinCode').value;
+    const gstNumber = document.getElementById('gstNumber').value;
+
+    if (partyName.trim() === '') {
+        alert('Please enter party name');
+        return;
+    }
+
+    // Set customer name field in main form
+    document.getElementById('customerName').value = partyName;
+    
+    // Log party data (you can send to backend via AJAX)
+    console.log('Party Data:', {
+        partyName, contactPerson, mobileNumber, email, phone, 
+        address, city, state, pinCode, gstNumber
+    });
+
+    closePartyModal();
+    alert('Party created successfully!');
+}
+
+// Event Listeners
+document.getElementById('partyModal').addEventListener('click', function (e) {
+    if (e.target === this) closePartyModal();
+});
+
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closePartyModal();
+});
+</script>
